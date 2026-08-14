@@ -1,0 +1,55 @@
+/* */
+/* _sidenav.scss */
+/* */
+
+
+aside+.page-content {
+    @apply lg:ms-sidenav;
+}
+
+
+/* Hidden Sidenav View ( Fullscreen page content view) */
+#app-menu {
+    @apply lg:py-0;
+
+    &.opened {
+        @apply lg:-ms-sidenav;
+
+        &+.page-content {
+            @apply lg:ms-0;
+        }
+    }
+}
+
+
+
+/* Menu Active */
+.admin-menu {
+
+    .menu-dot {
+        @apply iconify tabler--circle-filled scale-[.25] text-2xl opacity-75;
+    }
+
+    .menu-item {
+        a.active {
+            @apply text-primary bg-primary/5 relative;
+
+            &::before {
+                content: "";
+                @apply absolute top-2 bottom-2 start-0 right-auto border-s-2 border-solid border-primary;
+            }
+        }
+    }
+
+
+
+    .menu-arrow {
+        @apply iconify tabler--plus ms-auto text-sm transition-all;
+    }
+
+    .hs-accordion.active {
+        .menu-arrow {
+            @apply iconify tabler--minus;
+        }
+    }
+}

@@ -1,0 +1,52 @@
+@theme {
+
+    --font-body: "Montserrat", sans-serif;
+
+    --text-body: 0.875rem;
+    --color-body-bg: #f6f7fb;
+    --color-body-color: #4c4c5c;
+
+    --color-primary: var(--color-indigo-500);
+
+    --color-primary-50: var(--color-indigo-50);
+    --color-primary-100: var(--color-indigo-100);
+    --color-primary-200: var(--color-indigo-200);
+    --color-primary-300: var(--color-indigo-300);
+    --color-primary-400: var(--color-indigo-400);
+    --color-primary-500: var(--color-indigo-500);
+    --color-primary-600: var(--color-indigo-600);
+    --color-primary-700: var(--color-indigo-700);
+    --color-primary-800: var(--color-indigo-800);
+    --color-primary-900: var(--color-indigo-900);
+    --color-primary-950: var(--color-indigo-950);
+
+    --color-secondary: #747a80;
+    --color-success: #20b799;
+    --color-info: #3cbade;
+    --color-warning: #efb540;
+    --color-danger: #fa5944;
+    --color-light: #e9edf3;
+    --color-dark: #222a3e;
+
+    --color-default-50: #fdfdfd;
+    --color-default-100: var(--color-stone-100);
+    --color-default-200: var(--color-stone-200);
+    --color-default-300: var(--color-stone-300);
+    --color-default-400: var(--color-stone-400);
+    --color-default-500: var(--color-stone-500);
+    --color-default-600: var(--color-stone-600);
+    --color-default-700: var(--color-stone-700);
+    --color-default-800: var(--color-stone-800);
+    --color-default-900: var(--color-stone-900);
+    --color-default-950: var(--color-stone-950);
+
+    /* 0 0 17px 0 rgba(130, 122, 122, 0.1) */
+
+
+    --spacing-sidenav: 265px;
+    --spacing-topbar: 70px;
+
+}
+
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));

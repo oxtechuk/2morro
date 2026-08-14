@@ -1,0 +1,39 @@
+/* */
+/* _card.scss */
+/* */
+
+
+@layer components {
+
+
+    .card {
+        @apply relative rounded bg-white flex flex-col break-words bg-clip-border h-fit shadow;
+
+        .card-header {
+            @apply py-3 px-5 border-b border-default-200;
+        }
+
+        .card-footer {
+            @apply py-3 px-6 border-t border-default-200;
+        }
+
+        .card-body {
+            @apply p-5;
+        }
+
+        /* .card-title { */
+        /*     @apply relative; */
+
+        /*     &::before { */
+        /*         content: ""; */
+        /*         @apply absolute top-0 bottom-0 start-0 end-auto border-s border-2 border-primary -ms-5; */
+        /*         border-bottom: 0; */
+        /*     } */
+        /* } */
+
+    }
+
+    .card-title {
+        @apply text-base font-semibold text-default-800;
+    }
+}

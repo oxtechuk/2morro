@@ -1,0 +1,44 @@
+/*
+Template Name: Opatix - Tailwind CSS 4 Admin Layout & UI Kit Template
+Version: 1.0
+Author: MyraStudio
+File: Main Css File
+*/
+
+/* Google Font Link */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+@import "tailwindcss";
+
+
+/* Tailwind Plugin */
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/forms";
+
+
+/* Preline Plugin */
+@source "preline/dist/*.js";
+@import "../../node_modules/preline/variants.css";
+
+
+@import "./icons.css";
+@import "./config.css";
+
+
+/* Structure */
+@import "./structure/_general.css";
+@import "./structure/_sidenav.css";
+@import "./structure/_topbar.css";
+
+
+/* Components */
+@import "./custom/_helper.css";
+@import "./custom/_buttons.css";
+@import "./custom/_card.css";
+@import "./custom/_forms.css";
+@import "./custom/_chart.css";
+@import "./custom/_fullcalendar.css";
+
+
+/* Advanced Plugins */
+@import "./custom/_simplebar.css";
