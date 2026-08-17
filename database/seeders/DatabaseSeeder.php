@@ -163,5 +163,172 @@ class DatabaseSeeder extends Seeder
             $p1->id => ['quantity' => 1],
             $p2->id => ['quantity' => 1],
         ]);
+
+        // 7. Seed Sample Customers and CRM Profiles
+        $customersData = [
+            [
+                'name' => 'أحمد علي حسن',
+                'email' => 'ahmed.ali@example.com',
+                'password' => Hash::make('password123'),
+                'segment' => 'specialist',
+                'notes' => 'أخصائي تخاطب، يهتم بشراء كروت التخاطب بالكميات لحسابه الخاص وعيادته.',
+                'phone' => '01012345678',
+                'governorate' => 'القاهرة',
+                'city' => 'مصر الجديدة',
+                'address' => '12 شارع الميرغني، مصر الجديدة',
+            ],
+            [
+                'name' => 'منى أحمد المحلاوي',
+                'email' => 'mona.ahmed@example.com',
+                'password' => Hash::make('password123'),
+                'segment' => 'parent',
+                'notes' => 'أم لطفل بعمر 4 سنوات يعاني من تأخر لغوي بسيط وتشتت انتباه.',
+                'phone' => '01234567890',
+                'governorate' => 'الجيزة',
+                'city' => 'الدقي',
+                'address' => '5 شارع التحرير، الدقي',
+            ],
+            [
+                'name' => 'حضانة أطفال الغد (أ/ ياسمين)',
+                'email' => 'tomorrow.nursery@example.com',
+                'password' => Hash::make('password123'),
+                'segment' => 'nursery',
+                'notes' => 'حضانة متكاملة تطلب باقات الشيتات والكتب لتوزيعها على الفصول.',
+                'phone' => '01511223344',
+                'governorate' => 'الإسكندرية',
+                'city' => 'سموحة',
+                'address' => 'بناية الرواد، سموحة، الإسكندرية',
+            ],
+            [
+                'name' => 'مدرسة الأمل لذوي الاحتياجات',
+                'email' => 'hope.school@example.com',
+                'password' => Hash::make('password123'),
+                'segment' => 'school',
+                'notes' => 'جهة حكومية/مؤسسة خيرية تشتري الأدوات والباقات بتمويل وتطلب فواتير ضريبية.',
+                'phone' => '01122334455',
+                'governorate' => 'المنصورة',
+                'city' => 'المنصورة',
+                'address' => 'شارع الجلاء، بجوار بنك مصر، المنصورة',
+            ]
+        ];
+
+        foreach ($customersData as $cData) {
+            $user = User::updateOrCreate(
+                ['email' => $cData['email']],
+                [
+                    'name' => $cData['name'],
+                    'password' => $cData['password'],
+                ]
+            );
+
+            // Create profile
+            $profile = \App\Models\CustomerProfile::updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'segment' => $cData['segment'],
+                    'admin_notes' => $cData['notes'],
+                    'loyalty_points' => rand(50, 500),
+                    'last_contacted_at' => now()->subDays(rand(1, 10)),
+                ]
+            );
+
+            // Create mock order
+            $orderNumber = 'ORD-' . strtoupper(Str::random(8));
+            $order = \App\Models\Order::create([
+                'user_id' => $user->id,
+                'order_number' => $orderNumber,
+                'customer_name' => $user->name,
+                'customer_email' => $user->email,
+                'customer_phone' => $cData['phone'],
+                'shipping_address' => $cData['address'],
+                'shipping_governorate' => $cData['governorate'],
+                'shipping_city' => $cData['city'],
+                'shipping_fee' => 40.00,
+                'subtotal' => 199.00,
+                'discount_total' => 0.00,
+                'total' => 239.00,
+                'payment_method' => rand(0, 1) ? 'cod' : 'paymob',
+                'payment_status' => 'paid',
+                'status' => 'delivered',
+                'notes' => 'طلب تجريبي من لوحة التحكم',
+            ]);
+
+            // Add item
+            \App\Models\OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $p1->id,
+                'product_name' => $p1->name,
+                'quantity' => 1,
+                'price' => 199.00,
+                'type' => $p1->type ?? 'physical',
+            ]);
+
+            // If specialist or nursery, add digital download worksheet as well
+            if (in_array($cData['segment'], ['specialist', 'nursery'])) {
+                $digitalOrderNumber = 'ORD-' . strtoupper(Str::random(8));
+                $dOrder = \App\Models\Order::create([
+                    'user_id' => $user->id,
+                    'order_number' => $digitalOrderNumber,
+                    'customer_name' => $user->name,
+                    'customer_email' => $user->email,
+                    'customer_phone' => $cData['phone'],
+                    'shipping_address' => 'رقمي - تحميل فوري',
+                    'shipping_governorate' => $cData['governorate'],
+                    'shipping_city' => $cData['city'],
+                    'shipping_fee' => 0.00,
+                    'subtotal' => 45.00,
+                    'discount_total' => 0.00,
+                    'total' => 45.00,
+                    'payment_method' => 'paymob',
+                    'payment_status' => 'paid',
+                    'status' => 'delivered',
+                    'notes' => 'شراء شيت رقمي',
+                ]);
+
+                \App\Models\OrderItem::create([
+                    'order_id' => $dOrder->id,
+                    'product_id' => $p2->id,
+                    'product_name' => $p2->name,
+                    'quantity' => 1,
+                    'price' => 45.00,
+                    'type' => $p2->type ?? 'digital',
+                ]);
+
+                // Create download link token
+                \App\Models\Download::create([
+                    'order_id' => $dOrder->id,
+                    'user_id' => $user->id,
+                    'product_id' => $p2->id,
+                    'token' => Str::random(32),
+                    'download_count' => rand(0, 3),
+                    'max_downloads' => 5,
+                    'expires_at' => now()->addDays(30),
+                ]);
+            }
+
+            // Create CRM Logs
+            \App\Models\CrmLog::create([
+                'user_id' => $user->id,
+                'admin_id' => $admin->id,
+                'type' => 'note',
+                'details' => 'تم إنشاء الحساب التلقائي وتفعيل الملف الشخصي الخاص بالـ CRM للعميل.',
+            ]);
+
+            if ($cData['segment'] === 'specialist') {
+                \App\Models\CrmLog::create([
+                    'user_id' => $user->id,
+                    'admin_id' => $admin->id,
+                    'type' => 'call',
+                    'details' => 'تم الاتصال بالعميل لتأكيد بيانات الشحن وعرض خصم الكميات المخصص للأخصائيين (20% للطلبات فوق 5 قطع). العميل أبدى اهتماماً كبيراً.',
+                ]);
+            } elseif ($cData['segment'] === 'parent') {
+                \App\Models\CrmLog::create([
+                    'user_id' => $user->id,
+                    'admin_id' => $admin->id,
+                    'type' => 'whatsapp',
+                    'details' => 'أرسلت الأم استفساراً عبر الواتساب تسأل عن السن المناسب لكروت التخاطب وعن مدى فعاليتها مع طفل متأخر في الكلام. تم الرد وإرسال مقال المركز ودليل الاستخدام.',
+                ]);
+            }
+        }
     }
 }

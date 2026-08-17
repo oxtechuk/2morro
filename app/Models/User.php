@@ -9,19 +9,11 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Panel;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable
 {
-    public function canAccessPanel(Panel $panel): bool
-    {
-        return str_ends_with($this->email, '@2morro.com') 
-            || $this->email === 'admin@2morro.com' 
-            || app()->environment('local');
-    }
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
@@ -51,5 +43,22 @@ class User extends Authenticatable implements FilamentUser
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function profile()
+    {
+        return $this->hasOne(CustomerProfile::class);
+    }
+
+    public function crmLogs()
+    {
+        return $this->hasMany(CrmLog::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return str_ends_with($this->email, '@2morro.com') 
+            || $this->email === 'admin@2morro.com' 
+            || app()->environment('local');
     }
 }

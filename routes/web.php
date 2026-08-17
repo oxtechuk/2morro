@@ -38,4 +38,45 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Admin Panel Routes
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\CrmController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ReviewController;
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Store Settings
+    Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
+    
+    // CRM Customers
+    Route::get('/crm', [CrmController::class, 'index'])->name('crm.index');
+    Route::get('/crm/customer/{user}', [CrmController::class, 'show'])->name('crm.show');
+    Route::post('/crm/customer/{user}/note', [CrmController::class, 'storeNote'])->name('crm.storeNote');
+    Route::post('/crm/customer/{user}/update-segment', [CrmController::class, 'updateSegment'])->name('crm.updateSegment');
+    Route::post('/crm/customer/{user}/reset-download/{download}', [CrmController::class, 'resetDownload'])->name('crm.resetDownload');
+
+    // Products CRUD
+    Route::resource('products', ProductController::class);
+    
+    // Categories CRUD
+    Route::resource('categories', CategoryController::class)->except(['show']);
+
+    // Orders Management
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{order}/update-status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
+
+    // Reviews Management
+    Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
+    Route::post('/reviews/{review}/toggle-approve', [ReviewController::class, 'toggleApprove'])->name('reviews.toggleApprove');
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+});
+
 require __DIR__.'/auth.php';

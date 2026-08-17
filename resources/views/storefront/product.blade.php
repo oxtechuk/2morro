@@ -3,6 +3,64 @@
 @section('title', $product->name . ' | تمورو')
 
 @section('content')
+<!-- SEO Structured Data Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": {!! json_encode($product->name) !!},
+  "image": [
+    @if(is_array($product->images) && !empty($product->images))
+      "{!! asset('storage/' . $product->images[0]) !!}"
+    @endif
+  ],
+  "description": {!! json_encode($product->short_description ?: Str::limit($product->description, 150)) !!},
+  "sku": {!! json_encode($product->sku ?: 'SKU-' . $product->id) !!},
+  "offers": {
+    "@type": "Offer",
+    "url": "{!! request()->url() !!}",
+    "priceCurrency": "EGP",
+    "price": "{{ $product->sale_price ?: $product->price }}",
+    "itemCondition": "https://schema.org/NewCondition",
+    "availability": "{{ ($product->stock > 0 || $product->type === 'digital') ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}"
+  }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [{
+    "@type": "ListItem",
+    "position": 1,
+    "name": "الرئيسية",
+    "item": "{!! route('home') !!}"
+  }
+  @if($product->categories->isNotEmpty())
+  ,{
+    "@type": "ListItem",
+    "position": 2,
+    "name": {!! json_encode($product->categories->first()->name) !!},
+    "item": "{!! route('search', ['category' => $product->categories->first()->slug]) !!}"
+  },{
+    "@type": "ListItem",
+    "position": 3,
+    "name": {!! json_encode($product->name) !!},
+    "item": "{!! request()->url() !!}"
+  }
+  @else
+  ,{
+    "@type": "ListItem",
+    "position": 2,
+    "name": {!! json_encode($product->name) !!},
+    "item": "{!! request()->url() !!}"
+  }
+  @endif
+  ]
+}
+</script>
+
 <div class="bg-white py-8">
     <div class="max-w-7xl mx-auto px-4">
         
