@@ -82,33 +82,41 @@ class SettingController extends Controller
 
         // Handle Store Logo upload
         if ($request->hasFile('store_logo_file')) {
-            $path = $request->file('store_logo_file')->store('logo', 'public');
-            $data['store_logo'] = 'storage/' . $path;
+            $file = $request->file('store_logo_file');
+            $filename = \Illuminate\Support\Str::random(40) . '.' . ($file->getClientOriginalExtension() ?: 'png');
+            $file->move(storage_path('app/public/logo'), $filename);
+            $data['store_logo'] = 'storage/logo/' . $filename;
             unset($data['store_logo_file']);
         }
 
         // Handle Hero Image upload for primary slide
         if ($request->hasFile('hero_image_file')) {
-            $path = $request->file('hero_image_file')->store('banners', 'public');
-            $data['hero_image'] = 'storage/' . $path;
+            $file = $request->file('hero_image_file');
+            $filename = \Illuminate\Support\Str::random(40) . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
+            $file->move(storage_path('app/public/banners'), $filename);
+            $data['hero_image'] = 'storage/banners/' . $filename;
             unset($data['hero_image_file']);
         }
 
         // Handle Catalog Page Banner Image upload
         if ($request->hasFile('catalog_banner_file')) {
-            $path = $request->file('catalog_banner_file')->store('banners', 'public');
-            $data['catalog_banner_image'] = 'storage/' . $path;
+            $file = $request->file('catalog_banner_file');
+            $filename = \Illuminate\Support\Str::random(40) . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
+            $file->move(storage_path('app/public/banners'), $filename);
+            $data['catalog_banner_image'] = 'storage/banners/' . $filename;
             unset($data['catalog_banner_file']);
         }
 
         // Handle adding a brand new banner directly from settings page
         if ($request->hasFile('new_banner_image')) {
-            $path = $request->file('new_banner_image')->store('banners', 'public');
+            $file = $request->file('new_banner_image');
+            $filename = \Illuminate\Support\Str::random(40) . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
+            $file->move(storage_path('app/public/banners'), $filename);
             \App\Models\Banner::create([
                 'title' => $request->input('new_banner_title'),
                 'subtitle' => $request->input('new_banner_subtitle'),
                 'badge_text' => $request->input('new_banner_badge', '🚀 جديد وحصري'),
-                'image' => 'storage/' . $path,
+                'image' => 'storage/banners/' . $filename,
                 'button_text' => $request->input('new_banner_btn_text', 'تسوق الآن'),
                 'button_link' => $request->input('new_banner_btn_link', '/search'),
                 'text_position' => 'right',

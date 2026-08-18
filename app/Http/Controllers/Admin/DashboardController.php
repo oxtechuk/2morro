@@ -44,9 +44,12 @@ class DashboardController extends Controller
             $segmentStats[$label] = $segmentsDistribution[$key] ?? 0;
         }
 
-        // 3. Sales chart data (last 6 months)
+        // 3. Sales chart data (last 6 months - compatible with MySQL, MariaDB, and SQLite)
+        $isSqlite = DB::connection()->getDriverName() === 'sqlite';
+        $monthExpr = $isSqlite ? "strftime('%m', created_at)" : "DATE_FORMAT(created_at, '%m')";
+
         $salesData = Order::select(
-            DB::raw("strftime('%m', created_at) as month"), // SQLite format
+            DB::raw("{$monthExpr} as month"),
             DB::raw('SUM(total) as total')
         )
         ->where('payment_status', 'paid')

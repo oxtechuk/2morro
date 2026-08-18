@@ -137,9 +137,12 @@ class ProductController extends Controller
         }
 
         // Handle Primary Image Upload
+        // Handle Primary Image Upload
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('products', 'public');
-            $data['images'] = [$path]; // Stored as array
+            $file = $request->file('image');
+            $filename = Str::random(40) . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
+            $file->move(storage_path('app/public/products'), $filename);
+            $data['images'] = ['products/' . $filename];
         } else {
             $data['images'] = [];
         }
@@ -147,12 +150,12 @@ class ProductController extends Controller
         // Handle Digital File Upload
         if ($request->type === 'digital' && $request->hasFile('digital_file')) {
             $file = $request->file('digital_file');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $file->getClientOriginalName());
             
-            // Store inside private folder (local disk)
-            $path = $file->storeAs('private_downloads', $filename, 'local');
+            // Store inside private folder
+            $file->move(storage_path('app/private/private_downloads'), $filename);
             
-            $data['digital_file_path'] = $path;
+            $data['digital_file_path'] = 'private_downloads/' . $filename;
             $data['digital_file_name'] = $file->getClientOriginalName();
             $data['digital_download_limit'] = $request->digital_download_limit;
             $data['digital_expiry_days'] = $request->digital_expiry_days;
@@ -228,26 +231,20 @@ class ProductController extends Controller
 
         // Handle Primary Image Upload
         if ($request->hasFile('image')) {
-            // Delete old primary image if exists
-            if (is_array($product->images) && !empty($product->images)) {
-                Storage::disk('public')->delete($product->images[0]);
-            }
-            $path = $request->file('image')->store('products', 'public');
-            $data['images'] = [$path];
+            $file = $request->file('image');
+            $filename = Str::random(40) . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
+            $file->move(storage_path('app/public/products'), $filename);
+            $data['images'] = ['products/' . $filename];
         }
 
         // Handle Digital File Upload
         if ($request->type === 'digital') {
             if ($request->hasFile('digital_file')) {
-                // Delete old digital file if exists
-                if ($product->digital_file_path) {
-                    Storage::disk('local')->delete($product->digital_file_path);
-                }
                 $file = $request->file('digital_file');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $path = $file->storeAs('private_downloads', $filename, 'local');
+                $filename = time() . '_' . preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $file->getClientOriginalName());
+                $file->move(storage_path('app/private/private_downloads'), $filename);
                 
-                $data['digital_file_path'] = $path;
+                $data['digital_file_path'] = 'private_downloads/' . $filename;
                 $data['digital_file_name'] = $file->getClientOriginalName();
             }
             

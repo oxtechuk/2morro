@@ -135,8 +135,9 @@ class CheckoutController extends Controller
             $screenshotPath = null;
             if ($request->hasFile('payment_screenshot')) {
                 $file = $request->file('payment_screenshot');
-                $filename = 'proof_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
-                $screenshotPath = $file->storeAs('payment_proofs', $filename, 'public');
+                $filename = 'proof_' . time() . '_' . Str::random(8) . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
+                $file->move(storage_path('app/public/payment_proofs'), $filename);
+                $screenshotPath = 'payment_proofs/' . $filename;
             }
 
             // Create Order

@@ -37,8 +37,10 @@ class BannerController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('banners', 'public');
-            $validated['image'] = 'storage/' . $path;
+            $file = $request->file('image');
+            $filename = \Illuminate\Support\Str::random(40) . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
+            $file->move(storage_path('app/public/banners'), $filename);
+            $validated['image'] = 'storage/banners/' . $filename;
         }
 
         $validated['is_active'] = $request->has('is_active');
@@ -71,8 +73,10 @@ class BannerController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('banners', 'public');
-            $validated['image'] = 'storage/' . $path;
+            $file = $request->file('image');
+            $filename = \Illuminate\Support\Str::random(40) . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
+            $file->move(storage_path('app/public/banners'), $filename);
+            $validated['image'] = 'storage/banners/' . $filename;
         }
 
         $validated['is_active'] = $request->has('is_active');
