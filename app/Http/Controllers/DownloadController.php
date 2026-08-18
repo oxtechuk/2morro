@@ -25,19 +25,31 @@ class DownloadController extends Controller
             abort(404, 'الملف غير متوفر حالياً.');
         }
 
-        // Increment download counter
-        $download->increment('download_count');
-
-        // Retrieve file from private storage disk
-        $filePath = $product->digital_file_path; // e.g. private_downloads/sample.pdf
+        $filePath = $product->digital_file_path; // e.g. private_downloads/sample_worksheet.pdf
         $downloadName = $product->digital_file_name ?: basename($filePath);
 
-        // Check file existence
-        if (!Storage::disk('local')->exists($filePath)) {
+        // Check various storage locations for maximum resilience
+        $fullPath = null;
+        if (Storage::disk('local')->exists($filePath)) {
+            $fullPath = Storage::disk('local')->path($filePath);
+        } elseif (file_exists(storage_path('app/' . $filePath))) {
+            $fullPath = storage_path('app/' . $filePath);
+        } elseif (file_exists(storage_path('app/private/' . $filePath))) {
+            $fullPath = storage_path('app/private/' . $filePath);
+        } elseif (Storage::disk('public')->exists($filePath)) {
+            $fullPath = Storage::disk('public')->path($filePath);
+        } elseif (file_exists(public_path($filePath))) {
+            $fullPath = public_path($filePath);
+        }
+
+        if (!$fullPath || !file_exists($fullPath)) {
             abort(404, 'ملف التحميل غير موجود على الخادم. يرجى التواصل مع الدعم الفني.');
         }
 
-        // Return download stream response
-        return Storage::disk('local')->download($filePath, $downloadName);
+        // Increment download counter
+        $download->increment('download_count');
+
+        // Return direct download response
+        return response()->download($fullPath, $downloadName);
     }
 }

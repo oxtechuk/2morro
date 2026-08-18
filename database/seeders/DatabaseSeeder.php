@@ -142,7 +142,7 @@ class DatabaseSeeder extends Seeder
                 'price' => 325.00,
                 'sale_price' => 220.00,
                 'sku' => 'BND-LSB-03',
-                'type' => 'physical', // Marked as physical because it contains a physical box that requires shipping
+                'type' => 'physical',
                 'stock' => 30,
                 'video_url' => 'https://www.youtube.com/embed/dQw4w9WgXcQ',
                 'benefits' => ['حل شامل للتأخر اللغوي', 'يجمع بين اللعب الملموس والكتابة والتدريبات', 'توفير مالي كبير مع توجيه أخصائي'],
@@ -158,11 +158,131 @@ class DatabaseSeeder extends Seeder
         $p3->ageGroups()->sync([$ageModels['2-3']->id, $ageModels['4-5']->id]);
         $p3->skills()->sync([$skillModels['language-development']->id, $skillModels['learning-difficulties']->id]);
         $p3->needs()->sync([$needModels['speech-delay']->id, $needModels['fine-motor']->id]);
-        // Define Bundle Products relationship (P3 contains P1 and P2)
         $p3->products()->sync([
             $p1->id => ['quantity' => 1],
             $p2->id => ['quantity' => 1],
         ]);
+
+        // Product 4: Smart Learning Clock
+        $p4 = Product::updateOrCreate(
+            ['slug' => 'smart-learning-clock'],
+            [
+                'name' => 'ساعة التعلم الذكية للأطفال',
+                'description' => 'ساعة خشبية تفاعلية ملونة لتعليم قراءة الوقت والأرقام والأشكال بطريقة ممتعة وبصرية.',
+                'short_description' => 'ساعة خشبية تعليمية تفاعلية لتعليم الوقت والعد.',
+                'price' => 280.00,
+                'sale_price' => null,
+                'sku' => 'PHY-SLC-04',
+                'type' => 'physical',
+                'stock' => 45,
+                'badge' => 'جديد',
+                'images' => ['products/clock.jpg'],
+                'is_active' => true,
+            ]
+        );
+        $p4->categories()->sync([$categoryModels['educational-tools']->id]);
+        $p4->ageGroups()->sync([$ageModels['4-5']->id, $ageModels['6-8']->id]);
+        $p4->skills()->sync([$skillModels['learning-difficulties']->id]);
+
+        // Product 5: Numbers and Counting Box
+        $p5 = Product::updateOrCreate(
+            ['slug' => 'numbers-counting-box'],
+            [
+                'name' => 'صندوق الأرقام والعد الخشبي',
+                'description' => 'صندوق خشبي ممتع يحتوي على قطع ملونة وأعمدة لتعليم مبادئ الحساب والعد والتصنيف.',
+                'short_description' => 'وسيلة ملموسة لتعليم الحساب والأرقام للأطفال.',
+                'price' => 350.00,
+                'sale_price' => null,
+                'sku' => 'PHY-NCB-05',
+                'type' => 'physical',
+                'stock' => 40,
+                'images' => ['products/sample-cards.jpg'],
+                'is_active' => true,
+            ]
+        );
+        $p5->categories()->sync([$categoryModels['educational-tools']->id]);
+        $p5->ageGroups()->sync([$ageModels['2-3']->id, $ageModels['4-5']->id]);
+
+        // Product 6: Geometric Shapes Set
+        $p6 = Product::updateOrCreate(
+            ['slug' => 'geometric-shapes-set'],
+            [
+                'name' => 'مجموعة الأشكال الهندسية والمطابقة',
+                'description' => 'مجموعة متكاملة لتطوير التآزر البصري الحركي ومطابقة الأشكال والألوان الأساسية.',
+                'short_description' => 'لعبة تعليمية لمطابقة الأشكال وتنمية التركيز.',
+                'price' => 450.00,
+                'sale_price' => null,
+                'sku' => 'PHY-GSS-06',
+                'type' => 'physical',
+                'stock' => 25,
+                'images' => ['products/sample-cards.jpg'],
+                'is_active' => true,
+            ]
+        );
+        $p6->categories()->sync([$categoryModels['educational-tools']->id]);
+        $p6->ageGroups()->sync([$ageModels['2-3']->id, $ageModels['4-5']->id]);
+
+        // Product 7: Animal Puzzle
+        $p7 = Product::updateOrCreate(
+            ['slug' => 'animal-puzzle-board'],
+            [
+                'name' => 'لعبة تركيب الحيوانات الخشبية',
+                'description' => 'لوحة بازل خشبية آمنة تساعد الطفل على التعرف على الحيوانات وتنمية المهارات الحركية الدقيقة.',
+                'short_description' => 'بازل خشبي ثلاثي الأبعاد لتنمية الذكاء.',
+                'price' => 320.00,
+                'sale_price' => null,
+                'sku' => 'PHY-APB-07',
+                'type' => 'physical',
+                'stock' => 60,
+                'badge' => 'الأكثر مبيعاً',
+                'images' => ['products/puzzle.jpg'],
+                'is_active' => true,
+            ]
+        );
+        $p7->categories()->sync([$categoryModels['educational-tools']->id]);
+        $p7->ageGroups()->sync([$ageModels['2-3']->id, $ageModels['4-5']->id]);
+
+        // Product 8: Picture Word Cards
+        $p8 = Product::updateOrCreate(
+            ['slug' => 'picture-word-cards'],
+            [
+                'name' => 'بطاقات الكلمات المصورة للتخاطب',
+                'description' => 'مجموعة بطاقات عالية الجودة تحتوي على صور واقعية لتطوير الحصيلة اللغوية.',
+                'short_description' => 'كروت مصورة للتخاطب والتعبير اللغوي.',
+                'price' => 180.00,
+                'sale_price' => null,
+                'sku' => 'PHY-PWC-08',
+                'type' => 'physical',
+                'stock' => 70,
+                'badge' => 'الأكثر مبيعاً',
+                'images' => ['products/sample-cards.jpg'],
+                'is_active' => true,
+            ]
+        );
+        $p8->categories()->sync([$categoryModels['educational-tools']->id]);
+        $p8->ageGroups()->sync([$ageModels['2-3']->id, $ageModels['4-5']->id]);
+
+        // Product 9: Smart Activity Board
+        $p9 = Product::updateOrCreate(
+            ['slug' => 'smart-activity-board'],
+            [
+                'name' => 'لوح الأنشطة الذكي متعدد المهارات',
+                'description' => 'لوح أنشطة متكامل يحتوي على أقفال ومفاتيح وتروس لتنمية الانتباه والمهارات الحسية.',
+                'short_description' => 'لوح أنشطة مونتيسوري متكامل لتنمية المهارات الدقيقة.',
+                'price' => 550.00,
+                'sale_price' => null,
+                'sku' => 'PHY-SAB-09',
+                'type' => 'physical',
+                'stock' => 20,
+                'badge' => 'الأكثر مبيعاً',
+                'images' => ['products/sample-cards.jpg'],
+                'is_active' => true,
+            ]
+        );
+        $p9->categories()->sync([$categoryModels['educational-tools']->id]);
+        $p9->ageGroups()->sync([$ageModels['2-3']->id, $ageModels['4-5']->id]);
+
+
 
         // 7. Seed Sample Customers and CRM Profiles
         $customersData = [

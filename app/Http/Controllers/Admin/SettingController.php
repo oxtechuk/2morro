@@ -19,6 +19,7 @@ class SettingController extends Controller
         // Default settings if empty
         $defaults = [
             'store_name' => 'تمورو',
+            'store_logo' => 'images/logo.png',
             'store_email' => 'contact@2morro.com',
             'store_phone' => '+201000000000',
             'store_whatsapp' => '201000000000',
@@ -44,17 +45,86 @@ class SettingController extends Controller
             'whatsapp_gateway_enabled' => '0',
             'whatsapp_api_url' => '',
             'whatsapp_api_token' => '',
+
+            // Hero Banner Dynamic Settings
+            'hero_title' => 'أدوات تعليمية تنمي مهارات طفلك',
+            'hero_title_highlight' => 'تنمي مهارات طفلك',
+            'hero_subtitle' => 'تعلَم.. استمتع.. وتطور كل يوم مع وسائل وأدوات تعليمية مختارة بعناية.',
+            'hero_btn1_text' => 'تسوق الآن',
+            'hero_btn1_link' => '/search',
+            'hero_btn2_text' => 'اختر حسب احتياج طفلك',
+            'hero_btn2_link' => '/search',
+            'hero_image' => 'images/hero-child.jpg',
+            'hero_badge_text' => '🚀 انطلاقة التعلم والذكاء',
+
+            // Catalog & Search Page Banner Settings
+            'catalog_banner_image' => 'images/hero-child.jpg',
+            'catalog_banner_title' => 'استكشف أفضل الأدوات والأنشطة التعليمية',
+            'catalog_banner_subtitle' => 'اختر ما يناسب عمر واحتياج طفلك لتطوير مهاراته خطوة بخطوة وبأفضل الوسائل التفاعلية.',
+
+            // Auth Page (Login / Register) Settings
+            'auth_video_url' => 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+            'auth_banner_title' => 'انضم إلى عائلة تمورو التعليمية ✨',
+            'auth_banner_subtitle' => 'نوفر لطفلك أفضل بيئة تفاعلية لتطوير قدراته واكتشاف مهاراته خطوة بخطوة.',
         ];
 
         // Merge defaults
         $settings = array_merge($defaults, $settings);
 
-        return view('admin.settings.index', compact('settings'));
+        $banners = \App\Models\Banner::orderBy('sort_order', 'asc')->get();
+
+        return view('admin.settings.index', compact('settings', 'banners'));
     }
 
     public function update(Request $request)
     {
         $data = $request->except('_token');
+
+        // Handle Store Logo upload
+        if ($request->hasFile('store_logo_file')) {
+            $path = $request->file('store_logo_file')->store('logo', 'public');
+            $data['store_logo'] = 'storage/' . $path;
+            unset($data['store_logo_file']);
+        }
+
+        // Handle Hero Image upload for primary slide
+        if ($request->hasFile('hero_image_file')) {
+            $path = $request->file('hero_image_file')->store('banners', 'public');
+            $data['hero_image'] = 'storage/' . $path;
+            unset($data['hero_image_file']);
+        }
+
+        // Handle Catalog Page Banner Image upload
+        if ($request->hasFile('catalog_banner_file')) {
+            $path = $request->file('catalog_banner_file')->store('banners', 'public');
+            $data['catalog_banner_image'] = 'storage/' . $path;
+            unset($data['catalog_banner_file']);
+        }
+
+        // Handle adding a brand new banner directly from settings page
+        if ($request->hasFile('new_banner_image')) {
+            $path = $request->file('new_banner_image')->store('banners', 'public');
+            \App\Models\Banner::create([
+                'title' => $request->input('new_banner_title'),
+                'subtitle' => $request->input('new_banner_subtitle'),
+                'badge_text' => $request->input('new_banner_badge', '🚀 جديد وحصري'),
+                'image' => 'storage/' . $path,
+                'button_text' => $request->input('new_banner_btn_text', 'تسوق الآن'),
+                'button_link' => $request->input('new_banner_btn_link', '/search'),
+                'text_position' => 'right',
+                'sort_order' => (\App\Models\Banner::max('sort_order') ?? 0) + 1,
+                'is_active' => true,
+            ]);
+            unset($data['new_banner_image'], $data['new_banner_title'], $data['new_banner_subtitle'], $data['new_banner_badge'], $data['new_banner_btn_text'], $data['new_banner_btn_link']);
+        }
+
+        // Clean and format YouTube video URL for auth pages
+        if (isset($data['auth_video_url']) && !empty($data['auth_video_url'])) {
+            $url = $data['auth_video_url'];
+            if (preg_match('/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/', $url, $matches)) {
+                $data['auth_video_url'] = 'https://www.youtube.com/embed/' . $matches[1];
+            }
+        }
 
         // Handle toggles which are not sent if unchecked
         $toggles = [
@@ -75,9 +145,24 @@ class SettingController extends Controller
             if (is_array($value)) {
                 $value = json_encode($value);
             }
-            Setting::set($key, $value);
+            Setting::set($key, (string) $value);
         }
 
-        return redirect()->route('admin.settings.index')->with('success', 'تم حفظ إعدادات المتجر بنجاح.');
+        // Sync with primary Banner in Hero Slider
+        $heroImage = Setting::get('hero_image');
+        $firstBanner = \App\Models\Banner::orderBy('sort_order', 'asc')->first();
+        if ($firstBanner && $heroImage) {
+            $firstBanner->update([
+                'image' => $heroImage,
+                'title' => Setting::get('hero_title', $firstBanner->title),
+                'subtitle' => Setting::get('hero_subtitle', $firstBanner->subtitle),
+                'button_text' => Setting::get('hero_btn1_text', $firstBanner->button_text),
+                'button_link' => Setting::get('hero_btn1_link', $firstBanner->button_link),
+                'secondary_button_text' => Setting::get('hero_btn2_text', $firstBanner->secondary_button_text),
+                'secondary_button_link' => Setting::get('hero_btn2_link', $firstBanner->secondary_button_link),
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'تم حفظ وتحديث كافة الإعدادات والبانرات بنجاح!');
     }
 }

@@ -258,9 +258,12 @@
 
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
-        <a href="{{ route('admin.dashboard') }}" class="sidebar-brand">
-            <span class="fs-4 text-primary"><i class="bi bi-compass-fill"></i></span>
-            <span>تمورو الأدمن</span>
+        <a href="{{ route('admin.dashboard') }}" class="sidebar-brand d-flex align-items-center justify-content-center py-3 px-4">
+            @php
+                $adminLogo = \App\Models\Setting::get('store_logo', 'images/logo.png');
+                $adminLogoVersion = file_exists(public_path($adminLogo)) ? filemtime(public_path($adminLogo)) : time();
+            @endphp
+            <img src="{{ asset($adminLogo) }}?v={{ $adminLogoVersion }}" alt="2morro Admin" style="max-height: 80px; width: auto; object-fit: contain;">
         </a>
         <ul class="sidebar-menu">
             <li class="menu-title">لوحة التحكم</li>
@@ -280,6 +283,12 @@
             </li>
 
             <li class="menu-title">إدارة المتجر</li>
+            <li class="menu-item">
+                <a href="{{ route('admin.banners.index') }}" class="menu-link {{ request()->routeIs('admin.banners.*') ? 'active' : '' }}">
+                    <i class="bi bi-images"></i>
+                    <span>بانرات السليدر الرئيسي</span>
+                </a>
+            </li>
             <li class="menu-item">
                 <a href="{{ route('admin.products.index') }}" class="menu-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
                     <i class="bi bi-box-seam-fill"></i>

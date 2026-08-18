@@ -15,6 +15,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
+use App\Models\Banner;
+
 class StorefrontController extends Controller
 {
     // Homepage
@@ -24,6 +26,9 @@ class StorefrontController extends Controller
         $ageGroups = AgeGroup::all();
         $skills = Skill::all();
         $needs = Need::all();
+
+        // Get active banners for Hero Slider
+        $banners = Banner::active()->get();
 
         // Get latest 10 products
         $newArrivals = Product::where('is_active', true)
@@ -42,19 +47,29 @@ class StorefrontController extends Controller
             $bestSellers = Product::where('is_active', true)->take(10)->get();
         }
 
+        // Get all products for the 4x3 filtered section
+        $allProducts = Product::where('is_active', true)
+            ->with(['categories', 'skills', 'needs', 'ageGroups'])
+            ->latest()
+            ->take(16)
+            ->get();
+
         // Get approved reviews
         $reviews = Review::where('is_approved', true)->latest()->take(6)->get();
 
         return view('storefront.index', compact(
+            'banners',
             'categories',
             'ageGroups',
             'skills',
             'needs',
             'newArrivals',
             'bestSellers',
+            'allProducts',
             'reviews'
         ));
     }
+
 
     // Product Detail Page
     public function product(Product $product)

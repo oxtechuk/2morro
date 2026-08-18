@@ -50,6 +50,11 @@
                                     <i class="bi bi-whatsapp"></i> إشعارات الواتساب
                                 </button>
                             </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link py-2.5 fw-semibold d-flex align-items-center justify-content-center gap-2" id="hero-tab" data-bs-toggle="tab" data-bs-target="#hero-pane" type="button" role="tab" aria-controls="hero-pane" aria-selected="false">
+                                    <i class="bi bi-image-fill"></i> بانر الهيرو الرئيسي
+                                </button>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -68,6 +73,16 @@
                                         <input type="text" name="store_name" class="form-control" value="{{ $settings['store_name'] }}">
                                     </div>
                                     <div class="col-md-6 col-sm-12">
+                                        <label class="form-label fw-bold">شعار المتجر الرسمي (Logo)</label>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <input type="file" name="store_logo_file" class="form-control" accept="image/*">
+                                            <div class="p-1 bg-light border rounded flex-shrink-0" style="width: 60px; height: 40px;">
+                                                <img src="{{ asset($settings['store_logo'] ?? 'images/logo.png') }}" alt="Logo" class="w-100 h-100 object-fit-contain">
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">يقبل صور PNG, SVG, JPG بدقة عالية وخلفية شفافة.</small>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
                                         <label class="form-label fw-bold">البريد الإلكتروني للتواصل</label>
                                         <input type="email" name="store_email" class="form-control text-start" value="{{ $settings['store_email'] }}">
                                     </div>
@@ -79,7 +94,7 @@
                                         <label class="form-label fw-bold">رقم الواتساب للعملاء</label>
                                         <input type="text" name="store_whatsapp" class="form-control text-start" value="{{ $settings['store_whatsapp'] }}" placeholder="مثال: 2010xxxxxxxx">
                                     </div>
-                                    <div class="col-12">
+                                    <div class="col-md-6 col-sm-12">
                                         <label class="form-label fw-bold">عنوان المقر / الفروع</label>
                                         <input type="text" name="store_address" class="form-control" value="{{ $settings['store_address'] }}">
                                     </div>
@@ -248,6 +263,179 @@
                                         <input type="text" name="whatsapp_api_token" class="form-control text-start" value="{{ $settings['whatsapp_api_token'] }}">
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. Hero Banner Dynamic Settings Tab (Multiple Slides Manager) -->
+                    <div class="tab-pane fade" id="hero-pane" role="tabpanel" aria-labelledby="hero-tab" tabindex="0">
+                        <div class="card shadow-xs border-0">
+                            <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
+                                <h5 class="mb-0 fw-bold text-dark">
+                                    <i class="bi bi-images text-primary me-2"></i> إدارة سليدر وبانرات الصفحة الرئيسية (Hero Slider)
+                                </h5>
+                                <a href="{{ route('admin.banners.create') }}" class="btn btn-sm btn-primary fw-bold">
+                                    <i class="bi bi-plus-lg me-1"></i> إضافة شريحة عبر المعالج الكامل
+                                </a>
+                            </div>
+                            <div class="card-body p-4">
+                                
+                                <!-- A. Current Active Slides in the Slider -->
+                                <h6 class="fw-bold text-slate-800 mb-3"><i class="bi bi-collection-play-fill text-primary me-1"></i> الشرائح الحالية المعروضة في السليدر ({{ $banners->count() }})</h6>
+                                
+                                <div class="table-responsive mb-4">
+                                    <table class="table table-bordered table-hover align-middle text-center mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th style="width: 60px;">الترتيب</th>
+                                                <th style="width: 140px;">معاينة البانر</th>
+                                                <th class="text-end">العنوان والنص</th>
+                                                <th>الزر والرابط</th>
+                                                <th>الحالة</th>
+                                                <th style="width: 120px;">الإجراء</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @forelse($banners as $b)
+                                                <tr>
+                                                    <td><span class="badge bg-light text-dark border">#{{ $b->sort_order }}</span></td>
+                                                    <td>
+                                                        <div class="rounded overflow-hidden border mx-auto" style="width: 120px; height: 60px;">
+                                                            <img src="{{ asset($b->image) }}" alt="Banner" class="w-100 h-100 object-fit-cover">
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <span class="badge bg-danger-subtle text-danger px-2 py-0.5 mb-1">{{ $b->badge_text }}</span>
+                                                        <div class="fw-bold text-dark">{{ $b->title ?: 'بدون عنوان (بانر مرئي)' }}</div>
+                                                        <small class="text-muted text-truncate d-block" style="max-width: 280px;">{{ $b->subtitle }}</small>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle d-block mb-1">{{ $b->button_text }}</span>
+                                                        <small class="text-muted" dir="ltr">{{ Str::limit($b->button_link, 15) }}</small>
+                                                    </td>
+                                                    <td>
+                                                        @if($b->is_active)
+                                                            <span class="badge bg-success-subtle text-success px-2 py-1"><i class="bi bi-check-circle me-1"></i> معروض</span>
+                                                        @else
+                                                            <span class="badge bg-secondary-subtle text-secondary px-2 py-1">معطل</span>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center justify-content-center gap-1">
+                                                            <a href="{{ route('admin.banners.edit', $b) }}" class="btn btn-sm btn-outline-primary" title="تعديل">
+                                                                <i class="bi bi-pencil-square"></i>
+                                                            </a>
+                                                            <form action="{{ route('admin.banners.destroy', $b) }}" method="POST" onsubmit="return confirm('هل تريد حذف هذه الشريحة؟');" class="d-inline">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف">
+                                                                    <i class="bi bi-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="6" class="py-4 text-muted">لا توجد شرائح حالياً في السليدر. قم برفع صورة جديدة أدناه.</td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <hr class="my-4">
+
+                                <!-- B. Quick Add a New Slide Directly from Settings -->
+                                <div class="bg-light p-4 rounded-3 border mb-4">
+                                    <h6 class="fw-bold text-primary mb-2">
+                                        <i class="bi bi-plus-circle-fill me-1"></i> إضافة شريحة بانر جديدة للسليدر فوراً
+                                    </h6>
+                                    <p class="text-muted small mb-3">اختر صورة البانر واكتب النصوص وسيتم إضافتها كشريحة جديدة في السليدر الرئيسي بالمتجر مباشرة عند الحفظ.</p>
+                                    
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <label class="form-label fw-bold">رفع صورة البانر الجديد (بالعرض الكامل) <span class="text-danger">*</span></label>
+                                            <input type="file" name="new_banner_image" class="form-control" accept="image/*">
+                                            <small class="text-muted">يقبل صور بدقة عالية JPG, PNG, WebP (مثال: 1920×600 بكسل).</small>
+                                        </div>
+                                        <div class="col-md-8 col-sm-12">
+                                            <label class="form-label fw-bold">العنوان الرئيسي للبانر الجديد</label>
+                                            <input type="text" name="new_banner_title" class="form-control" placeholder="مثال: خصومات كبرى على الأدوات التفاعلية">
+                                        </div>
+                                        <div class="col-md-4 col-sm-12">
+                                            <label class="form-label fw-bold">شارة ترويجية (Badge)</label>
+                                            <input type="text" name="new_banner_badge" class="form-control" placeholder="مثال: 🎁 عرض خاص" value="🚀 جديد وحصري">
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label fw-bold">الوصف والنص الترويجي</label>
+                                            <textarea name="new_banner_subtitle" class="form-control" rows="2" placeholder="اكتب نصاً تحفيزياً للبانر"></textarea>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12">
+                                            <label class="form-label fw-bold">نص الزر</label>
+                                            <input type="text" name="new_banner_btn_text" class="form-control" value="تسوق الآن">
+                                        </div>
+                                        <div class="col-md-6 col-sm-12">
+                                            <label class="form-label fw-bold">رابط الزر (URL)</label>
+                                            <input type="text" name="new_banner_btn_link" class="form-control text-start" value="/search" dir="ltr">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="my-4">
+
+                                <!-- C. Catalog / Search Page Banner Settings -->
+                                <div class="bg-light p-4 rounded-3 border mb-4">
+                                    <h6 class="fw-bold text-primary mb-2">
+                                        <i class="bi bi-grid-fill me-1"></i> بانر رأس صفحة التصفح والبحث (Catalog Header Banner)
+                                    </h6>
+                                    <p class="text-muted small mb-3">الصورة والنصوص التي تظهر في رأس صفحة تصفح المنتجات والأقسام والبحث (/search).</p>
+
+                                    <div class="row g-3 align-items-center">
+                                        <div class="col-md-4 col-sm-12">
+                                            <label class="form-label fw-bold">معاينة صورة البانر الحالية</label>
+                                            <div class="rounded overflow-hidden border bg-white p-1" style="height: 110px;">
+                                                <img src="{{ asset($settings['catalog_banner_image'] ?? 'images/hero-child.jpg') }}?v={{ time() }}" alt="Catalog Banner" class="w-100 h-100 object-fit-cover rounded">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8 col-sm-12">
+                                            <label class="form-label fw-bold">تغيير / رفع صورة بانر صفحة التصفح</label>
+                                            <input type="file" name="catalog_banner_file" class="form-control mb-2" accept="image/*">
+                                            <small class="text-muted">يقبل صور عريضة JPG, PNG, WebP (المقاس المقترح: 1920×450 بكسل).</small>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12">
+                                            <label class="form-label fw-bold">العنوان الافتراضي لصفحة التصفح</label>
+                                            <input type="text" name="catalog_banner_title" class="form-control" value="{{ $settings['catalog_banner_title'] ?? 'استكشف أفضل الأدوات والأنشطة التعليمية' }}">
+                                        </div>
+                                        <div class="col-md-6 col-sm-12">
+                                            <label class="form-label fw-bold">الوصف الترويجي لصفحة التصفح</label>
+                                            <input type="text" name="catalog_banner_subtitle" class="form-control" value="{{ $settings['catalog_banner_subtitle'] ?? 'اختر ما يناسب عمر واحتياج طفلك لتطوير مهاراته خطوة بخطوة وبأفضل الوسائل التفاعلية.' }}">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="my-4">
+
+                                <!-- D. Auth Video & Banner Settings -->
+                                <h6 class="fw-bold mb-1 text-primary"><i class="bi bi-play-btn-fill me-1"></i> فيديو وبانر صفحة تسجيل الدخول والتسجيل</h6>
+                                <p class="text-muted small mb-3">سيظهر هذا الفيديو والنصوص في الجانب التفاعلي لصفحات تسجيل الدخول وإنشاء الحساب.</p>
+
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold">رابط فيديو اليوتيوب (YouTube Video URL)</label>
+                                        <input type="text" name="auth_video_url" class="form-control text-start" value="{{ $settings['auth_video_url'] ?? 'https://www.youtube.com/embed/dQw4w9WgXcQ' }}" placeholder="مثال: https://www.youtube.com/watch?v=xxxx أو https://youtu.be/xxxx" dir="ltr">
+                                        <small class="text-muted">يقبل روابط يوتيوب المباشرة أو روابط التضمين (Embed) ويتم تحويلها تلقائياً.</small>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <label class="form-label fw-bold">عنوان البطاقة الجانبية لصفحات الدخول</label>
+                                        <input type="text" name="auth_banner_title" class="form-control" value="{{ $settings['auth_banner_title'] ?? 'انضم إلى عائلة تمورو التعليمية ✨' }}">
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <label class="form-label fw-bold">الوصف التحفيزي</label>
+                                        <input type="text" name="auth_banner_subtitle" class="form-control" value="{{ $settings['auth_banner_subtitle'] ?? 'نوفر لطفلك أفضل بيئة تفاعلية لتطوير قدراته واكتشاف مهاراته خطوة بخطوة.' }}">
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
