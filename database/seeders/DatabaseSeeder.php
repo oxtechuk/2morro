@@ -450,5 +450,27 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
+
+        // 8. Seed Default System Settings
+        $settings = [
+            'store_name' => 'مركز ومتجر تمورو',
+            'store_logo' => 'images/logo.png',
+            'store_email' => 'info@2morro.com',
+            'store_phone' => '01550504512',
+            'store_whatsapp' => '201550504512',
+            'store_address' => 'الإسكندرية (الإبراهيمية - أول البيطاش - سيدي بشر)',
+            'linktree_url' => 'https://linktr.ee/hebaalla?subscribe',
+            'supervisor_name' => 'أ. هبة الله أكرم',
+            'working_hours' => 'من 12:00 ظهراً إلى 9:00 مساءً (ماعدا الجمعة)',
+            'payment_cod_enabled' => '1',
+            'payment_instapay_address' => 'hebaalla@instapay',
+            'payment_wallet_number' => '01098861354',
+            'meta_title' => 'مركز ومتجر تمورو | تنمية مهارات الطفل وتخاطب وتأهيل',
+            'meta_description' => 'مركز ومتجر تمورو لتنمية مهارات الطفل، جلسات تخاطب وتعديل سلوك وتدخل مبكر وأدوات وشيتات تعليمية بإشراف أ. هبة الله أكرم',
+        ];
+
+        foreach ($settings as $key => $val) {
+            \App\Models\Setting::updateOrCreate(['key' => $key], ['value' => $val]);
+        }
     }
 }

@@ -11,7 +11,7 @@
             ✓
         </div>
 
-        <h1 class="text-3xl font-black text-[#102A63]">تم تسجيل طلبك بنجاح!</h1>
+        <h1 class="text-3xl font-black text-[#1360e2]">تم تسجيل طلبك بنجاح!</h1>
         <p class="text-slate-500 font-semibold mt-2 text-sm max-w-md mx-auto leading-relaxed">
             شكرًا لشرائك من متجر تمورو. رقم طلبك هو <span class="text-brand-blue font-extrabold">{{ $order->order_number }}</span>. جاري تجهيز الطلب ومراجعته حالياً.
         </p>
@@ -57,7 +57,7 @@
         <!-- Digital downloads segment -->
         @if($downloads->isNotEmpty())
             <div class="bg-blue-50/50 border border-blue-100 rounded-3xl p-6 md:p-8 mt-8 text-right">
-                <h3 class="text-sm font-bold text-[#102A63] mb-3 flex items-center gap-1.5">
+                <h3 class="text-sm font-bold text-[#1360e2] mb-3 flex items-center gap-1.5">
                     <span class="w-1.5 h-4 bg-brand-blue rounded-full"></span>
                     تحميل الشيتات والملفات الرقمية
                 </h3>
@@ -69,7 +69,9 @@
                     @foreach($downloads as $download)
                         <div class="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                             <div class="flex items-center gap-3">
-                                <span class="text-2xl">📄</span>
+                                <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#2563ea] flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                </div>
                                 <div class="flex flex-col leading-tight">
                                     <h4 class="text-xs font-bold text-slate-700">{{ $download->product->name }}</h4>
                                     <span class="text-[10px] text-slate-400 font-semibold mt-1">صلاحية التحميل: 5 مرات كحد أقصى • PDF</span>
@@ -81,7 +83,7 @@
                                     متاح التحميل بعد تسليم الطلب المادي
                                 </span>
                             @else
-                                <a href="{{ route('download', $download->token) }}" class="bg-[#102A63] hover:bg-slate-800 text-white font-bold text-xs py-2 px-6 rounded-xl transition-colors whitespace-nowrap">
+                                <a href="{{ route('download', $download->token) }}" class="bg-[#2563ea] hover:bg-blue-700 text-white font-bold text-xs py-2 px-6 rounded-xl transition-colors whitespace-nowrap">
                                     تحميل الملف الآن
                                 </a>
                             @endif
@@ -93,19 +95,21 @@
 
         <!-- WhatsApp confirmation helper -->
         <div class="mt-12 flex flex-col items-center gap-4 bg-slate-50/50 p-6 rounded-3xl border border-slate-200">
-            <span class="text-2xl">💬</span>
-            <div class="flex flex-col gap-1">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.458L0 24zm6.002-3.693c1.615.957 3.178 1.462 4.736 1.463 5.485.002 9.948-4.463 9.95-9.953.001-2.66-1.025-5.16-2.887-7.026C16.001 2.923 13.506 1.897 10.85 1.897c-5.486 0-9.949 4.464-9.953 9.954-.001 2.052.541 4.06 1.567 5.814l-1.026 3.75 3.829-1.004z"></path></svg>
+            </div>
+            <div class="flex flex-col gap-1 text-center">
                 <h3 class="text-xs font-bold text-slate-800">هل تود تسريع عملية التأكيد وتفعيل الملفات؟</h3>
                 <p class="text-[10px] text-slate-400 font-semibold max-w-md">
                     يمكنك إرسال رسالة مباشرة إلى رقم الواتساب الخاص بالدعم الفني مع رقم طلبك <b>({{ $order->order_number }})</b> وصورة التحويل لتأكيد الطلب وشحنه فوراً.
                 </p>
             </div>
-            <a href="https://wa.me/201012345678?text={{ urlencode('مرحباً، أود تأكيد الطلب رقم ' . $order->order_number . ' وإرسال إثبات الدفع.') }}" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold text-xs py-2.5 px-6 rounded-full flex items-center gap-1.5 transition-colors shadow-sm">
-                تأكيد عبر الواتساب الآن
+            <a href="https://wa.me/201550504512?text={{ urlencode('مرحباً، أود تأكيد الطلب رقم ' . $order->order_number . ' وإرسال إثبات الدفع.') }}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2.5 px-6 rounded-full flex items-center gap-1.5 transition-colors shadow-sm">
+                <span>تأكيد عبر الواتساب الآن</span>
             </a>
         </div>
 
-        <a href="{{ route('home') }}" class="inline-block mt-8 font-extrabold text-xs text-brand-blue hover:underline">العودة للرئيسية وتصفح المزيد</a>
+        <a href="{{ route('home') }}" class="inline-block mt-8 font-extrabold text-xs text-[#2563ea] hover:underline">العودة للرئيسية وتصفح المزيد</a>
 
     </div>
 </div>

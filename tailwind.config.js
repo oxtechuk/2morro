@@ -17,7 +17,7 @@ export default {
             },
             colors: {
                 brand: {
-                    navy: '#102A63',
+                    navy: '#1360e2',
                     'navy-dark': '#0B1E48',
                     blue: '#2563EB',
                     'blue-light': '#3B82F6',
@@ -31,7 +31,7 @@ export default {
                     'amber-soft': '#FFFBEB',
                     purple: '#8B5CF6',
                     'purple-soft': '#F5F3FF',
-                    green: '#10B981',
+                    green: '#F97316 ',
                     'green-soft': '#ECFDF5',
                 }
             },

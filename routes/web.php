@@ -27,6 +27,12 @@ Route::get('/checkout/success/{order_number}', [CheckoutController::class, 'succ
 // Secure file download route
 Route::get('/download/{token}', [DownloadController::class, 'download'])->name('download');
 
+// Consultation & Assessment Booking Routes
+use App\Http\Controllers\BookingController;
+Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
+Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
+Route::get('/booking/success/{bookingNumber}', [BookingController::class, 'success'])->name('booking.success');
+
 // Breeze dashboard & auth profile routes
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -47,10 +53,19 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\BookingController as AdminBookingController;
+use App\Http\Controllers\Admin\BrandController;
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
+    // Consultation Bookings Management (إدارة الحجوزات والاستشارات)
+    Route::resource('bookings', AdminBookingController::class);
+
+    // Brands & Partners Management (إدارة البراندات والشركاء)
+    Route::resource('brands', BrandController::class)->except(['show']);
+    Route::post('/brands/{brand}/toggle-status', [BrandController::class, 'toggleStatus'])->name('brands.toggleStatus');
+
     // Store Settings
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');

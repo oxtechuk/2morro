@@ -50,8 +50,46 @@ class CheckoutController extends Controller
         $total = $subtotal + $shippingFee;
 
         // InstaPay and Wallet details
-        $instapayAddress = '2morro@instapay';
-        $walletNumber = '01012345678';
+        $instapayAddress = \App\Models\Setting::get('payment_instapay_address', 'hebaalla@instapay');
+        $walletNumber = \App\Models\Setting::get('payment_wallet_number', '01098861354');
+        
+        $walletNumbers = [
+            [
+                'branch' => 'فرع الإبراهيمية (الرئيسي)',
+                'number' => '01098861354',
+                'type' => 'فودافون كاش (Vodafone Cash)',
+                'badge' => 'الأساسي'
+            ],
+            [
+                'branch' => 'فرع الإبراهيمية',
+                'number' => '01550504512',
+                'type' => 'وي باي / فودافون كاش',
+                'badge' => 'متاح'
+            ],
+            [
+                'branch' => 'فرع أول البيطاش',
+                'number' => '01064580472',
+                'type' => 'فودافون كاش (Vodafone Cash)',
+                'badge' => 'متاح'
+            ],
+            [
+                'branch' => 'فرع أول البيطاش',
+                'number' => '01507574512',
+                'type' => 'محافظ إلكترونية',
+                'badge' => 'متاح'
+            ],
+            [
+                'branch' => 'فرع سيدي بشر',
+                'number' => '01508074512',
+                'type' => 'محافظ إلكترونية',
+                'badge' => 'متاح'
+            ],
+        ];
+
+        $linktreeUrl = \App\Models\Setting::get('linktree_url', 'https://linktr.ee/hebaalla?subscribe');
+        $whatsappNumber = \App\Models\Setting::get('store_whatsapp', '201550504512');
+        $supervisorName = \App\Models\Setting::get('supervisor_name', 'أ. هبة الله أكرم');
+        $workingHours = \App\Models\Setting::get('working_hours', 'من 12:00 ظهراً إلى 9:00 مساءً (ماعدا الجمعة)');
 
         return view('storefront.checkout', compact(
             'cart',
@@ -60,7 +98,12 @@ class CheckoutController extends Controller
             'total',
             'physicalCount',
             'instapayAddress',
-            'walletNumber'
+            'walletNumber',
+            'walletNumbers',
+            'linktreeUrl',
+            'whatsappNumber',
+            'supervisorName',
+            'workingHours'
         ));
     }
 

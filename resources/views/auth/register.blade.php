@@ -24,7 +24,7 @@
                         <span>حساب جديد في دقائق</span>
                     </span>
                     
-                    <h1 class="text-2xl sm:text-3xl font-black text-[#102A63] leading-tight">
+                    <h1 class="text-2xl sm:text-3xl font-black text-[#1360e2] leading-tight">
                         إنشاء حساب جديد مجاناً 🎉
                     </h1>
                     
@@ -148,7 +148,7 @@
 
                     <!-- Submit Button -->
                     <div class="pt-3">
-                        <button type="submit" class="w-full bg-[#102A63] hover:bg-slate-800 text-white font-black text-xs sm:text-sm py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all group">
+                        <button type="submit" class="w-full bg-[#1360e2] hover:bg-slate-800 text-white font-black text-xs sm:text-sm py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all group">
                             <span>إنشاء الحساب وبدء التعلم</span>
                             <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
                         </button>
@@ -169,7 +169,7 @@
         </div>
 
         <!-- 2. Dynamic Video & Showcase Side (Left in RTL, 6 cols) -->
-        <div class="lg:col-span-6 xl:col-span-6 bg-gradient-to-br from-[#102A63] via-[#1E40AF] to-[#2563EB] text-white p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden text-right min-h-[480px]">
+        <div class="lg:col-span-6 xl:col-span-6 bg-gradient-to-br from-[#1360e2] via-[#1E40AF] to-[#2563EB] text-white p-8 sm:p-12 flex flex-col justify-between relative overflow-hidden text-right min-h-[480px]">
             
             <!-- Glassmorphic Background Accents -->
             <div class="absolute -top-12 -left-12 w-48 h-48 rounded-full bg-white/10 blur-xl pointer-events-none"></div>

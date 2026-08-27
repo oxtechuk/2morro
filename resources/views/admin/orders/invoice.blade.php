@@ -39,7 +39,7 @@
         .store-logo {
             font-size: 28px;
             font-weight: 800;
-            color: #102A63;
+            color: #1360e2;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -59,7 +59,7 @@
             font-size: 20px;
             font-weight: 700;
             margin: 0 0 10px 0;
-            color: #102A63;
+            color: #1360e2;
         }
 
         .grid-info {
@@ -75,7 +75,7 @@
             border-bottom: 1px solid #cbd5e1;
             padding-bottom: 5px;
             margin: 0 0 10px 0;
-            color: #102A63;
+            color: #1360e2;
         }
 
         .info-block p {
@@ -95,7 +95,7 @@
             padding: 12px 10px;
             text-align: right;
             font-weight: 700;
-            color: #102A63;
+            color: #1360e2;
         }
 
         .table-items td {
@@ -120,7 +120,7 @@
         .totals-table tr.grand-total {
             font-weight: 800;
             font-size: 16px;
-            color: #102A63;
+            color: #1360e2;
             border-top: 2px solid #cbd5e1;
         }
 
@@ -154,7 +154,7 @@
         }
         
         .print-btn {
-            background-color: #102A63;
+            background-color: #1360e2;
             color: #ffffff;
             border: none;
             padding: 10px 20px;
@@ -289,8 +289,8 @@
 
         <!-- Footer note -->
         <div class="footer-note">
-            <p>شكراً لتسوقكم مع متجر تمورو لتعليم وتنمية مهارات الأطفال!</p>
-            <p>إذا كان لديكم أي استفسار يرجى التواصل معنا عبر WhatsApp على الرقم 01012345678 أو البريد الإلكتروني.</p>
+            <p>شكراً لتسوقكم مع مركز ومتجر 2morro لتنمية مهارات الطفل | قيادة وإشراف: أ. هبة الله أكرم</p>
+            <p>فروعنا بالإسكندرية (الإبراهيمية - البيطاش - سيدي بشر) | للتواصل عبر WhatsApp: 01550504512</p>
         </div>
     </div>
 

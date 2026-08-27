@@ -1,14 +1,14 @@
-<div class="bg-white rounded-2xl border border-slate-100 p-2.5 shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
+<div class="bg-white rounded-2xl border border-slate-200/80 p-2 sm:p-3 shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group h-full">
     
     <!-- Image Box -->
     <div class="relative bg-[#F8FAFC] rounded-xl aspect-square flex items-center justify-center p-2 overflow-hidden">
         <!-- Badge -->
         @if($product->badge)
-            <span class="absolute top-2 right-2 z-10 text-[9px] font-black px-2 py-0.5 rounded-full text-white bg-[#EF4444] shadow-xs">
+            <span class="absolute top-1.5 right-1.5 z-10 text-[8px] sm:text-[9px] font-black px-2 py-0.5 rounded-full text-white bg-[#EF4444] shadow-xs">
                 {{ $product->badge }}
             </span>
         @elseif($product->sale_price)
-            <span class="absolute top-2 right-2 z-10 text-[9px] font-black px-2 py-0.5 rounded-full text-white bg-[#EF4444] shadow-xs">
+            <span class="absolute top-1.5 right-1.5 z-10 text-[8px] sm:text-[9px] font-black px-2 py-0.5 rounded-full text-white bg-[#EF4444] shadow-xs">
                 خصم {{ round((($product->price - $product->sale_price) / $product->price) * 100) }}%
             </span>
         @endif
@@ -20,7 +20,6 @@
                 if ($product->images && count($product->images) > 0) {
                     $imgUrl = asset('storage/' . $product->images[0]);
                 } else {
-                    // Smart fallback based on slug
                     if (str_contains($product->slug, 'clock')) {
                         $imgUrl = asset('storage/products/clock.jpg');
                     } elseif (str_contains($product->slug, 'puzzle')) {
@@ -42,30 +41,30 @@
     </div>
 
     <!-- Product Info -->
-    <div class="pt-2.5 flex flex-col flex-grow justify-between text-center">
+    <div class="pt-2 flex flex-col flex-grow justify-between text-right">
         <div>
             <!-- Title -->
-            <h3 class="text-xs font-bold text-slate-800 leading-tight truncate group-hover:text-blue-600 transition-colors">
+            <h3 class="text-[11px] sm:text-xs font-bold text-slate-800 leading-snug line-clamp-2 min-h-[28px] sm:min-h-[32px] group-hover:text-[#2563ea] transition-colors">
                 <a href="{{ route('product', $product->slug) }}">{{ $product->name }}</a>
             </h3>
 
-            <!-- Rating Stars -->
-            <div class="flex items-center justify-center gap-1 mt-1 text-slate-400">
-                <div class="flex items-center text-amber-400 text-xs">
+            <!-- Rating Stars (Subtle) -->
+            <div class="flex items-center gap-1 mt-1 text-slate-400">
+                <div class="flex items-center text-amber-400 text-[10px] sm:text-xs">
                     ★★★★★
                 </div>
-                <span class="text-[10px] text-slate-400 font-bold">({{ rand(120, 320) }}) 4.9</span>
+                <span class="text-[9px] sm:text-[10px] text-slate-400 font-bold">(4.9)</span>
             </div>
         </div>
 
         <!-- Price & Cart Action -->
-        <div class="flex items-center justify-between mt-2.5 pt-2 border-t border-slate-50">
-            <div class="flex items-baseline gap-1">
+        <div class="flex items-center justify-between mt-2 pt-2 border-t border-slate-100">
+            <div class="flex flex-col">
                 @if($product->sale_price)
-                    <span class="text-xs font-black text-[#102A63]">{{ number_format($product->sale_price, 0) }} جنيه</span>
-                    <span class="text-[9px] text-slate-400 line-through font-semibold">{{ number_format($product->price, 0) }}</span>
+                    <span class="text-xs sm:text-sm font-black text-[#2563ea]">{{ number_format($product->sale_price, 0) }} ج.م</span>
+                    <span class="text-[9px] text-slate-400 line-through font-semibold -mt-0.5">{{ number_format($product->price, 0) }} ج.م</span>
                 @else
-                    <span class="text-xs font-black text-[#102A63]">{{ number_format($product->price, 0) }} جنيه</span>
+                    <span class="text-xs sm:text-sm font-black text-[#2563ea]">{{ number_format($product->price, 0) }} ج.م</span>
                 @endif
             </div>
 
@@ -73,8 +72,8 @@
             <form action="{{ route('cart.add') }}" method="POST" class="inline">
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
-                <button type="submit" title="أضف إلى السلة" class="w-7 h-7 rounded-lg bg-[#102A63] hover:bg-blue-600 text-white flex items-center justify-center transition-colors shadow-xs group/btn">
-                    <svg class="w-3.5 h-3.5 transition-transform group-hover/btn:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                <button type="submit" title="أضف إلى السلة" class="w-8 h-8 rounded-xl bg-blue-50 hover:bg-[#2563ea] text-[#2563ea] hover:text-white flex items-center justify-center transition-all duration-200 shadow-2xs group/btn active:scale-95">
+                    <svg class="w-4 h-4 transition-transform group-hover/btn:scale-110" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                 </button>
             </form>
         </div>

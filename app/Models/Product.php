@@ -18,6 +18,7 @@ class Product extends Model
         'sale_price',
         'sku',
         'type', // physical, digital, course, session
+        'brand_id',
         'stock',
         'digital_file_path',
         'digital_file_name',
@@ -44,6 +45,11 @@ class Product extends Model
         'digital_download_limit' => 'integer',
         'digital_expiry_days' => 'integer',
     ];
+
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
 
     public function categories()
     {

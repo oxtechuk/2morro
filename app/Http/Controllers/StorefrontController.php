@@ -30,21 +30,56 @@ class StorefrontController extends Controller
         // Get active banners for Hero Slider
         $banners = Banner::active()->get();
 
-        // Get latest 10 products
-        $newArrivals = Product::where('is_active', true)
-            ->latest()
-            ->take(10)
-            ->get();
+        // 1. Promo Section Dynamic Settings
+        $promoSettings = [
+            'deals_title' => \App\Models\Setting::get('promo_deals_title', 'عروض الأسبوع'),
+            'deals_subtitle' => \App\Models\Setting::get('promo_deals_subtitle', 'خصومات تصل إلي'),
+            'deals_discount' => \App\Models\Setting::get('promo_deals_discount', '30%'),
+            'deals_btn_text' => \App\Models\Setting::get('promo_deals_btn_text', 'تسوق الآن'),
+            'deals_btn_link' => \App\Models\Setting::get('promo_deals_btn_link', '/search?category=educational-bundles'),
+            'deals_image' => \App\Models\Setting::get('promo_deals_image', 'images/promo-gift.jpg'),
+            'deals_gradient' => \App\Models\Setting::get('promo_deals_gradient', 'blue'),
+            'group1_title' => \App\Models\Setting::get('promo_group1_title', 'الأكثر مبيعاً'),
+            'group1_link' => \App\Models\Setting::get('promo_group1_link', '/search'),
+            'group2_title' => \App\Models\Setting::get('promo_group2_title', 'الجديد لدينا'),
+            'group2_link' => \App\Models\Setting::get('promo_group2_link', '/search'),
+        ];
 
-        // Get best sellers (marked with badge or high price for demonstration)
-        $bestSellers = Product::where('is_active', true)
-            ->where('badge', 'الأكثر مبيعاً')
-            ->take(10)
-            ->get();
+        // 2. Load Group 1 Products (Bestsellers or Custom Selected)
+        $group1Source = \App\Models\Setting::get('promo_group1_source', 'bestsellers');
+        $group1RawIds = \App\Models\Setting::get('promo_group1_product_ids', '[]');
+        $group1Ids = is_array($group1RawIds) ? $group1RawIds : (json_decode($group1RawIds, true) ?: []);
 
-        // Fallback if no specific bestseller badge exists
-        if ($bestSellers->isEmpty()) {
-            $bestSellers = Product::where('is_active', true)->take(10)->get();
+        if ($group1Source === 'custom' && !empty($group1Ids)) {
+            $bestSellers = Product::where('is_active', true)->whereIn('id', $group1Ids)->take(4)->get();
+            if ($bestSellers->isEmpty()) {
+                $bestSellers = Product::where('is_active', true)->take(4)->get();
+            }
+        } else {
+            $bestSellers = Product::where('is_active', true)
+                ->where('badge', 'الأكثر مبيعاً')
+                ->take(4)
+                ->get();
+            if ($bestSellers->isEmpty()) {
+                $bestSellers = Product::where('is_active', true)->take(4)->get();
+            }
+        }
+
+        // 3. Load Group 2 Products (New Arrivals or Custom Selected)
+        $group2Source = \App\Models\Setting::get('promo_group2_source', 'newest');
+        $group2RawIds = \App\Models\Setting::get('promo_group2_product_ids', '[]');
+        $group2Ids = is_array($group2RawIds) ? $group2RawIds : (json_decode($group2RawIds, true) ?: []);
+
+        if ($group2Source === 'custom' && !empty($group2Ids)) {
+            $newArrivals = Product::where('is_active', true)->whereIn('id', $group2Ids)->take(4)->get();
+            if ($newArrivals->isEmpty()) {
+                $newArrivals = Product::where('is_active', true)->latest()->take(4)->get();
+            }
+        } else {
+            $newArrivals = Product::where('is_active', true)
+                ->latest()
+                ->take(4)
+                ->get();
         }
 
         // Get all products for the 4x3 filtered section
@@ -57,8 +92,66 @@ class StorefrontController extends Controller
         // Get approved reviews
         $reviews = Review::where('is_approved', true)->latest()->take(6)->get();
 
+        // Homepage bottom sleek banner settings
+        $bottomBanner = [
+            'image' => \App\Models\Setting::get('home_bottom_banner_image', 'images/hero-child.jpg'),
+            'title' => \App\Models\Setting::get('home_bottom_banner_title', 'مركز 2morro لتنمية مهارات الطفل'),
+            'subtitle' => \App\Models\Setting::get('home_bottom_banner_subtitle', 'جلسات تخاطب وتعديل سلوك وتدخل مبكر وتقييمات شاملة في المركز وأونلاين بإشراف أ. هبة الله أكرم'),
+            'btn1_text' => \App\Models\Setting::get('home_bottom_banner_btn1_text', 'حجز استشارة وتقييم'),
+            'btn1_link' => \App\Models\Setting::get('home_bottom_banner_btn1_link', '/booking'),
+            'btn2_text' => \App\Models\Setting::get('home_bottom_banner_btn2_text', 'تواصل واتساب'),
+            'btn2_link' => \App\Models\Setting::get('home_bottom_banner_btn2_link', 'https://wa.me/201550504512'),
+        ];
+
+        // Homepage Triple Feature Cards (Matching attached reference mockup: Blue, Teal, Red)
+        $featureCards = [
+            'card1' => [
+                'title' => \App\Models\Setting::get('feature_card_1_title', 'ألعاب تنمية المهارات'),
+                'subtitle' => \App\Models\Setting::get('feature_card_1_subtitle', 'عروض وتخفيضات مذهلة على ألعاب الطفل!'),
+                'btn_text' => \App\Models\Setting::get('feature_card_1_btn_text', 'عرض المجموعة'),
+                'btn_link' => \App\Models\Setting::get('feature_card_1_btn_link', '/search?category=educational-tools'),
+                'image' => \App\Models\Setting::get('feature_card_1_image', 'images/card-truck.jpg'),
+                'bg' => \App\Models\Setting::get('feature_card_1_bg', '#0052CC'),
+            ],
+            'card2' => [
+                'title' => \App\Models\Setting::get('feature_card_2_title', 'مجموعة تنمية الذكاء'),
+                'subtitle' => \App\Models\Setting::get('feature_card_2_subtitle', 'خصم 15% على أدوات وألعاب الطفل!'),
+                'btn_text' => \App\Models\Setting::get('feature_card_2_btn_text', 'عرض المجموعة'),
+                'btn_link' => \App\Models\Setting::get('feature_card_2_btn_link', '/search?category=educational-bundles'),
+                'image' => \App\Models\Setting::get('feature_card_2_image', 'images/card-blocks.jpg'),
+                'bg' => \App\Models\Setting::get('feature_card_2_bg', '#00A896'),
+            ],
+            'card3' => [
+                'title' => \App\Models\Setting::get('feature_card_3_title', 'باقات وعروض التوفير'),
+                'subtitle' => \App\Models\Setting::get('feature_card_3_subtitle', 'خصم 15% على الأدوات والوسائل التعليمية!'),
+                'btn_text' => \App\Models\Setting::get('feature_card_3_btn_text', 'عرض المجموعة'),
+                'btn_link' => \App\Models\Setting::get('feature_card_3_btn_link', '/search?category=digital-worksheets'),
+                'image' => \App\Models\Setting::get('feature_card_3_image', 'images/card-dino.jpg'),
+                'bg' => \App\Models\Setting::get('feature_card_3_bg', '#e96e1e'),
+            ],
+        ];
+
+        // Homepage Brands / Partners (Top & Bottom Opposite Marquee Rows)
+        $topBrands = \App\Models\Brand::where('is_active', true)->where('row', 'top')->orderBy('sort_order', 'asc')->get();
+        $bottomBrands = \App\Models\Brand::where('is_active', true)->where('row', 'bottom')->orderBy('sort_order', 'asc')->get();
+
+        if ($topBrands->isEmpty() && $bottomBrands->isEmpty()) {
+            $allBrands = \App\Models\Brand::where('is_active', true)->orderBy('sort_order', 'asc')->get();
+            $topBrands = $allBrands;
+            $bottomBrands = $allBrands;
+        } elseif ($bottomBrands->isEmpty()) {
+            $bottomBrands = $topBrands;
+        } elseif ($topBrands->isEmpty()) {
+            $topBrands = $bottomBrands;
+        }
+
         return view('storefront.index', compact(
             'banners',
+            'promoSettings',
+            'bottomBanner',
+            'featureCards',
+            'topBrands',
+            'bottomBrands',
             'categories',
             'ageGroups',
             'skills',
@@ -108,6 +201,18 @@ class StorefrontController extends Controller
                     ->orWhereHas('needs', function($needQ) use ($q) {
                         $needQ->where('name', 'like', "%{$q}%");
                     });
+            });
+        }
+
+        // Filter by Brand
+        if ($request->filled('brand')) {
+            $brandSlug = $request->input('brand');
+            $query->where(function($bQ) use ($brandSlug) {
+                $bQ->whereHas('brand', function($q) use ($brandSlug) {
+                    $q->where('slug', $brandSlug)->orWhere('name', 'like', "%{$brandSlug}%");
+                })
+                ->orWhere('name', 'like', "%{$brandSlug}%")
+                ->orWhere('description', 'like', "%{$brandSlug}%");
             });
         }
 

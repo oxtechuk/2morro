@@ -247,7 +247,7 @@ Recommended supporting UI colors:
     --color-background-soft: #F8FAFC;
     --color-surface: #FFFFFF;
 
-    --color-text-primary: #102A63;
+    --color-text-primary: #1360e2;
     --color-text-secondary: #64748B;
     --color-text-muted: #94A3B8;
 

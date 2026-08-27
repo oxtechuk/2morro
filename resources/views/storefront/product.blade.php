@@ -81,7 +81,7 @@
                     </div>
 
                     <!-- Title -->
-                    <h1 class="text-2xl sm:text-3xl font-black text-[#102A63] mt-3 leading-snug">
+                    <h1 class="text-2xl sm:text-3xl font-black text-[#1360e2] mt-3 leading-snug">
                         {{ $product->name }}
                     </h1>
 
@@ -131,13 +131,13 @@
                     <!-- Pricing -->
                     <div class="flex items-baseline gap-3 mb-6">
                         @if($product->sale_price)
-                            <span class="text-3xl font-black text-[#102A63]">{{ number_format($product->sale_price, 2) }} ج.م</span>
+                            <span class="text-3xl font-black text-[#1360e2]">{{ number_format($product->sale_price, 2) }} ج.م</span>
                             <span class="text-base text-slate-400 line-through font-bold">{{ number_format($product->price, 2) }} ج.م</span>
                             <span class="text-xs text-green-600 font-black bg-green-50 py-1 px-3 rounded-full border border-green-100">
                                 توفير {{ number_format($product->price - $product->sale_price, 2) }} ج.م
                             </span>
                         @else
-                            <span class="text-3xl font-black text-[#102A63]">{{ number_format($product->price, 2) }} ج.م</span>
+                            <span class="text-3xl font-black text-[#1360e2]">{{ number_format($product->price, 2) }} ج.م</span>
                         @endif
                     </div>
 
@@ -157,7 +157,7 @@
                                 <input type="hidden" name="quantity" value="1">
                             @endif
 
-                            <button type="submit" class="flex-grow bg-[#102A63] hover:bg-slate-800 text-white font-bold text-sm py-3.5 px-8 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-md">
+                            <button type="submit" class="flex-grow bg-[#1360e2] hover:bg-slate-800 text-white font-bold text-sm py-3.5 px-8 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-md">
                                 <svg class="w-4 h-4 text-[#14B8A6]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                                 أضف إلى السلة
                             </button>
@@ -270,7 +270,7 @@
                 @endif
 
                 <div class="bg-blue-50/50 p-5 rounded-3xl border border-blue-100">
-                    <h4 class="text-xs font-black text-[#102A63] mb-2 flex items-center gap-1.5">
+                    <h4 class="text-xs font-black text-[#1360e2] mb-2 flex items-center gap-1.5">
                         💳 طريقة الدفع والتأكيد:
                     </h4>
                     <p class="text-[11px] text-slate-600 font-semibold leading-relaxed">

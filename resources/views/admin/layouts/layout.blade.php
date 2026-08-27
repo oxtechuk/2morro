@@ -43,7 +43,7 @@
             padding: 20px 24px;
             font-size: 1.25rem;
             font-weight: 700;
-            color: #102a63;
+            color: #1360e2;
             border-bottom: 1px solid #f1f5f9;
             display: flex;
             align-items: center;
@@ -85,7 +85,7 @@
 
         .menu-link:hover {
             background-color: #f1f5f9;
-            color: #102a63;
+            color: #1360e2;
         }
 
         .menu-link.active {
@@ -274,43 +274,73 @@
                 </a>
             </li>
             
-            <li class="menu-title">إدارة العملاء</li>
+            <li class="menu-title">إدارة العملاء والاستشارات</li>
+            <li class="menu-item">
+                <a href="{{ route('admin.bookings.index') }}" class="menu-link {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">
+                    <i class="bi bi-calendar-check-fill text-warning"></i>
+                    <span>إدارة الحجوزات</span>
+                    @php
+                        $pendingBookingsCount = \App\Models\Booking::whereIn('status', ['new', 'pending'])->count();
+                    @endphp
+                    @if($pendingBookingsCount > 0)
+                        <span class="badge bg-warning text-dark ms-auto fw-black fs-8 px-2 py-0.5 rounded-pill">{{ $pendingBookingsCount }}</span>
+                    @endif
+                </a>
+            </li>
             <li class="menu-item">
                 <a href="{{ route('admin.crm.index') }}" class="menu-link {{ request()->routeIs('admin.crm.*') ? 'active' : '' }}">
-                    <i class="bi bi-people-fill"></i>
+                    <i class="bi bi-people-fill text-purple" style="color: #7E22CE;"></i>
                     <span>إدارة العملاء (CRM)</span>
                 </a>
             </li>
 
-            <li class="menu-title">إدارة المتجر</li>
+            <li class="menu-title">إدارة المتجر والكتالوج</li>
             <li class="menu-item">
                 <a href="{{ route('admin.banners.index') }}" class="menu-link {{ request()->routeIs('admin.banners.*') ? 'active' : '' }}">
-                    <i class="bi bi-images"></i>
+                    <i class="bi bi-images text-primary"></i>
                     <span>بانرات السليدر الرئيسي</span>
                 </a>
             </li>
             <li class="menu-item">
+                <a href="{{ route('admin.brands.index') }}" class="menu-link {{ request()->routeIs('admin.brands.*') ? 'active' : '' }}">
+                    <i class="bi bi-patch-check-fill text-info"></i>
+                    <span>البراندات والشركاء</span>
+                </a>
+            </li>
+            <li class="menu-item">
                 <a href="{{ route('admin.products.index') }}" class="menu-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
-                    <i class="bi bi-box-seam-fill"></i>
+                    <i class="bi bi-box-seam-fill text-success"></i>
                     <span>إدارة المنتجات</span>
                 </a>
             </li>
             <li class="menu-item">
                 <a href="{{ route('admin.categories.index') }}" class="menu-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-                    <i class="bi bi-tags-fill"></i>
+                    <i class="bi bi-tags-fill text-secondary"></i>
                     <span>تصنيفات المتجر</span>
                 </a>
             </li>
             <li class="menu-item">
                 <a href="{{ route('admin.orders.index') }}" class="menu-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
-                    <i class="bi bi-cart-fill"></i>
-                    <span>إدارة الطلبات</span>
+                    <i class="bi bi-cart-fill text-danger"></i>
+                    <span>إدارة الطلبات والمبيعات</span>
+                    @php
+                        $pendingOrdersBadge = \App\Models\Order::whereIn('status', ['pending', 'processing'])->count();
+                    @endphp
+                    @if($pendingOrdersBadge > 0)
+                        <span class="badge bg-danger text-white ms-auto fw-black fs-8 px-2 py-0.5 rounded-pill">{{ $pendingOrdersBadge }}</span>
+                    @endif
                 </a>
             </li>
             <li class="menu-item">
                 <a href="{{ route('admin.reviews.index') }}" class="menu-link {{ request()->routeIs('admin.reviews.*') ? 'active' : '' }}">
-                    <i class="bi bi-star-half"></i>
-                    <span>تقييمات العملاء</span>
+                    <i class="bi bi-star-half text-amber" style="color: #F59E0B;"></i>
+                    <span>تقييمات ومراجعات</span>
+                    @php
+                        $unapprovedReviews = \App\Models\Review::where('is_approved', false)->count();
+                    @endphp
+                    @if($unapprovedReviews > 0)
+                        <span class="badge bg-danger text-white ms-auto fw-black fs-8 px-2 py-0.5 rounded-pill">{{ $unapprovedReviews }}</span>
+                    @endif
                 </a>
             </li>
 

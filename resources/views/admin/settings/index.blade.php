@@ -55,6 +55,21 @@
                                     <i class="bi bi-image-fill"></i> بانر الهيرو الرئيسي
                                 </button>
                             </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link py-2.5 fw-semibold d-flex align-items-center justify-content-center gap-2" id="promo-tab" data-bs-toggle="tab" data-bs-target="#promo-pane" type="button" role="tab" aria-controls="promo-pane" aria-selected="false">
+                                    <i class="bi bi-stars text-warning"></i> عروض الأسبوع والمجموعات المميزة
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link py-2.5 fw-semibold d-flex align-items-center justify-content-center gap-2" id="booking-tab" data-bs-toggle="tab" data-bs-target="#booking-pane" type="button" role="tab" aria-controls="booking-pane" aria-selected="false">
+                                    <i class="bi bi-calendar-check-fill text-primary"></i> صفحة حجز الاستشارات
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link py-2.5 fw-semibold d-flex align-items-center justify-content-center gap-2" id="cards-tab" data-bs-toggle="tab" data-bs-target="#cards-pane" type="button" role="tab" aria-controls="cards-pane" aria-selected="false">
+                                    <i class="bi bi-grid-3x3-gap-fill text-info"></i> الكروت الإعلانية الثلاثية
+                                </button>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -92,11 +107,23 @@
                                     </div>
                                     <div class="col-md-6 col-sm-12">
                                         <label class="form-label fw-bold">رقم الواتساب للعملاء</label>
-                                        <input type="text" name="store_whatsapp" class="form-control text-start" value="{{ $settings['store_whatsapp'] }}" placeholder="مثال: 2010xxxxxxxx">
+                                        <input type="text" name="store_whatsapp" class="form-control text-start" value="{{ $settings['store_whatsapp'] }}" placeholder="مثال: 201550504512">
                                     </div>
                                     <div class="col-md-6 col-sm-12">
                                         <label class="form-label fw-bold">عنوان المقر / الفروع</label>
                                         <input type="text" name="store_address" class="form-control" value="{{ $settings['store_address'] }}">
+                                    </div>
+                                    <div class="col-md-4 col-sm-12">
+                                        <label class="form-label fw-bold">اسم المشرف / القيادة</label>
+                                        <input type="text" name="supervisor_name" class="form-control" value="{{ $settings['supervisor_name'] ?? 'أ. هبة الله أكرم' }}">
+                                    </div>
+                                    <div class="col-md-4 col-sm-12">
+                                        <label class="form-label fw-bold">رابط حساب Linktree</label>
+                                        <input type="text" name="linktree_url" class="form-control text-start" value="{{ $settings['linktree_url'] ?? 'https://linktr.ee/hebaalla?subscribe' }}">
+                                    </div>
+                                    <div class="col-md-4 col-sm-12">
+                                        <label class="form-label fw-bold">مواعيد العمل الرسمية</label>
+                                        <input type="text" name="working_hours" class="form-control" value="{{ $settings['working_hours'] ?? 'من 12:00 ظهراً إلى 9:00 مساءً (ماعدا الجمعة)' }}">
                                     </div>
                                     <hr class="my-4">
                                     <h6 class="fw-bold mb-2">بيانات تهيئة محركات البحث (SEO Settings)</h6>
@@ -118,6 +145,37 @@
                         <div class="card">
                             <div class="card-header"><h5 class="mb-0">خيارات الدفع وتحصيل الأموال</h5></div>
                             <div class="card-body">
+                                
+                                <!-- InstaPay Payment Settings -->
+                                <div class="border rounded p-4 mb-4 bg-light">
+                                    <div class="d-flex align-items-center gap-2 mb-3">
+                                        <i class="bi bi-send-check-fill text-primary fs-5"></i>
+                                        <h6 class="fw-bold mb-0">بيانات تحويل إنستاباي (InstaPay)</h6>
+                                    </div>
+                                    <div class="row g-3">
+                                        <div class="col-md-6 col-sm-12">
+                                            <label class="form-label fw-bold">عنوان / معرف الدفع InstaPay IPA (أو رقم الهاتف)</label>
+                                            <input type="text" name="payment_instapay_address" class="form-control text-start" value="{{ $settings['payment_instapay_address'] ?? 'hebaalla@instapay' }}">
+                                            <small class="text-muted">يظهر للعميل في صفحة إتمام الشراء لتحويل قيمة الطلب عليه.</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Mobile Wallet Numbers -->
+                                <div class="border rounded p-4 mb-4 bg-light">
+                                    <div class="d-flex align-items-center gap-2 mb-3">
+                                        <i class="bi bi-phone-fill text-danger fs-5"></i>
+                                        <h6 class="fw-bold mb-0">أرقام المحافظ الإلكترونية (فودافون كاش / اتصالات كاش / أورانج / وي كاش)</h6>
+                                    </div>
+                                    <div class="row g-3">
+                                        <div class="col-md-6 col-sm-12">
+                                            <label class="form-label fw-bold">أرقام هواتف المحافظ المعتمدة للتحويل</label>
+                                            <input type="text" name="payment_wallet_number" class="form-control text-start" value="{{ $settings['payment_wallet_number'] ?? '01098861354' }}">
+                                            <small class="text-muted">يمكن كتابة الرقم الرئيسي أو أرقام متعددة تفصل بينها بشرطة مائلة /.</small>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!-- Cash On Delivery -->
                                 <div class="d-flex align-items-center justify-content-between mb-4 p-3 bg-light rounded">
                                     <div>
@@ -125,7 +183,7 @@
                                         <p class="text-muted fs-7 mb-0">السماح للعملاء بالطلب والدفع نقداً عند التوصيل للمندوب.</p>
                                     </div>
                                     <div class="form-check form-switch fs-4">
-                                        <input class="form-check-input" type="checkbox" name="payment_cod_enabled" value="1" id="codSwitch" {{ $settings['payment_cod_enabled'] == '1' ? 'checked' : '' }}>
+                                        <input class="form-check-input" type="checkbox" name="payment_cod_enabled" value="1" id="codSwitch" {{ ($settings['payment_cod_enabled'] ?? '1') == '1' ? 'checked' : '' }}>
                                     </div>
                                 </div>
 
@@ -440,7 +498,466 @@
                         </div>
                     </div>
 
-                </div>
+                    <!-- 7. Promo Deals & Highlight Products Tab (عروض الأسبوع والمنتجات المميزة) -->
+                    <div class="tab-pane fade" id="promo-pane" role="tabpanel" aria-labelledby="promo-tab" tabindex="0">
+                        
+                        <!-- A. Side Promo Banner Card Settings -->
+                        <div class="card mb-4 border-0 shadow-sm">
+                            <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between">
+                                <h5 class="mb-0 fw-bold"><i class="bi bi-tag-fill me-2"></i> بطاقة عروض الأسبوع (Side Promo Banner)</h5>
+                                <span class="badge bg-white text-primary fw-bold">القسم الثالث بالرئيسية</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    
+                                    <!-- Image Upload & Preview -->
+                                    <div class="col-md-6 col-sm-12">
+                                        <label class="form-label fw-bold">صورة العرض / البوكس أو الهدية</label>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <input type="file" name="promo_deals_image_file" class="form-control" accept="image/*">
+                                            @php
+                                                $curPromoImg = $settings['promo_deals_image'] ?? 'images/promo-gift.jpg';
+                                                $curPromoUrl = str_starts_with($curPromoImg, 'http') ? $curPromoImg : asset($curPromoImg);
+                                            @endphp
+                                            <div class="p-1 bg-light border rounded flex-shrink-0" style="width: 60px; height: 60px;">
+                                                <img src="{{ $curPromoUrl }}" alt="Promo" class="w-100 h-100 object-fit-contain" onerror="this.onerror=null; this.src='{{ asset('images/promo-gift.jpg') }}';">
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">يقبل صور PNG و JPG و SVG بدون خلفية أو صور مربعة ذات دقة عالية.</small>
+                                    </div>
+
+                                    <!-- Gradient Background Style -->
+                                    <div class="col-md-6 col-sm-12">
+                                        <label class="form-label fw-bold">لون وتدرج خلفية الكارت الترويجي</label>
+                                        <select name="promo_deals_gradient" class="form-select">
+                                            <option value="blue" {{ ($settings['promo_deals_gradient'] ?? 'blue') === 'blue' ? 'selected' : '' }}>🔵 أزرق ملكي متدرج (Royal Blue)</option>
+                                            <option value="purple" {{ ($settings['promo_deals_gradient'] ?? 'blue') === 'purple' ? 'selected' : '' }}>🟣 بنفسجي كحلي فخم (Indigo Purple)</option>
+                                            <option value="coral" {{ ($settings['promo_deals_gradient'] ?? 'blue') === 'coral' ? 'selected' : '' }}>🟠 برتقالي ناري جذاب (Coral Orange)</option>
+                                            <option value="emerald" {{ ($settings['promo_deals_gradient'] ?? 'blue') === 'emerald' ? 'selected' : '' }}>🟢 أخضر زمردي فاخر (Emerald Green)</option>
+                                            <option value="dark" {{ ($settings['promo_deals_gradient'] ?? 'blue') === 'dark' ? 'selected' : '' }}>⚫ كحلي داكن عصري (Midnight Dark)</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Title -->
+                                    <div class="col-md-4 col-sm-12">
+                                        <label class="form-label fw-bold">عنوان العرض الرئيسي</label>
+                                        <input type="text" name="promo_deals_title" class="form-control" value="{{ $settings['promo_deals_title'] ?? 'عروض الأسبوع' }}">
+                                    </div>
+
+                                    <!-- Subtitle -->
+                                    <div class="col-md-4 col-sm-12">
+                                        <label class="form-label fw-bold">النص الفرعي</label>
+                                        <input type="text" name="promo_deals_subtitle" class="form-control" value="{{ $settings['promo_deals_subtitle'] ?? 'خصومات تصل إلي' }}">
+                                    </div>
+
+                                    <!-- Discount Badge -->
+                                    <div class="col-md-4 col-sm-12">
+                                        <label class="form-label fw-bold">نسبة الخصم / الشارة الكبيرة</label>
+                                        <input type="text" name="promo_deals_discount" class="form-control" value="{{ $settings['promo_deals_discount'] ?? '30%' }}">
+                                    </div>
+
+                                    <!-- Button Text -->
+                                    <div class="col-md-6 col-sm-12">
+                                        <label class="form-label fw-bold">نص الزر</label>
+                                        <input type="text" name="promo_deals_btn_text" class="form-control" value="{{ $settings['promo_deals_btn_text'] ?? 'تسوق الآن' }}">
+                                    </div>
+
+                                    <!-- Button Link -->
+                                    <div class="col-md-6 col-sm-12">
+                                        <label class="form-label fw-bold">رابط الزر</label>
+                                        <input type="text" name="promo_deals_btn_link" class="form-control text-start" value="{{ $settings['promo_deals_btn_link'] ?? '/search?category=educational-bundles' }}" dir="ltr">
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- B. Group 1 & Group 2 Products Configuration -->
+                        <div class="row g-4">
+                            
+                            <!-- Group 1: الأكثر مبيعاً -->
+                            <div class="col-lg-6 col-12">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-header bg-light d-flex align-items-center justify-content-between">
+                                        <h6 class="mb-0 fw-bold text-danger"><i class="bi bi-fire me-1"></i> المجموعة الأولى (الأكثر مبيعاً)</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">عنوان المجموعة الأولى</label>
+                                            <input type="text" name="promo_group1_title" class="form-control" value="{{ $settings['promo_group1_title'] ?? 'الأكثر مبيعاً' }}">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">رابط زر "عرض الكل"</label>
+                                            <input type="text" name="promo_group1_link" class="form-control text-start" value="{{ $settings['promo_group1_link'] ?? '/search' }}" dir="ltr">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">طريقة اختيار المنتجات المعروضة</label>
+                                            <select name="promo_group1_source" class="form-select" onchange="document.getElementById('group1_custom_wrap').style.display = this.value === 'custom' ? 'block' : 'none';">
+                                                <option value="bestsellers" {{ ($settings['promo_group1_source'] ?? 'bestsellers') === 'bestsellers' ? 'selected' : '' }}>⚡ تلقائي (المنتجات المميزة بشارة الأكثر مبيعاً)</option>
+                                                <option value="custom" {{ ($settings['promo_group1_source'] ?? 'bestsellers') === 'custom' ? 'selected' : '' }}>🎯 اختيار يدوي لمنتجات محددة (Custom Highlight)</option>
+                                            </select>
+                                        </div>
+
+                                        @php
+                                            $g1Raw = $settings['promo_group1_product_ids'] ?? '[]';
+                                            $g1Selected = is_array($g1Raw) ? $g1Raw : (json_decode($g1Raw, true) ?: []);
+                                        @endphp
+
+                                        <div id="group1_custom_wrap" class="p-3 bg-light rounded border" style="display: {{ ($settings['promo_group1_source'] ?? 'bestsellers') === 'custom' ? 'block' : 'none' }}; max-height: 260px; overflow-y: auto;">
+                                            <label class="form-label fw-bold small text-muted mb-2">اختر 4 منتجات لعرضها في هذه المجموعة:</label>
+                                            <div class="d-flex flex-column gap-2">
+                                                @foreach($products as $p)
+                                                    <label class="d-flex align-items-center gap-2 p-2 bg-white rounded border small cursor-pointer">
+                                                        <input type="checkbox" name="promo_group1_product_ids[]" value="{{ $p->id }}" {{ in_array($p->id, $g1Selected) ? 'checked' : '' }} class="form-check-input mt-0">
+                                                        <span class="fw-bold text-truncate flex-grow-1">{{ $p->name }}</span>
+                                                        <span class="badge bg-secondary">{{ number_format($p->price, 0) }} ج.م</span>
+                                                    </label>
+                                                @endforeach
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Group 2: الجديد لدينا -->
+                            <div class="col-lg-6 col-12">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-header bg-light d-flex align-items-center justify-content-between">
+                                        <h6 class="mb-0 fw-bold text-primary"><i class="bi bi-sparkles me-1"></i> المجموعة الثانية (الجديد لدينا)</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">عنوان المجموعة الثانية</label>
+                                            <input type="text" name="promo_group2_title" class="form-control" value="{{ $settings['promo_group2_title'] ?? 'الجديد لدينا' }}">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">رابط زر "عرض الكل"</label>
+                                            <input type="text" name="promo_group2_link" class="form-control text-start" value="{{ $settings['promo_group2_link'] ?? '/search' }}" dir="ltr">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label fw-bold">طريقة اختيار المنتجات المعروضة</label>
+                                            <select name="promo_group2_source" class="form-select" onchange="document.getElementById('group2_custom_wrap').style.display = this.value === 'custom' ? 'block' : 'none';">
+                                                <option value="newest" {{ ($settings['promo_group2_source'] ?? 'newest') === 'newest' ? 'selected' : '' }}>⚡ تلقائي (أحدث المنتجات المضافة بالمتجر)</option>
+                                                <option value="custom" {{ ($settings['promo_group2_source'] ?? 'newest') === 'custom' ? 'selected' : '' }}>🎯 اختيار يدوي لمنتجات محددة (Custom Highlight)</option>
+                                            </select>
+                                        </div>
+
+                                        @php
+                                            $g2Raw = $settings['promo_group2_product_ids'] ?? '[]';
+                                            $g2Selected = is_array($g2Raw) ? $g2Raw : (json_decode($g2Raw, true) ?: []);
+                                        @endphp
+
+                                        <div id="group2_custom_wrap" class="p-3 bg-light rounded border" style="display: {{ ($settings['promo_group2_source'] ?? 'newest') === 'custom' ? 'block' : 'none' }}; max-height: 260px; overflow-y: auto;">
+                                            <label class="form-label fw-bold small text-muted mb-2">اختر 4 منتجات لعرضها في هذه المجموعة:</label>
+                                            <div class="d-flex flex-column gap-2">
+                                                @foreach($products as $p)
+                                                    <label class="d-flex align-items-center gap-2 p-2 bg-white rounded border small cursor-pointer">
+                                                        <input type="checkbox" name="promo_group2_product_ids[]" value="{{ $p->id }}" {{ in_array($p->id, $g2Selected) ? 'checked' : '' }} class="form-check-input mt-0">
+                                                        <span class="fw-bold text-truncate flex-grow-1">{{ $p->name }}</span>
+                                                        <span class="badge bg-secondary">{{ number_format($p->price, 0) }} ج.م</span>
+                                                    </label>
+                                                @endforeach
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- 8. Booking Consultation Page Settings Tab -->
+                    <div class="tab-pane fade" id="booking-pane" role="tabpanel" aria-labelledby="booking-tab" tabindex="0">
+                        <div class="card">
+                            <div class="card-header d-flex align-items-center justify-content-between">
+                                <h5 class="mb-0 fw-bold"><i class="bi bi-calendar-check text-primary me-2"></i> إعدادات صفحة حجز الاستشارات والتقييمات (/booking)</h5>
+                                <a href="{{ route('booking.index') }}" target="_blank" class="btn btn-sm btn-outline-primary fw-bold">معاينة الصفحة الحية ←</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-4">
+                                    
+                                    <!-- Side Image Upload -->
+                                    <div class="col-md-6 col-12">
+                                        <label class="form-label fw-bold">صورة البانر الجانبي لصفحة الحجز (Sidebar Image)</label>
+                                        <input type="file" name="booking_image_file" class="form-control mb-2" accept="image/*">
+                                        <input type="text" name="booking_image" class="form-control form-control-sm text-start" dir="ltr" value="{{ $settings['booking_image'] ?? 'images/hero-child.jpg' }}" placeholder="مسار الصورة">
+                                        <small class="text-muted d-block mt-1">تظهر هذه الصورة بشكل ثابت وأنيق في العمود الأيمن لصفحة الحجز بجانب نموذج التسجيل.</small>
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <label class="form-label fw-bold">معاينة الصورة الحالية</label>
+                                        <div class="rounded-3 border p-2 bg-light text-center" style="max-height: 220px; overflow: hidden;">
+                                            <img src="{{ asset($settings['booking_image'] ?? 'images/hero-child.jpg') }}" alt="Booking Side Banner" class="img-fluid rounded-2" style="max-height: 200px; object-fit: cover;">
+                                        </div>
+                                    </div>
+
+                                    <hr class="text-muted my-2">
+
+                                    <!-- Titles and Texts -->
+                                    <div class="col-md-6 col-12">
+                                        <label class="form-label fw-bold">العنوان الرئيسي لصفحة الحجز</label>
+                                        <input type="text" name="booking_page_title" class="form-control" value="{{ $settings['booking_page_title'] ?? 'حجز استشارة وتقييم مهارات الطفل' }}">
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <label class="form-label fw-bold">النص التوضيحي والنبذة</label>
+                                        <input type="text" name="booking_page_subtitle" class="form-control" value="{{ $settings['booking_page_subtitle'] ?? 'صرح متخصص في رعاية وتأهيل وتنمية قدرات الأطفال وتوفير أفضل الأدوات التعليمية بإشراف أ. هبة الله أكرم' }}">
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold">الرسالة الإرشادية / الاقتباس</label>
+                                        <textarea name="booking_page_quote" rows="2" class="form-control">{{ $settings['booking_page_quote'] ?? '« عندما تشعرين بأن طفلك بحاجة لدعم وتأهيل في مهاراته اللغوية أو السلوكية أو الحركية، فإن التدخل المبكر يصنع الفارق في مستقبله »' }}</textarea>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Home Bottom Banner Card (صورة وزرارين من الداشبورد) -->
+                        <div class="card mt-4">
+                            <div class="card-header d-flex align-items-center justify-content-between">
+                                <h5 class="mb-0 fw-bold"><i class="bi bi-image text-success me-2"></i> البانر الإعلاني السفلي بالصفحة الرئيسية (صورة + زرارين)</h5>
+                                <a href="{{ route('home') }}" target="_blank" class="btn btn-sm btn-outline-success fw-bold">معاينة الرئيسية ←</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-4">
+                                    
+                                    <!-- Bottom Banner Image Upload -->
+                                    <div class="col-md-6 col-12">
+                                        <label class="form-label fw-bold">صورة البانر السفلي (Home Bottom Banner Image)</label>
+                                        <input type="file" name="home_bottom_banner_file" class="form-control mb-2" accept="image/*">
+                                        <input type="text" name="home_bottom_banner_image" class="form-control form-control-sm text-start" dir="ltr" value="{{ $settings['home_bottom_banner_image'] ?? 'images/hero-child.jpg' }}" placeholder="مسار الصورة">
+                                        <small class="text-muted d-block mt-1">تظهر هذه الصورة كخلفية للبانر العريض أسفل الصفحة الرئيسية قبل الفوتر مباشرة.</small>
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <label class="form-label fw-bold">معاينة صورة البانر الحالية</label>
+                                        <div class="rounded-3 border p-2 bg-light text-center" style="max-height: 220px; overflow: hidden;">
+                                            <img src="{{ asset($settings['home_bottom_banner_image'] ?? 'images/hero-child.jpg') }}" alt="Bottom Banner" class="img-fluid rounded-2" style="max-height: 200px; object-fit: cover;">
+                                        </div>
+                                    </div>
+
+                                    <hr class="text-muted my-2">
+
+                                    <!-- Title and Subtitle -->
+                                    <div class="col-md-6 col-12">
+                                        <label class="form-label fw-bold">عنوان البانر</label>
+                                        <input type="text" name="home_bottom_banner_title" class="form-control" value="{{ $settings['home_bottom_banner_title'] ?? 'مركز 2morro لتنمية مهارات الطفل' }}">
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <label class="form-label fw-bold">النص التوضيحي للبانر</label>
+                                        <input type="text" name="home_bottom_banner_subtitle" class="form-control" value="{{ $settings['home_bottom_banner_subtitle'] ?? 'جلسات تخاطب وتعديل سلوك وتدخل مبكر وتقييمات شاملة في المركز وأونلاين بإشراف أ. هبة الله أكرم' }}">
+                                    </div>
+
+                                    <!-- Button 1 -->
+                                    <div class="col-md-6 col-12">
+                                        <label class="form-label fw-bold">نص الزر الأول (الأساسي)</label>
+                                        <input type="text" name="home_bottom_banner_btn1_text" class="form-control" value="{{ $settings['home_bottom_banner_btn1_text'] ?? 'حجز استشارة وتقييم' }}">
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <label class="form-label fw-bold">رابط الزر الأول</label>
+                                        <input type="text" name="home_bottom_banner_btn1_link" class="form-control text-start" dir="ltr" value="{{ $settings['home_bottom_banner_btn1_link'] ?? '/booking' }}">
+                                    </div>
+
+                                    <!-- Button 2 -->
+                                    <div class="col-md-6 col-12">
+                                        <label class="form-label fw-bold">نص الزر الثاني (واتساب / إضافي)</label>
+                                        <input type="text" name="home_bottom_banner_btn2_text" class="form-control" value="{{ $settings['home_bottom_banner_btn2_text'] ?? 'تواصل واتساب' }}">
+                                    </div>
+
+                                    <div class="col-md-6 col-12">
+                                        <label class="form-label fw-bold">رابط الزر الثاني</label>
+                                        <input type="text" name="home_bottom_banner_btn2_link" class="form-control text-start" dir="ltr" value="{{ $settings['home_bottom_banner_btn2_link'] ?? 'https://wa.me/201550504512' }}">
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- 9. Triple Feature Cards Settings Tab -->
+                    <div class="tab-pane fade" id="cards-pane" role="tabpanel" aria-labelledby="cards-tab" tabindex="0">
+                        <div class="card mb-4">
+                            <div class="card-header d-flex align-items-center justify-content-between">
+                                <h5 class="mb-0 fw-bold"><i class="bi bi-grid-3x3-gap-fill text-info me-2"></i> إعدادات الكروت الإعلانية الثلاثية بالصفحة الرئيسية</h5>
+                                <a href="{{ route('home') }}" target="_blank" class="btn btn-sm btn-outline-info fw-bold">معاينة بالرئيسية ←</a>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-muted small mb-4">تحكم بشكل كامل في نصوص وألوان وروابط وصور الكروت الثلاثية الملونة البارزة في الصفحة الرئيسية.</p>
+
+                                <div class="row g-4">
+                                    
+                                    <!-- Card 1 (الأزرق) -->
+                                    <div class="col-lg-4 col-12">
+                                        <div class="card h-100 border shadow-xs" style="border-top: 4px solid {{ $settings['feature_card_1_bg'] ?? '#0052CC' }} !important;">
+                                            <div class="card-header bg-light py-2">
+                                                <h6 class="mb-0 fw-bold" style="color: {{ $settings['feature_card_1_bg'] ?? '#0052CC' }};">
+                                                    <i class="bi bi-1-circle-fill me-1"></i> الكارت الأول (الأزرق)
+                                                </h6>
+                                            </div>
+                                            <div class="card-body">
+                                                
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">لون خلفية الكارت</label>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <input type="color" class="form-control form-control-color" value="{{ $settings['feature_card_1_bg'] ?? '#0052CC' }}" onchange="document.getElementById('c1_bg').value = this.value">
+                                                        <input type="text" name="feature_card_1_bg" id="c1_bg" class="form-control text-start font-mono" dir="ltr" value="{{ $settings['feature_card_1_bg'] ?? '#0052CC' }}">
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">عنوان الكارت</label>
+                                                    <input type="text" name="feature_card_1_title" class="form-control" value="{{ $settings['feature_card_1_title'] ?? 'ألعاب تنمية المهارات' }}">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">الوصف المختصر</label>
+                                                    <textarea name="feature_card_1_subtitle" rows="2" class="form-control">{{ $settings['feature_card_1_subtitle'] ?? 'عروض وتخفيضات مذهلة على ألعاب الطفل!' }}</textarea>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">نص الزر</label>
+                                                    <input type="text" name="feature_card_1_btn_text" class="form-control" value="{{ $settings['feature_card_1_btn_text'] ?? 'عرض المجموعة' }}">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">رابط الزر</label>
+                                                    <input type="text" name="feature_card_1_btn_link" class="form-control text-start" dir="ltr" value="{{ $settings['feature_card_1_btn_link'] ?? '/search?category=educational-tools' }}">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">صورة الكارت (3D Toy Image)</label>
+                                                    <input type="file" name="feature_card_1_file" class="form-control mb-2" accept="image/*">
+                                                    <input type="text" name="feature_card_1_image" class="form-control form-control-sm text-start" dir="ltr" value="{{ $settings['feature_card_1_image'] ?? 'images/card-truck.jpg' }}">
+                                                </div>
+
+                                                <div class="text-center p-2 rounded-2" style="background-color: {{ $settings['feature_card_1_bg'] ?? '#0052CC' }};">
+                                                    <img src="{{ asset($settings['feature_card_1_image'] ?? 'images/card-truck.jpg') }}" alt="Card 1" class="img-fluid" style="max-height: 90px; object-fit: contain;">
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Card 2 (التركواز) -->
+                                    <div class="col-lg-4 col-12">
+                                        <div class="card h-100 border shadow-xs" style="border-top: 4px solid {{ $settings['feature_card_2_bg'] ?? '#00A896' }} !important;">
+                                            <div class="card-header bg-light py-2">
+                                                <h6 class="mb-0 fw-bold" style="color: {{ $settings['feature_card_2_bg'] ?? '#00A896' }};">
+                                                    <i class="bi bi-2-circle-fill me-1"></i> الكارت الثاني (التركواز)
+                                                </h6>
+                                            </div>
+                                            <div class="card-body">
+                                                
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">لون خلفية الكارت</label>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <input type="color" class="form-control form-control-color" value="{{ $settings['feature_card_2_bg'] ?? '#00A896' }}" onchange="document.getElementById('c2_bg').value = this.value">
+                                                        <input type="text" name="feature_card_2_bg" id="c2_bg" class="form-control text-start font-mono" dir="ltr" value="{{ $settings['feature_card_2_bg'] ?? '#00A896' }}">
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">عنوان الكارت</label>
+                                                    <input type="text" name="feature_card_2_title" class="form-control" value="{{ $settings['feature_card_2_title'] ?? 'مجموعة تنمية الذكاء' }}">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">الوصف المختصر</label>
+                                                    <textarea name="feature_card_2_subtitle" rows="2" class="form-control">{{ $settings['feature_card_2_subtitle'] ?? 'خصم 15% على أدوات وألعاب الطفل!' }}</textarea>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">نص الزر</label>
+                                                    <input type="text" name="feature_card_2_btn_text" class="form-control" value="{{ $settings['feature_card_2_btn_text'] ?? 'عرض المجموعة' }}">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">رابط الزر</label>
+                                                    <input type="text" name="feature_card_2_btn_link" class="form-control text-start" dir="ltr" value="{{ $settings['feature_card_2_btn_link'] ?? '/search?category=educational-bundles' }}">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">صورة الكارت (3D Toy Image)</label>
+                                                    <input type="file" name="feature_card_2_file" class="form-control mb-2" accept="image/*">
+                                                    <input type="text" name="feature_card_2_image" class="form-control form-control-sm text-start" dir="ltr" value="{{ $settings['feature_card_2_image'] ?? 'images/card-blocks.jpg' }}">
+                                                </div>
+
+                                                <div class="text-center p-2 rounded-2" style="background-color: {{ $settings['feature_card_2_bg'] ?? '#00A896' }};">
+                                                    <img src="{{ asset($settings['feature_card_2_image'] ?? 'images/card-blocks.jpg') }}" alt="Card 2" class="img-fluid" style="max-height: 90px; object-fit: contain;">
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Card 3 (الأحمر) -->
+                                    <div class="col-lg-4 col-12">
+                                        <div class="card h-100 border shadow-xs" style="border-top: 4px solid {{ $settings['feature_card_3_bg'] ?? '#e96e1e' }} !important;">
+                                            <div class="card-header bg-light py-2">
+                                                <h6 class="mb-0 fw-bold" style="color: {{ $settings['feature_card_3_bg'] ?? '#e96e1e' }};">
+                                                    <i class="bi bi-3-circle-fill me-1"></i> الكارت الثالث (الأحمر)
+                                                </h6>
+                                            </div>
+                                            <div class="card-body">
+                                                
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">لون خلفية الكارت</label>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <input type="color" class="form-control form-control-color" value="{{ $settings['feature_card_3_bg'] ?? '#e96e1e' }}" onchange="document.getElementById('c3_bg').value = this.value">
+                                                        <input type="text" name="feature_card_3_bg" id="c3_bg" class="form-control text-start font-mono" dir="ltr" value="{{ $settings['feature_card_3_bg'] ?? '#e96e1e' }}">
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">عنوان الكارت</label>
+                                                    <input type="text" name="feature_card_3_title" class="form-control" value="{{ $settings['feature_card_3_title'] ?? 'باقات وعروض التوفير' }}">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">الوصف المختصر</label>
+                                                    <textarea name="feature_card_3_subtitle" rows="2" class="form-control">{{ $settings['feature_card_3_subtitle'] ?? 'خصم 15% على الأدوات والوسائل التعليمية!' }}</textarea>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">نص الزر</label>
+                                                    <input type="text" name="feature_card_3_btn_text" class="form-control" value="{{ $settings['feature_card_3_btn_text'] ?? 'عرض المجموعة' }}">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">رابط الزر</label>
+                                                    <input type="text" name="feature_card_3_btn_link" class="form-control text-start" dir="ltr" value="{{ $settings['feature_card_3_btn_link'] ?? '/search?category=digital-worksheets' }}">
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold">صورة الكارت (3D Toy Image)</label>
+                                                    <input type="file" name="feature_card_3_file" class="form-control mb-2" accept="image/*">
+                                                    <input type="text" name="feature_card_3_image" class="form-control form-control-sm text-start" dir="ltr" value="{{ $settings['feature_card_3_image'] ?? 'images/card-dino.jpg' }}">
+                                                </div>
+
+                                                <div class="text-center p-2 rounded-2" style="background-color: {{ $settings['feature_card_3_bg'] ?? '#e96e1e' }};">
+                                                    <img src="{{ asset($settings['feature_card_3_image'] ?? 'images/card-dino.jpg') }}" alt="Card 3" class="img-fluid" style="max-height: 90px; object-fit: contain;">
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
 
                 <!-- Save Button -->
                 <div class="row mt-4">
