@@ -629,6 +629,81 @@
             </div>
         </div>
 
+        <!-- Floating WhatsApp Live Chat Widget -->
+        @php
+            $floatingWaNumber = \App\Models\Setting::get('store_whatsapp', '201550504512');
+            $floatingSupervisor = \App\Models\Setting::get('supervisor_name', 'أ. هبة الله أكرم');
+        @endphp
+        <div class="fixed bottom-20 md:bottom-6 left-5 z-40" x-data="{ waOpen: false }" @click.away="waOpen = false">
+            
+            <!-- WhatsApp Chat Popup Card -->
+            <div x-show="waOpen" 
+                 x-cloak
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                 x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+                 class="absolute bottom-16 left-0 w-72 sm:w-80 bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden text-right mb-2">
+                
+                <!-- Card Header -->
+                <div class="bg-gradient-to-r from-[#128C7E] to-[#25D366] p-4 text-white">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <div class="relative">
+                                <div class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-xs flex items-center justify-center text-white font-black text-sm border border-white/30">
+                                    2M
+                                </div>
+                                <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-white rounded-full"></span>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-black text-white leading-tight">مركز 2morro</h4>
+                                <span class="text-[10px] text-white/90 font-medium flex items-center gap-1">
+                                    <span>متصل الآن</span>
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <button @click="waOpen = false" class="text-white/80 hover:text-white p-1 text-sm font-bold">✕</button>
+                    </div>
+                </div>
+
+                <!-- Card Body -->
+                <div class="p-4 bg-slate-50 space-y-3">
+                    <div class="bg-white p-3 rounded-2xl rounded-tr-none shadow-xs border border-slate-100 text-xs text-slate-700 leading-relaxed font-semibold">
+                        مرحباً بك في مركز 2morro! 👋
+                        <br>
+                        هل لديك استفسار عن الاستشارات، الجلسات، أو الأدوات والشيتات التعليمية؟ فريقنا يسعد بمساعدتك الآن.
+                    </div>
+
+                    <a href="https://wa.me/{{ $floatingWaNumber }}?text={{ urlencode('مرحباً مركز 2morro، أود الاستفسار عن الخدمات المتاحة.') }}" 
+                       target="_blank" 
+                       class="w-full bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs py-3 px-4 rounded-xl flex items-center justify-center gap-2 shadow-sm transition-all hover:scale-[1.02] active:scale-95">
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.458L0 24zm6.002-3.693c1.615.957 3.178 1.462 4.736 1.463 5.485.002 9.948-4.463 9.95-9.953.001-2.66-1.025-5.16-2.887-7.026C16.001 2.923 13.506 1.897 10.85 1.897c-5.486 0-9.949 4.464-9.953 9.954-.001 2.052.541 4.06 1.567 5.814l-1.026 3.75 3.829-1.004z"></path></svg>
+                        <span>بدء المحادثة على واتساب</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Main Pulsating WhatsApp Floating Button -->
+            <button @click="waOpen = !waOpen" 
+                    title="تحدث معنا على واتساب" 
+                    class="relative w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white flex items-center justify-center shadow-lg shadow-emerald-500/30 hover:scale-105 active:scale-95 transition-all group">
+                
+                <!-- Pulse animation ring -->
+                <span class="absolute inset-0 rounded-full bg-[#25D366] opacity-40 animate-ping pointer-events-none"></span>
+
+                <!-- WhatsApp SVG Icon -->
+                <svg class="w-7 h-7 sm:w-8 sm:h-8 fill-current relative z-10 transition-transform group-hover:rotate-6" viewBox="0 0 24 24">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.458L0 24zm6.002-3.693c1.615.957 3.178 1.462 4.736 1.463 5.485.002 9.948-4.463 9.95-9.953.001-2.66-1.025-5.16-2.887-7.026C16.001 2.923 13.506 1.897 10.85 1.897c-5.486 0-9.949 4.464-9.953 9.954-.001 2.052.541 4.06 1.567 5.814l-1.026 3.75 3.829-1.004z"/>
+                </svg>
+
+                <!-- Active status badge -->
+                <span class="absolute top-1 right-1 w-3.5 h-3.5 bg-emerald-400 border-2 border-white rounded-full z-20"></span>
+            </button>
+        </div>
+
     </body>
 </html>
 
