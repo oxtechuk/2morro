@@ -58,7 +58,10 @@ class BookingController extends Controller
         $services = Booking::$services;
         $branches = Booking::$branches;
         $statuses = Booking::$statuses;
-        $users = User::where('role', '!=', 'admin')->select('id', 'name', 'phone', 'email')->get();
+        $users = User::where('email', '!=', 'admin@2morro.com')
+            ->where('email', 'not like', '%@2morro.com')
+            ->select('id', 'name', 'email')
+            ->get();
 
         return view('admin.bookings.index', compact(
             'bookings',
@@ -104,15 +107,13 @@ class BookingController extends Controller
         // Link with selected user or find/create
         $userId = $validated['existing_user_id'] ?? null;
         if (!$userId) {
-            $user = User::where('phone', $validated['parent_phone'])->first();
+            $user = !empty($validated['parent_email']) ? User::where('email', $validated['parent_email'])->first() : null;
             if (!$user) {
                 $email = $validated['parent_email'] ?: 'client_' . time() . '_' . rand(100, 999) . '@2morro.center';
                 $user = User::create([
                     'name' => $validated['parent_name'],
-                    'phone' => $validated['parent_phone'],
                     'email' => $email,
                     'password' => bcrypt(Str::random(16)),
-                    'role' => 'user',
                 ]);
             }
             $userId = $user->id;

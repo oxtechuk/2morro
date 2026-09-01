@@ -56,23 +56,15 @@ class BookingController extends Controller
         // 1. Identify or Create User for CRM tracking
         $userId = Auth::id();
         if (!$userId) {
-            $cleanPhone = preg_replace('/[^0-9]/', '', $validated['parent_phone']);
-            $user = User::where('phone', $validated['parent_phone'])
-                ->orWhere('phone', $cleanPhone)
-                ->when(!empty($validated['parent_email']), function ($q) use ($validated) {
-                    $q->orWhere('email', $validated['parent_email']);
-                })
-                ->first();
+            $user = !empty($validated['parent_email']) ? User::where('email', $validated['parent_email'])->first() : null;
 
             if (!$user) {
                 // Generate a temporary dummy email if not provided
                 $email = $validated['parent_email'] ?: 'client_' . time() . '_' . rand(100, 999) . '@2morro.center';
                 $user = User::create([
                     'name' => $validated['parent_name'],
-                    'phone' => $validated['parent_phone'],
                     'email' => $email,
                     'password' => bcrypt(Str::random(16)),
-                    'role' => 'user',
                 ]);
             }
             $userId = $user->id;

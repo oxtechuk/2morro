@@ -383,13 +383,9 @@
                                                             <a href="{{ route('admin.banners.edit', $b) }}" class="btn btn-sm btn-outline-primary" title="تعديل">
                                                                 <i class="bi bi-pencil-square"></i>
                                                             </a>
-                                                            <form action="{{ route('admin.banners.destroy', $b) }}" method="POST" onsubmit="return confirm('هل تريد حذف هذه الشريحة؟');" class="d-inline">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف">
-                                                                    <i class="bi bi-trash"></i>
-                                                                </button>
-                                                            </form>
+                                                            <button type="button" onclick="submitDeleteBanner('{{ route('admin.banners.destroy', $b) }}')" class="btn btn-sm btn-outline-danger" title="حذف">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -969,7 +965,23 @@
                 </div>
 
             </form>
+
+            <!-- Standalone Delete Banner Form (outside main form to prevent HTML form nesting) -->
+            <form id="deleteBannerForm" method="POST" style="display: none;">
+                @csrf
+                @method('DELETE')
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+function submitDeleteBanner(actionUrl) {
+    if (confirm('هل أنت متأكد من رغبتك في حذف شريحة البانر هذه؟')) {
+        const form = document.getElementById('deleteBannerForm');
+        form.action = actionUrl;
+        form.submit();
+    }
+}
+</script>
 @endsection

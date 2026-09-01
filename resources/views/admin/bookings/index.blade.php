@@ -268,11 +268,11 @@
                         <!-- 1. Client Link -->
                         <div class="col-12">
                             <label class="form-label fw-bold small">ربط بعميل مسجل مسبقاً (اختياري)</label>
-                            <select name="existing_user_id" class="form-select" onchange="if(this.value){ document.getElementById('parent_name_input').value = this.options[this.selectedIndex].getAttribute('data-name'); document.getElementById('parent_phone_input').value = this.options[this.selectedIndex].getAttribute('data-phone'); document.getElementById('parent_email_input').value = this.options[this.selectedIndex].getAttribute('data-email'); }">
+                            <select name="existing_user_id" class="form-select" onchange="if(this.value){ document.getElementById('parent_name_input').value = this.options[this.selectedIndex].getAttribute('data-name'); document.getElementById('parent_email_input').value = this.options[this.selectedIndex].getAttribute('data-email'); }">
                                 <option value="">-- عميل جديد أو غير مسجل --</option>
                                 @foreach($users as $u)
-                                    <option value="{{ $u->id }}" data-name="{{ $u->name }}" data-phone="{{ $u->phone }}" data-email="{{ $u->email }}">
-                                        {{ $u->name }} ({{ $u->phone }})
+                                    <option value="{{ $u->id }}" data-name="{{ $u->name }}" data-email="{{ $u->email }}">
+                                        {{ $u->name }} ({{ $u->email }})
                                     </option>
                                 @endforeach
                             </select>

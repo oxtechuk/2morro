@@ -252,17 +252,17 @@
                     </div>
                 </div>
 
-                <!-- Banner Image -->
-                <div class="my-3 flex items-center justify-center relative z-10">
+                <!-- Banner Image (Direct clean image without background box or border) -->
+                <div class="my-2 flex items-center justify-center relative z-10">
                     @php
                         $promoImg = $promoSettings['deals_image'] ?: 'images/promo-gift.jpg';
                         $promoImgUrl = str_starts_with($promoImg, 'http') ? $promoImg : asset($promoImg);
                     @endphp
-                    <div class="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl bg-white/15 backdrop-blur-xs p-3 flex items-center justify-center border border-white/20 shadow-inner group-hover:scale-105 transition-transform duration-300">
+                    <div class="w-32 h-32 sm:w-40 sm:h-40 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
                         <img src="{{ $promoImgUrl }}" 
                              alt="{{ $promoSettings['deals_title'] }}" 
                              onerror="this.onerror=null; this.src='{{ asset('images/promo-gift.jpg') }}';"
-                             class="w-full h-full object-contain drop-shadow-lg">
+                             class="max-w-full max-h-full object-contain drop-shadow-lg">
                     </div>
                 </div>
 
