@@ -272,16 +272,33 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        // Delete images
+        // Delete images safely
         if (is_array($product->images) && !empty($product->images)) {
             foreach ($product->images as $img) {
-                Storage::disk('public')->delete($img);
+                try {
+                    $storagePath = storage_path('app/public/' . $img);
+                    $publicPath = public_path($img);
+                    if (file_exists($storagePath)) {
+                        @unlink($storagePath);
+                    } elseif (file_exists($publicPath)) {
+                        @unlink($publicPath);
+                    }
+                } catch (\Throwable $e) {
+                    // Ignore missing file or fileinfo errors
+                }
             }
         }
 
-        // Delete digital file
+        // Delete digital file safely
         if ($product->digital_file_path) {
-            Storage::disk('local')->delete($product->digital_file_path);
+            try {
+                $digitalPath = storage_path('app/' . $product->digital_file_path);
+                if (file_exists($digitalPath)) {
+                    @unlink($digitalPath);
+                }
+            } catch (\Throwable $e) {
+                // Ignore missing file or fileinfo errors
+            }
         }
 
         // Detach relations

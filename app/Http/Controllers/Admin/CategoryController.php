@@ -70,10 +70,17 @@ class CategoryController extends Controller
         if ($request->hasFile('image')) {
             // Delete old image if exists
             if ($category->image) {
-                Storage::disk('public')->delete($category->image);
+                try {
+                    $oldPath = storage_path('app/public/' . $category->image);
+                    if (file_exists($oldPath)) {
+                        @unlink($oldPath);
+                    }
+                } catch (\Throwable $e) {}
             }
-            $path = $request->file('image')->store('categories', 'public');
-            $data['image'] = $path;
+            $file = $request->file('image');
+            $filename = \Illuminate\Support\Str::random(40) . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
+            $file->move(storage_path('app/public/categories'), $filename);
+            $data['image'] = 'categories/' . $filename;
         }
 
         $category->update($data);
@@ -85,7 +92,12 @@ class CategoryController extends Controller
     {
         // Delete image if exists
         if ($category->image) {
-            Storage::disk('public')->delete($category->image);
+            try {
+                $imgPath = storage_path('app/public/' . $category->image);
+                if (file_exists($imgPath)) {
+                    @unlink($imgPath);
+                }
+            } catch (\Throwable $e) {}
         }
         
         $category->delete();
