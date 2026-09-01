@@ -176,13 +176,68 @@
 
                     </nav>
 
-                    <!-- 3. Left (RTL): Search & Corrected Shopping Cart Icon -->
-                    <div class="flex items-center gap-2 sm:gap-2.5">
+                    <!-- 3. Left (RTL): Search, User Account, & Shopping Cart -->
+                    <div class="flex items-center gap-1.5 sm:gap-2.5">
                         
                         <!-- Search Icon -->
                         <button @click="searchOpen = !searchOpen" title="بحث في المتجر" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-slate-700 hover:text-[#2563ea] hover:bg-slate-100 flex items-center justify-center transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </button>
+
+                        <!-- User Account / My Account Dropdown -->
+                        <div class="relative" x-data="{ userMenuOpen: false }" @click.away="userMenuOpen = false">
+                            @auth
+                                <button @click="userMenuOpen = !userMenuOpen" title="حسابي" class="inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-100 hover:bg-blue-50 text-slate-700 hover:text-[#2563ea] transition-all border border-slate-200/80">
+                                    <span class="w-6 h-6 rounded-full bg-[#2563ea] text-white text-xs font-black flex items-center justify-center">
+                                        {{ mb_substr(Auth::user()->name, 0, 1) }}
+                                    </span>
+                                </button>
+
+                                <!-- Dropdown Menu -->
+                                <div x-show="userMenuOpen" 
+                                     x-cloak
+                                     x-transition:enter="transition ease-out duration-150"
+                                     x-transition:enter-start="opacity-0 translate-y-2"
+                                     x-transition:enter-end="opacity-100 translate-y-0"
+                                     x-transition:leave="transition ease-in duration-100"
+                                     x-transition:leave-start="opacity-100 translate-y-0"
+                                     x-transition:leave-end="opacity-0 translate-y-2"
+                                     class="absolute left-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 py-2 z-50 text-right">
+                                    <div class="px-4 py-2.5 border-b border-slate-100">
+                                        <div class="text-xs font-black text-slate-800">{{ Auth::user()->name }}</div>
+                                        <div class="text-[11px] text-slate-400 truncate">{{ Auth::user()->email }}</div>
+                                    </div>
+
+                                    @if(Auth::user()->isAdmin())
+                                        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-4 py-2 hover:bg-blue-50 text-[#2563ea] text-xs font-bold transition-colors">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                                            <span>لوحة التحكم (المدير)</span>
+                                        </a>
+                                    @endif
+
+                                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-2 px-4 py-2 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-colors">
+                                        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                        <span>تعديل الحساب</span>
+                                    </a>
+
+                                    <div class="border-t border-slate-100 my-1"></div>
+
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="w-full flex items-center gap-2 px-4 py-2 hover:bg-red-50 text-red-600 text-xs font-bold transition-colors text-right">
+                                            <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                                            <span>تسجيل الخروج</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            @else
+                                <a href="{{ route('login') }}" title="تسجيل الدخول / حسابي" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-slate-700 hover:text-[#2563ea] hover:bg-slate-100 flex items-center justify-center transition-colors">
+                                    <svg class="w-5 h-5 sm:w-5.5 sm:h-5.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                    </svg>
+                                </a>
+                            @endauth
+                        </div>
 
                         <!-- Corrected High-Quality Cart Button & Badge -->
                         <button @click="cartOpen = true" title="سلة المشتريات" class="relative inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-blue-50/90 hover:bg-blue-100 text-[#2563ea] hover:text-blue-700 border border-blue-100 shadow-2xs transition-all group">
@@ -232,7 +287,26 @@
                 <a href="{{ route('search', ['category' => 'courses']) }}" class="block text-sm font-bold text-slate-700 py-2 border-b border-slate-50">الكورسات والبرامج</a>
                 <a href="{{ route('search', ['category' => 'educational-bundles']) }}" class="block text-sm font-bold text-slate-700 py-2 border-b border-slate-50">الباقات والعروض</a>
                 <a href="{{ route('booking.index') }}" class="block text-sm font-bold text-amber-700 py-2 border-b border-slate-50">حجز استشارة وتقييم</a>
-                <a href="https://linktr.ee/hebaalla?subscribe" target="_blank" class="block text-sm font-black text-emerald-600 py-2">صفحة روابط المركز (Linktree)</a>
+                <a href="https://linktr.ee/hebaalla?subscribe" target="_blank" class="block text-sm font-black text-emerald-600 py-2 border-b border-slate-50">صفحة روابط المركز (Linktree)</a>
+
+                @auth
+                    <div class="pt-2 border-t border-slate-100">
+                        <div class="text-xs font-bold text-slate-400 mb-1">حسابي ({{ Auth::user()->name }})</div>
+                        @if(Auth::user()->isAdmin())
+                            <a href="{{ route('admin.dashboard') }}" class="block text-sm font-bold text-[#2563ea] py-1.5">لوحة التحكم (المدير)</a>
+                        @endif
+                        <a href="{{ route('profile.edit') }}" class="block text-sm font-bold text-slate-700 py-1.5">تعديل الملف الشخصي</a>
+                        <form method="POST" action="{{ route('logout') }}" class="mt-1">
+                            @csrf
+                            <button type="submit" class="text-sm font-bold text-red-600 py-1.5 w-full text-right">تسجيل الخروج</button>
+                        </form>
+                    </div>
+                @else
+                    <div class="pt-2 border-t border-slate-100 flex items-center gap-3">
+                        <a href="{{ route('login') }}" class="flex-1 bg-[#2563ea] text-white text-center py-2 rounded-xl text-xs font-bold">تسجيل الدخول</a>
+                        <a href="{{ route('register') }}" class="flex-1 bg-slate-100 text-slate-700 text-center py-2 rounded-xl text-xs font-bold">إنشاء حساب</a>
+                    </div>
+                @endauth
             </div>
 
         </header>
