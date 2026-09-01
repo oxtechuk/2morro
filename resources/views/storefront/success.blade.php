@@ -36,6 +36,8 @@
                             الدفع عند الاستلام
                         @elseif($order->payment_method === 'instapay')
                             تحويل انستاباي (InstaPay)
+                        @elseif($order->payment_method === 'bank')
+                            تحويل بنكي مباشر (IBAN)
                         @else
                             تحويل محفظة إلكترونية
                         @endif

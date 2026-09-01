@@ -49,9 +49,15 @@ class CheckoutController extends Controller
 
         $total = $subtotal + $shippingFee;
 
-        // InstaPay and Wallet details
+        // InstaPay, Wallet, and Bank Transfer / IBAN details
         $instapayAddress = \App\Models\Setting::get('payment_instapay_address', 'hebaalla@instapay');
         $walletNumber = \App\Models\Setting::get('payment_wallet_number', '01098861354');
+        
+        $bankName = \App\Models\Setting::get('payment_bank_name', 'البنك الأهلي المصري (NBE)');
+        $bankAccountName = \App\Models\Setting::get('payment_bank_account_name', 'مركز 2morro - أ. هبة الله أكرم');
+        $bankAccountNumber = \App\Models\Setting::get('payment_bank_account_number', '12345678901234');
+        $bankIban = \App\Models\Setting::get('payment_bank_iban', 'EG380002000100000012345678901');
+        $bankSwift = \App\Models\Setting::get('payment_bank_swift', 'NBEGEGCX');
         
         $walletNumbers = [
             [
@@ -100,6 +106,11 @@ class CheckoutController extends Controller
             'instapayAddress',
             'walletNumber',
             'walletNumbers',
+            'bankName',
+            'bankAccountName',
+            'bankAccountNumber',
+            'bankIban',
+            'bankSwift',
             'linktreeUrl',
             'whatsappNumber',
             'supervisorName',
@@ -122,12 +133,12 @@ class CheckoutController extends Controller
             'customer_phone' => 'required|string|max:20',
             'shipping_governorate' => 'required|string|max:50',
             'shipping_address' => 'required|string',
-            'payment_method' => 'required|in:cod,instapay,wallet',
+            'payment_method' => 'required|in:cod,instapay,wallet,bank',
             'notes' => 'nullable|string',
         ];
 
-        // Proof of payment is required for InstaPay and Wallet
-        if ($request->input('payment_method') === 'instapay' || $request->input('payment_method') === 'wallet') {
+        // Proof of payment is required for InstaPay, Wallet, and Bank Transfer
+        if (in_array($request->input('payment_method'), ['instapay', 'wallet', 'bank'])) {
             $rules['payment_screenshot'] = 'required|image|max:4096'; // Max 4MB image
         }
 

@@ -56,6 +56,7 @@
                         <option value="cod" {{ request('payment_method') === 'cod' ? 'selected' : '' }}>الدفع عند الاستلام</option>
                         <option value="instapay" {{ request('payment_method') === 'instapay' ? 'selected' : '' }}>انستاباي (InstaPay)</option>
                         <option value="wallet" {{ request('payment_method') === 'wallet' ? 'selected' : '' }}>محفظة إلكترونية</option>
+                        <option value="bank" {{ request('payment_method') === 'bank' ? 'selected' : '' }}>تحويل بنكي (IBAN)</option>
                     </select>
                 </div>
 
@@ -105,12 +106,14 @@
                                             'cod' => 'الدفع عند الاستلام',
                                             'instapay' => 'انستاباي',
                                             'wallet' => 'محفظة إلكترونية',
+                                            'bank' => 'تحويل بنكي (IBAN)',
                                             default => 'غير محدد',
                                         };
                                         $methodIcon = match($order->payment_method) {
                                             'cod' => 'bi-truck',
                                             'instapay' => 'bi-phone-flip',
                                             'wallet' => 'bi-wallet2',
+                                            'bank' => 'bi-bank2',
                                             default => 'bi-question-circle',
                                         };
                                     @endphp

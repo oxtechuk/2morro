@@ -283,6 +283,8 @@
                                             <span class="badge bg-secondary-subtle text-secondary fs-8">عند الاستلام</span>
                                         @elseif($order->payment_method === 'instapay')
                                             <span class="badge bg-purple-subtle text-purple fs-8" style="background-color: #F3E8FF; color: #7E22CE;">إنستاباي</span>
+                                        @elseif($order->payment_method === 'bank')
+                                            <span class="badge bg-success-subtle text-success fs-8">تحويل بنكي IBAN</span>
                                         @else
                                             <span class="badge bg-danger-subtle text-danger fs-8">فودافون كاش</span>
                                         @endif

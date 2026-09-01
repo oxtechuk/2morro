@@ -207,7 +207,13 @@
                         <div class="mb-2 fs-7 text-muted">
                             العميل اختار الدفع عبر: 
                             <span class="fw-bold text-dark">
-                                {{ $order->payment_method === 'instapay' ? 'تطبيق InstaPay' : 'المحافظ الإلكترونية' }}
+                                @if($order->payment_method === 'instapay')
+                                    تطبيق InstaPay
+                                @elseif($order->payment_method === 'bank')
+                                    التحويل البنكي (IBAN)
+                                @else
+                                    المحافظ الإلكترونية
+                                @endif
                             </span>
                         </div>
                         

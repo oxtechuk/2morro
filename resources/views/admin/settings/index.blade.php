@@ -176,6 +176,37 @@
                                     </div>
                                 </div>
 
+                                <!-- Bank Transfer & IBAN Details -->
+                                <div class="border rounded p-4 mb-4 bg-light">
+                                    <div class="d-flex align-items-center gap-2 mb-3">
+                                        <i class="bi bi-bank2 text-success fs-5"></i>
+                                        <h6 class="fw-bold mb-0">بيانات التحويل البنكي ورقم الآيبان (Bank Transfer / IBAN)</h6>
+                                    </div>
+                                    <div class="row g-3">
+                                        <div class="col-md-6 col-sm-12">
+                                            <label class="form-label fw-bold">اسم البنك</label>
+                                            <input type="text" name="payment_bank_name" class="form-control" value="{{ $settings['payment_bank_name'] ?? 'البنك الأهلي المصري (NBE)' }}" placeholder="مثال: البنك الأهلي المصري / CIB">
+                                        </div>
+                                        <div class="col-md-6 col-sm-12">
+                                            <label class="form-label fw-bold">اسم صاحب الحساب / المستفيد</label>
+                                            <input type="text" name="payment_bank_account_name" class="form-control" value="{{ $settings['payment_bank_account_name'] ?? 'مركز 2morro - أ. هبة الله أكرم' }}">
+                                        </div>
+                                        <div class="col-md-6 col-sm-12">
+                                            <label class="form-label fw-bold">رقم الآيبان الدولي (IBAN) <span class="text-danger">*</span></label>
+                                            <input type="text" name="payment_bank_iban" class="form-control text-start font-mono" dir="ltr" value="{{ $settings['payment_bank_iban'] ?? 'EG380002000100000012345678901' }}" placeholder="EGxxxxxxxxxxxxxxxxxxxx">
+                                            <small class="text-muted">يظهر للعميل مع زر نسخ مباشر في صفحة إتمام الطلب.</small>
+                                        </div>
+                                        <div class="col-md-3 col-sm-6">
+                                            <label class="form-label fw-bold">رقم الحساب المحلي</label>
+                                            <input type="text" name="payment_bank_account_number" class="form-control text-start font-mono" dir="ltr" value="{{ $settings['payment_bank_account_number'] ?? '12345678901234' }}">
+                                        </div>
+                                        <div class="col-md-3 col-sm-6">
+                                            <label class="form-label fw-bold">رمز السويفت (SWIFT Code)</label>
+                                            <input type="text" name="payment_bank_swift" class="form-control text-start font-mono" dir="ltr" value="{{ $settings['payment_bank_swift'] ?? 'NBEGEGCX' }}">
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!-- Cash On Delivery -->
                                 <div class="d-flex align-items-center justify-content-between mb-4 p-3 bg-light rounded">
                                     <div>

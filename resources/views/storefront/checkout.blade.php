@@ -210,10 +210,69 @@
                                 </div>
                             </label>
 
+                            <!-- Option 4: Bank Transfer / IBAN -->
+                            <label :class="paymentMethod === 'bank' ? 'border-blue-600 ring-2 ring-blue-100 bg-white' : 'border-slate-200 bg-white hover:border-slate-300'" class="flex items-start gap-3.5 p-4 rounded-2xl border cursor-pointer select-none transition-all">
+                                <input type="radio" name="payment_method" value="bank" x-model="paymentMethod" class="mt-1 text-blue-600 focus:ring-0">
+                                <div class="flex flex-col leading-tight flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs font-black text-slate-800 flex items-center gap-1.5">
+                                            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"></path></svg>
+                                            <span>التحويل البنكي المباشر (Bank Transfer / IBAN)</span>
+                                        </span>
+                                        <span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700">حساب بنكي / آيبان</span>
+                                    </div>
+                                    <span class="text-[11px] text-slate-500 font-semibold mt-1.5 leading-relaxed">
+                                        حول المبلغ من حسابك البنكي أو عبر تطبيق البنك باستخدام الآيبان (IBAN) وارفع صورة الإيصال:
+                                    </span>
+                                    
+                                    <!-- Bank & IBAN Details Box -->
+                                    <div class="mt-3.5 p-4 bg-emerald-50/50 rounded-2xl border border-emerald-100 space-y-3">
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                                            <div>
+                                                <span class="text-slate-500 font-bold">اسم البنك:</span>
+                                                <span class="font-black text-slate-800 me-1">{{ $bankName }}</span>
+                                            </div>
+                                            <div>
+                                                <span class="text-slate-500 font-bold">اسم المستفيد:</span>
+                                                <span class="font-black text-slate-800 me-1">{{ $bankAccountName }}</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- IBAN Code Row -->
+                                        <div class="pt-2 border-t border-emerald-100/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+                                            <div class="flex items-center gap-2 text-xs flex-wrap">
+                                                <span class="font-bold text-slate-600">رقم الآيبان (IBAN):</span>
+                                                <code class="font-black text-emerald-900 bg-white px-3 py-1 rounded-lg border border-emerald-200 select-all tracking-wider text-xs font-mono" dir="ltr">{{ $bankIban }}</code>
+                                            </div>
+                                            <button type="button" @click.stop="copyToClipboard('{{ $bankIban }}', 'iban')" class="text-[11px] font-bold px-3 py-1.5 bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl transition-colors flex items-center gap-1.5 shadow-2xs">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                                <span x-text="copiedText === 'iban' ? 'تم النسخ بنجاح' : 'نسخ IBAN'"></span>
+                                            </button>
+                                        </div>
+
+                                        @if(!empty($bankAccountNumber))
+                                            <div class="pt-2 border-t border-emerald-100/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-slate-500 font-bold">رقم الحساب:</span>
+                                                    <code class="font-bold text-slate-800 bg-white px-2.5 py-0.5 rounded border border-emerald-200 font-mono" dir="ltr">{{ $bankAccountNumber }}</code>
+                                                </div>
+                                                @if(!empty($bankSwift))
+                                                    <div class="flex items-center gap-1.5">
+                                                        <span class="text-slate-500 font-bold">سويفت كود (SWIFT):</span>
+                                                        <span class="font-bold text-slate-700 font-mono">{{ $bankSwift }}</span>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                </div>
+                            </label>
+
                         </div>
 
                         <!-- 4. Screenshot Upload & WhatsApp confirmation (Conditional) -->
-                        <div x-show="paymentMethod === 'instapay' || paymentMethod === 'wallet'" class="mt-6 p-6 rounded-3xl bg-gradient-to-b from-blue-50/80 to-indigo-50/40 border border-blue-200 flex flex-col gap-4" x-transition>
+                        <div x-show="paymentMethod === 'instapay' || paymentMethod === 'wallet' || paymentMethod === 'bank'" class="mt-6 p-6 rounded-3xl bg-gradient-to-b from-blue-50/80 to-indigo-50/40 border border-blue-200 flex flex-col gap-4" x-transition>
                             <div class="flex items-center gap-2">
                                 <span class="w-2.5 h-2.5 rounded-full bg-[#2563ea] animate-pulse"></span>
                                 <h4 class="text-xs font-black text-[#2563ea]">برجاء إرفاق لقطة شاشة لإثبات الدفع والتحويل (Screenshot) *</h4>
