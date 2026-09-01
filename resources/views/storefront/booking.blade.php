@@ -251,23 +251,34 @@
                                 </select>
                             </div>
 
-                            <!-- Session Format & Branch (Grid) -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
+                            <!-- Session Format & Branch (Dynamic Grid) -->
+                            <div id="sessionFormatBranchContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-4 transition-all">
+                                <div id="sessionFormatCol">
                                     <label class="block text-xs font-black text-slate-700 mb-1.5">طريقة المقابلة <span class="text-red-500">*</span></label>
-                                    <select name="session_format" id="session_format" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#F97316] focus:ring-2 focus:ring-orange-100 text-xs sm:text-sm font-bold text-slate-800 outline-none transition-all bg-white">
-                                        <option value="in_center" {{ old('session_format', 'in_center') === 'in_center' ? 'selected' : '' }}>حضورياً في المركز</option>
-                                        <option value="online" {{ old('session_format') === 'online' ? 'selected' : '' }}>أونلاين عن بُعد (Zoom)</option>
+                                    <select name="session_format" id="session_format" onchange="toggleBranchField()" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#F97316] focus:ring-2 focus:ring-orange-100 text-xs sm:text-sm font-bold text-slate-800 outline-none transition-all bg-white">
+                                        <option value="in_center" {{ old('session_format', 'in_center') === 'in_center' ? 'selected' : '' }}>🏥 حضورياً في مقر المركز</option>
+                                        <option value="online" {{ old('session_format') === 'online' ? 'selected' : '' }}>💻 أونلاين عن بُعد (Zoom / Video)</option>
                                     </select>
                                 </div>
 
-                                <div>
+                                <div id="branchCol" class="transition-all">
                                     <label class="block text-xs font-black text-slate-700 mb-1.5">الفرع المفضل <span class="text-red-500">*</span></label>
                                     <select name="branch" id="branch" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-[#F97316] focus:ring-2 focus:ring-orange-100 text-xs sm:text-sm font-bold text-slate-800 outline-none transition-all bg-white">
                                         @foreach($branches as $key => $branchName)
-                                            <option value="{{ $key }}" {{ old('branch') === $key ? 'selected' : '' }}>{{ $branchName }}</option>
+                                            @if($key !== 'online')
+                                                <option value="{{ $key }}" {{ old('branch') === $key ? 'selected' : '' }}>{{ $branchName }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
+                                </div>
+                            </div>
+
+                            <!-- Online Information Widget (Appears when Online is selected) -->
+                            <div id="onlineInfoWidget" class="hidden p-3.5 rounded-2xl bg-blue-50/80 border border-blue-200/80 text-blue-900 text-xs flex items-start gap-2.5 transition-all">
+                                <span class="w-6 h-6 rounded-xl bg-blue-600 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">💻</span>
+                                <div class="leading-relaxed">
+                                    <span class="font-black">استشارة أونلاين عن بُعد:</span>
+                                    <p class="text-[11px] text-blue-800/90 mt-0.5 font-medium">سيتم التواصل معك عبر الواتساب لتأكيد موعد الجلسة وتزويدك برابط غرفة الزووم (Zoom Meeting) الخاصة مع الأخصائي مباشرة.</p>
                                 </div>
                             </div>
 
@@ -434,5 +445,43 @@
             progressFill.style.width = "100%";
         }
     }
+
+    function toggleBranchField() {
+        const formatSelect = document.getElementById('session_format');
+        const branchCol = document.getElementById('branchCol');
+        const branchSelect = document.getElementById('branch');
+        const container = document.getElementById('sessionFormatBranchContainer');
+        const onlineWidget = document.getElementById('onlineInfoWidget');
+
+        if (!formatSelect) return;
+
+        if (formatSelect.value === 'online') {
+            if (branchCol) branchCol.classList.add('hidden');
+            if (branchSelect) {
+                branchSelect.removeAttribute('required');
+                branchSelect.disabled = true;
+            }
+            if (container) {
+                container.classList.remove('sm:grid-cols-2');
+                container.classList.add('grid-cols-1');
+            }
+            if (onlineWidget) onlineWidget.classList.remove('hidden');
+        } else {
+            if (branchCol) branchCol.classList.remove('hidden');
+            if (branchSelect) {
+                branchSelect.setAttribute('required', 'required');
+                branchSelect.disabled = false;
+            }
+            if (container) {
+                container.classList.remove('grid-cols-1');
+                container.classList.add('sm:grid-cols-2');
+            }
+            if (onlineWidget) onlineWidget.classList.add('hidden');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleBranchField();
+    });
 </script>
 @endsection

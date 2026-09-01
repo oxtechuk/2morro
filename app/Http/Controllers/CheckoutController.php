@@ -53,7 +53,7 @@ class CheckoutController extends Controller
         $instapayAddress = \App\Models\Setting::get('payment_instapay_address', 'hebaalla@instapay');
         $walletNumber = \App\Models\Setting::get('payment_wallet_number', '01098861354');
         
-        $bankName = \App\Models\Setting::get('payment_bank_name', 'البنك الأهلي المصري (NBE)');
+        $bankName = \App\Models\Setting::get('payment_bank_name', 'بنك القاهرة (Banque du Caire)');
         $bankAccountName = \App\Models\Setting::get('payment_bank_account_name', 'مركز 2morro - أ. هبة الله أكرم');
         $bankAccountNumber = \App\Models\Setting::get('payment_bank_account_number', '12345678901234');
         $bankIban = \App\Models\Setting::get('payment_bank_iban', 'EG380002000100000012345678901');

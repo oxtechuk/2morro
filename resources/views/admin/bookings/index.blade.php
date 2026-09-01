@@ -319,17 +319,19 @@
 
                         <div class="col-md-6 col-12">
                             <label class="form-label fw-bold small">مكان المقابلة <span class="text-danger">*</span></label>
-                            <select name="session_format" class="form-select" required>
+                            <select name="session_format" id="admin_session_format" class="form-select" onchange="toggleAdminBranchField()" required>
                                 <option value="in_center">🏥 في مقر المركز</option>
                                 <option value="online">💻 أونلاين عن بُعد</option>
                             </select>
                         </div>
 
-                        <div class="col-md-6 col-12">
+                        <div class="col-md-6 col-12" id="admin_branch_col">
                             <label class="form-label fw-bold small">الفرع المختار <span class="text-danger">*</span></label>
-                            <select name="branch" class="form-select" required>
+                            <select name="branch" id="admin_branch" class="form-select" required>
                                 @foreach($branches as $k => $bName)
-                                    <option value="{{ $k }}">{{ $bName }}</option>
+                                    @if($k !== 'online')
+                                        <option value="{{ $k }}">{{ $bName }}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
@@ -380,4 +382,24 @@
         </div>
     </div>
 </div>
+
+<script>
+    function toggleAdminBranchField() {
+        const format = document.getElementById('admin_session_format');
+        const branchCol = document.getElementById('admin_branch_col');
+        const branchSelect = document.getElementById('admin_branch');
+
+        if (!format || !branchCol) return;
+
+        if (format.value === 'online') {
+            branchCol.classList.add('d-none');
+            branchSelect.removeAttribute('required');
+            branchSelect.disabled = true;
+        } else {
+            branchCol.classList.remove('d-none');
+            branchSelect.setAttribute('required', 'required');
+            branchSelect.disabled = false;
+        }
+    }
+</script>
 @endsection

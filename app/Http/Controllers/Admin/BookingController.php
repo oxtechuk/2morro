@@ -96,7 +96,7 @@ class BookingController extends Controller
             'child_age' => 'required|string|max:50',
             'service_type' => 'required|string',
             'session_format' => 'required|string|in:in_center,online',
-            'branch' => 'required|string',
+            'branch' => 'required_if:session_format,in_center|nullable|string',
             'booking_date' => 'required|date',
             'booking_time' => 'required|string|max:50',
             'status' => 'required|string|in:pending,confirmed,completed,cancelled',
@@ -126,6 +126,7 @@ class BookingController extends Controller
         );
 
         $bookingNumber = 'BK-ADM-' . date('ymd') . '-' . rand(100, 999);
+        $finalBranch = ($validated['session_format'] === 'online') ? 'online' : ($validated['branch'] ?? 'ibrahimiya');
 
         $booking = Booking::create([
             'booking_number' => $bookingNumber,
@@ -137,7 +138,7 @@ class BookingController extends Controller
             'child_age' => $validated['child_age'],
             'service_type' => $validated['service_type'],
             'session_format' => $validated['session_format'],
-            'branch' => $validated['branch'],
+            'branch' => $finalBranch,
             'booking_date' => $validated['booking_date'],
             'booking_time' => $validated['booking_time'],
             'status' => $validated['status'],

@@ -185,7 +185,7 @@
                                     <div class="row g-3">
                                         <div class="col-md-6 col-sm-12">
                                             <label class="form-label fw-bold">اسم البنك</label>
-                                            <input type="text" name="payment_bank_name" class="form-control" value="{{ $settings['payment_bank_name'] ?? 'البنك الأهلي المصري (NBE)' }}" placeholder="مثال: البنك الأهلي المصري / CIB">
+                                            <input type="text" name="payment_bank_name" class="form-control" value="{{ $settings['payment_bank_name'] ?? 'بنك القاهرة (Banque du Caire)' }}" placeholder="مثال: بنك القاهرة (Banque du Caire)">
                                         </div>
                                         <div class="col-md-6 col-sm-12">
                                             <label class="form-label fw-bold">اسم صاحب الحساب / المستفيد</label>

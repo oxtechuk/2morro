@@ -38,7 +38,7 @@ class BookingController extends Controller
             'child_age' => 'required|string|max:50',
             'service_type' => 'required|string',
             'session_format' => 'required|string|in:in_center,online',
-            'branch' => 'required|string',
+            'branch' => 'required_if:session_format,in_center|nullable|string',
             'booking_date' => 'required|date|after_or_equal:today',
             'booking_time' => 'required|string|max:50',
             'notes' => 'nullable|string|max:1000',
@@ -48,6 +48,7 @@ class BookingController extends Controller
             'child_name.required' => 'يرجى إدخال اسم الطفل.',
             'child_age.required' => 'يرجى إدخال عمر الطفل.',
             'service_type.required' => 'يرجى اختيار نوع الاستشارة / الجلسة المطلوبة.',
+            'branch.required_if' => 'يرجى تحديد الفرع المفضل للمقابلة في المركز.',
             'booking_date.required' => 'يرجى اختيار التاريخ المناسب للحجز.',
             'booking_date.after_or_equal' => 'تاريخ الحجز يجب أن يكون اليوم أو تاريخاً قادماً.',
             'booking_time.required' => 'يرجى اختيار الفترة الزمنية المناسبة.',
@@ -82,7 +83,10 @@ class BookingController extends Controller
             $bookingNumber = 'BK-' . date('ymd') . '-' . rand(1000, 9999);
         }
 
-        // 4. Create the Booking Record
+        // 4. Determine final branch
+        $finalBranch = ($validated['session_format'] === 'online') ? 'online' : ($validated['branch'] ?? 'ibrahimiya');
+
+        // 5. Create the Booking Record
         $booking = Booking::create([
             'booking_number' => $bookingNumber,
             'user_id' => $userId,
@@ -93,7 +97,7 @@ class BookingController extends Controller
             'child_age' => $validated['child_age'],
             'service_type' => $validated['service_type'],
             'session_format' => $validated['session_format'],
-            'branch' => $validated['branch'],
+            'branch' => $finalBranch,
             'booking_date' => $validated['booking_date'],
             'booking_time' => $validated['booking_time'],
             'notes' => $validated['notes'] ?? null,
