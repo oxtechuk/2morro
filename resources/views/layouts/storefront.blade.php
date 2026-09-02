@@ -434,62 +434,56 @@
             </div>
         </div>
 
-        <!-- Premium Modern Clean & Compact Footer (مضغوط وسلس جداً على الموبايل وشامل على الديسكتوب) -->
         <!-- ========================================================================= -->
-        <!-- COMPLETE MODERN REDESIGNED FOOTER (تصميم حديث وفاخر متجاوب بالكامل) -->
+        <!-- COMPLETE MODERN CRISP FOOTER (تصميم أنيق عالي التباين وواضح بالكامل) -->
         <!-- ========================================================================= -->
-        <footer class="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-slate-300 border-t border-slate-800 mt-10 sm:mt-16 pt-8 sm:pt-14 pb-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-            
-            <!-- Subtle Ambient Background Glows -->
-            <div class="absolute -top-24 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-24 left-1/4 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none"></div>
-
-            <div class="max-w-7xl mx-auto relative z-10">
+        <footer class="bg-[#F8FAFC] text-slate-700 border-t border-slate-200/90 mt-10 sm:mt-16 pt-8 sm:pt-12 pb-8 px-4 sm:px-6 lg:px-8 relative">
+            <div class="max-w-7xl mx-auto">
                 
                 <!-- 1. Top Feature Highlights (مزايا وخدمات المركز المعتمدة) -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 pb-8 sm:pb-12 border-b border-slate-800 text-right">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-5 pb-8 sm:pb-10 border-b border-slate-200 text-right">
                     
                     <!-- Feature 1 -->
-                    <div class="bg-slate-800/40 hover:bg-slate-800/70 border border-slate-700/60 p-3 sm:p-4 rounded-2xl flex items-center gap-3 transition-all duration-300 hover:border-blue-500/40">
-                        <div class="w-10 sm:w-12 h-10 sm:h-12 rounded-xl bg-blue-500/15 text-blue-400 flex items-center justify-center flex-shrink-0 border border-blue-500/30">
-                            <svg class="w-5 sm:w-6 h-5 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path></svg>
+                    <div class="bg-white border border-slate-200/90 shadow-2xs p-3 sm:p-4 rounded-2xl flex items-center gap-3 transition-all duration-200 hover:shadow-xs hover:border-blue-300">
+                        <div class="w-10 sm:w-11 h-10 sm:h-11 rounded-xl bg-blue-50 text-[#2563ea] flex items-center justify-center flex-shrink-0 border border-blue-100">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path></svg>
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-xs sm:text-sm font-black text-white">شحن سريع ومجاني</span>
-                            <span class="text-[10px] sm:text-xs text-slate-400 font-medium">للطلبات فوق 550 ج.م</span>
+                            <span class="text-xs sm:text-sm font-black text-slate-900">شحن سريع ومجاني</span>
+                            <span class="text-[10px] sm:text-xs text-slate-500 font-semibold">للطلبات فوق 550 ج.م</span>
                         </div>
                     </div>
 
                     <!-- Feature 2 -->
-                    <div class="bg-slate-800/40 hover:bg-slate-800/70 border border-slate-700/60 p-3 sm:p-4 rounded-2xl flex items-center gap-3 transition-all duration-300 hover:border-emerald-500/40">
-                        <div class="w-10 sm:w-12 h-10 sm:h-12 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center flex-shrink-0 border border-emerald-500/30">
-                            <svg class="w-5 sm:w-6 h-5 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    <div class="bg-white border border-slate-200/90 shadow-2xs p-3 sm:p-4 rounded-2xl flex items-center gap-3 transition-all duration-200 hover:shadow-xs hover:border-emerald-300">
+                        <div class="w-10 sm:w-11 h-10 sm:h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0 border border-emerald-100">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-xs sm:text-sm font-black text-white">إشراف وتأهيل معتمد</span>
-                            <span class="text-[10px] sm:text-xs text-slate-400 font-medium">أ. هبة الله أكرم</span>
+                            <span class="text-xs sm:text-sm font-black text-slate-900">إشراف وتأهيل معتمد</span>
+                            <span class="text-[10px] sm:text-xs text-slate-500 font-semibold">أ. هبة الله أكرم</span>
                         </div>
                     </div>
 
                     <!-- Feature 3 -->
-                    <div class="bg-slate-800/40 hover:bg-slate-800/70 border border-slate-700/60 p-3 sm:p-4 rounded-2xl flex items-center gap-3 transition-all duration-300 hover:border-amber-500/40">
-                        <div class="w-10 sm:w-12 h-10 sm:h-12 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center flex-shrink-0 border border-amber-500/30">
-                            <svg class="w-5 sm:w-6 h-5 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <div class="bg-white border border-slate-200/90 shadow-2xs p-3 sm:p-4 rounded-2xl flex items-center gap-3 transition-all duration-200 hover:shadow-xs hover:border-amber-300">
+                        <div class="w-10 sm:w-11 h-10 sm:h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0 border border-amber-100">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-xs sm:text-sm font-black text-white">جلسات واستشارات</span>
-                            <span class="text-[10px] sm:text-xs text-slate-400 font-medium">بالفروع وأونلاين</span>
+                            <span class="text-xs sm:text-sm font-black text-slate-900">جلسات واستشارات</span>
+                            <span class="text-[10px] sm:text-xs text-slate-500 font-semibold">بالفروع وأونلاين</span>
                         </div>
                     </div>
 
                     <!-- Feature 4 -->
-                    <div class="bg-slate-800/40 hover:bg-slate-800/70 border border-slate-700/60 p-3 sm:p-4 rounded-2xl flex items-center gap-3 transition-all duration-300 hover:border-purple-500/40">
-                        <div class="w-10 sm:w-12 h-10 sm:h-12 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center flex-shrink-0 border border-purple-500/30">
-                            <svg class="w-5 sm:w-6 h-5 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    <div class="bg-white border border-slate-200/90 shadow-2xs p-3 sm:p-4 rounded-2xl flex items-center gap-3 transition-all duration-200 hover:shadow-xs hover:border-purple-300">
+                        <div class="w-10 sm:w-11 h-10 sm:h-11 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center flex-shrink-0 border border-purple-100">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-xs sm:text-sm font-black text-white">دفع آمن وسهل</span>
-                            <span class="text-[10px] sm:text-xs text-slate-400 font-medium">انستاباي، محافظ، كاش</span>
+                            <span class="text-xs sm:text-sm font-black text-slate-900">دفع آمن وسهل</span>
+                            <span class="text-[10px] sm:text-xs text-slate-500 font-semibold">انستاباي ومحافظ وكاش</span>
                         </div>
                     </div>
                 </div>
@@ -498,44 +492,44 @@
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 py-8 sm:py-12 text-right">
                     
                     <!-- Col 1: Brand Info, Vision & Social Channels (4 cols) -->
-                    <div class="md:col-span-4 flex flex-col gap-4">
-                        <div class="inline-block bg-white/95 p-2 rounded-2xl self-start shadow-md border border-slate-200">
+                    <div class="md:col-span-4 flex flex-col gap-3.5">
+                        <div class="inline-block bg-white p-2 rounded-2xl self-start shadow-xs border border-slate-200">
                             <img src="{{ asset($storeLogo) }}?v={{ $logoVersion }}" alt="2morro" style="max-height: 52px; width: auto; object-fit: contain;" class="h-10 sm:h-12 w-auto object-contain">
                         </div>
                         
-                        <p class="text-xs sm:text-sm text-slate-400 font-medium leading-relaxed">
-                            <b class="text-white font-bold">مركز ومتجر 2morro:</b> الصرح الرائد في تأهيل وتنمية مهارات الأطفال وتوفير أفضل الوسائل والألعاب التعليمية والشيتات الرقمية التفاعلية بإشراف أ. هبة الله أكرم.
+                        <p class="text-xs sm:text-sm text-slate-600 font-semibold leading-relaxed">
+                            <b class="text-slate-900 font-extrabold">مركز ومتجر 2morro:</b> تأهيل وتنمية مهارات الأطفال وتوفير أفضل الوسائل والألعاب التعليمية والشيتات الرقمية التفاعلية بإشراف أ. هبة الله أكرم.
                         </p>
 
                         <!-- Linktree Official Button -->
-                        <div class="pt-1">
+                        <div class="pt-0.5">
                             <a href="https://linktr.ee/hebaalla?subscribe" target="_blank" rel="noopener noreferrer" 
-                               class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500/20 to-teal-500/20 hover:from-emerald-500/30 hover:to-teal-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-black transition-all shadow-sm group hover:scale-[1.02]">
-                                <svg class="w-4 h-4 text-emerald-400 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                               class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-black transition-all shadow-2xs group">
+                                <svg class="w-4 h-4 text-emerald-600 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
                                 <span>صفحة روابط المركز الرسمية (Linktree)</span>
                             </a>
                         </div>
                         
                         <!-- Social Media Network Badges -->
-                        <div class="flex flex-wrap items-center gap-2.5 pt-2">
+                        <div class="flex flex-wrap items-center gap-2 pt-1">
                             <!-- WhatsApp -->
-                            <a href="https://wa.me/201550504512" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-xl bg-[#25D366]/20 text-[#25D366] hover:bg-[#25D366] hover:text-white border border-[#25D366]/40 flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-sm" title="واتساب (01550504512)">
+                            <a href="https://wa.me/201550504512" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white border border-emerald-200 flex items-center justify-center transition-all duration-200 shadow-2xs hover:scale-105" title="واتساب (01550504512)">
                                 <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.458L0 24zm6.002-3.693c1.615.957 3.178 1.462 4.736 1.463 5.485.002 9.948-4.463 9.95-9.953.001-2.66-1.025-5.16-2.887-7.026C16.001 2.923 13.506 1.897 10.85 1.897c-5.486 0-9.949 4.464-9.953 9.954-.001 2.052.541 4.06 1.567 5.814l-1.026 3.75 3.829-1.004z"></path></svg>
                             </a>
                             <!-- Facebook -->
-                            <a href="https://www.facebook.com/2morroo" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-xl bg-[#1877F2]/20 text-[#1877F2] hover:bg-[#1877F2] hover:text-white border border-[#1877F2]/40 flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-sm" title="فيسبوك">
+                            <a href="https://www.facebook.com/2morroo" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white border border-blue-200 flex items-center justify-center transition-all duration-200 shadow-2xs hover:scale-105" title="فيسبوك">
                                 <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M9 8H7v3h2v9h3v-9h3.6L15 8h-3V6.5C12 5.67 12.5 5 13.5 5H15V2h-2.5C9.5 2 9 3.5 9 5.5V8z"></path></svg>
                             </a>
                             <!-- Instagram -->
-                            <a href="https://www.instagram.com/hebaallaakrm/" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-xl bg-[#E4405F]/20 text-[#E4405F] hover:bg-[#E4405F] hover:text-white border border-[#E4405F]/40 flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-sm" title="انستجرام">
+                            <a href="https://www.instagram.com/hebaallaakrm/" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-xl bg-pink-50 text-pink-600 hover:bg-pink-600 hover:text-white border border-pink-200 flex items-center justify-center transition-all duration-200 shadow-2xs hover:scale-105" title="انستجرام">
                                 <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"></path></svg>
                             </a>
                             <!-- YouTube -->
-                            <a href="https://youtube.com/c/2Morro?sub_confirmation=1" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-xl bg-[#FF0000]/20 text-[#FF0000] hover:bg-[#FF0000] hover:text-white border border-[#FF0000]/40 flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-sm" title="يوتيوب">
+                            <a href="https://youtube.com/c/2Morro?sub_confirmation=1" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-xl bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-200 flex items-center justify-center transition-all duration-200 shadow-2xs hover:scale-105" title="يوتيوب">
                                 <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"></path></svg>
                             </a>
                             <!-- Phone -->
-                            <a href="tel:01550504512" class="w-9 h-9 rounded-xl bg-blue-500/20 text-blue-400 hover:bg-blue-600 hover:text-white border border-blue-500/40 flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-sm" title="اتصال مباشر">
+                            <a href="tel:01550504512" class="w-9 h-9 rounded-xl bg-blue-50 text-[#2563ea] hover:bg-[#2563ea] hover:text-white border border-blue-200 flex items-center justify-center transition-all duration-200 shadow-2xs hover:scale-105" title="اتصال مباشر">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
                             </a>
                         </div>
@@ -543,59 +537,59 @@
 
                     <!-- Col 2: Alexandria Branches Cards (4 cols) -->
                     <div class="md:col-span-4 flex flex-col gap-3">
-                        <h5 class="text-sm font-black text-white flex items-center gap-2 mb-1">
+                        <h5 class="text-sm font-black text-slate-900 flex items-center gap-2 mb-0.5">
                             <span class="w-2 h-4 bg-[#EF4444] rounded-full"></span>
                             فروع المركز بالإسكندرية
                         </h5>
 
                         <div class="space-y-2.5">
                             <!-- Branch 1: Ibrahimia -->
-                            <div class="bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 p-3 rounded-2xl transition-colors">
+                            <div class="bg-white border border-slate-200/90 shadow-2xs p-3 rounded-2xl hover:border-blue-300 transition-colors">
                                 <div class="flex items-start justify-between gap-2">
                                     <div>
-                                        <span class="font-black text-white text-xs block">📍 فرع الإبراهيمية:</span>
-                                        <span class="text-slate-400 text-[11px] block mt-0.5">أول لاجتيه من شارع أبو قير (فوق سنترال إياد)</span>
+                                        <span class="font-black text-slate-900 text-xs block">📍 فرع الإبراهيمية:</span>
+                                        <span class="text-slate-600 text-[11px] block mt-0.5">أول لاجتيه من شارع أبو قير (فوق سنترال إياد)</span>
                                     </div>
-                                    <span class="px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-300 text-[10px] font-bold border border-blue-500/30 whitespace-nowrap">الرئيسي</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-blue-50 text-[#2563ea] text-[10px] font-extrabold border border-blue-200 whitespace-nowrap">الرئيسي</span>
                                 </div>
-                                <div class="flex items-center gap-2 mt-2 pt-2 border-t border-slate-700/50">
-                                    <a href="tel:01550504512" class="text-[11px] font-mono text-blue-400 hover:text-blue-300 font-bold flex items-center gap-1" dir="ltr">
+                                <div class="flex items-center gap-2 mt-2 pt-2 border-t border-slate-100">
+                                    <a href="tel:01550504512" class="text-[11px] font-mono text-[#2563ea] hover:underline font-bold flex items-center gap-1" dir="ltr">
                                         <span>01550504512</span>
                                     </a>
-                                    <span class="text-slate-600">/</span>
-                                    <a href="tel:035918166" class="text-[11px] font-mono text-slate-300 hover:text-white font-bold" dir="ltr">03 5918166</a>
+                                    <span class="text-slate-400">/</span>
+                                    <a href="tel:035918166" class="text-[11px] font-mono text-slate-700 hover:text-black font-bold" dir="ltr">03 5918166</a>
                                 </div>
                             </div>
 
                             <!-- Branch 2: Bitash -->
-                            <div class="bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 p-3 rounded-2xl transition-colors">
+                            <div class="bg-white border border-slate-200/90 shadow-2xs p-3 rounded-2xl hover:border-emerald-300 transition-colors">
                                 <div class="flex items-start justify-between gap-2">
                                     <div>
-                                        <span class="font-black text-white text-xs block">📍 فرع أول البيطاش (العجمي):</span>
-                                        <span class="text-slate-400 text-[11px] block mt-0.5">أمام بنك القاهرة - عمارة مركز القلب</span>
+                                        <span class="font-black text-slate-900 text-xs block">📍 فرع أول البيطاش (العجمي):</span>
+                                        <span class="text-slate-600 text-[11px] block mt-0.5">أمام بنك القاهرة - عمارة مركز القلب</span>
                                     </div>
-                                    <span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/30 whitespace-nowrap">فرع غرب</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-extrabold border border-emerald-200 whitespace-nowrap">فرع غرب</span>
                                 </div>
-                                <div class="flex items-center gap-2 mt-2 pt-2 border-t border-slate-700/50">
-                                    <a href="tel:01064580472" class="text-[11px] font-mono text-emerald-400 hover:text-emerald-300 font-bold" dir="ltr">01064580472</a>
-                                    <span class="text-slate-600">/</span>
-                                    <a href="tel:033090476" class="text-[11px] font-mono text-slate-300 hover:text-white font-bold" dir="ltr">03 3090476</a>
+                                <div class="flex items-center gap-2 mt-2 pt-2 border-t border-slate-100">
+                                    <a href="tel:01064580472" class="text-[11px] font-mono text-emerald-700 hover:underline font-bold" dir="ltr">01064580472</a>
+                                    <span class="text-slate-400">/</span>
+                                    <a href="tel:033090476" class="text-[11px] font-mono text-slate-700 hover:text-black font-bold" dir="ltr">03 3090476</a>
                                 </div>
                             </div>
 
                             <!-- Branch 3: Sidi Bishr -->
-                            <div class="bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 p-3 rounded-2xl transition-colors">
+                            <div class="bg-white border border-slate-200/90 shadow-2xs p-3 rounded-2xl hover:border-purple-300 transition-colors">
                                 <div class="flex items-start justify-between gap-2">
                                     <div>
-                                        <span class="font-black text-white text-xs block">📍 فرع سيدي بشر:</span>
-                                        <span class="text-slate-400 text-[11px] block mt-0.5">أول نفق جمال عبد الناصر (فوق رؤية سكان)</span>
+                                        <span class="font-black text-slate-900 text-xs block">📍 فرع سيدي بشر:</span>
+                                        <span class="text-slate-600 text-[11px] block mt-0.5">أول نفق جمال عبد الناصر (فوق رؤية سكان)</span>
                                     </div>
-                                    <span class="px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300 text-[10px] font-bold border border-purple-500/30 whitespace-nowrap">فرع شرق</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 text-[10px] font-extrabold border border-purple-200 whitespace-nowrap">فرع شرق</span>
                                 </div>
-                                <div class="flex items-center gap-2 mt-2 pt-2 border-t border-slate-700/50">
-                                    <a href="tel:01508074512" class="text-[11px] font-mono text-purple-400 hover:text-purple-300 font-bold" dir="ltr">01508074512</a>
-                                    <span class="text-slate-600">/</span>
-                                    <a href="tel:035542766" class="text-[11px] font-mono text-slate-300 hover:text-white font-bold" dir="ltr">03 5542766</a>
+                                <div class="flex items-center gap-2 mt-2 pt-2 border-t border-slate-100">
+                                    <a href="tel:01508074512" class="text-[11px] font-mono text-purple-700 hover:underline font-bold" dir="ltr">01508074512</a>
+                                    <span class="text-slate-400">/</span>
+                                    <a href="tel:035542766" class="text-[11px] font-mono text-slate-700 hover:text-black font-bold" dir="ltr">03 5542766</a>
                                 </div>
                             </div>
                         </div>
@@ -603,16 +597,16 @@
 
                     <!-- Col 3: Quick Store Catalog & Booking (2 cols) -->
                     <div class="md:col-span-2 flex flex-col gap-3">
-                        <h5 class="text-sm font-black text-white flex items-center gap-2 mb-1">
+                        <h5 class="text-sm font-black text-slate-900 flex items-center gap-2 mb-0.5">
                             <span class="w-2 h-4 bg-[#2563ea] rounded-full"></span>
                             أقسام المتجر
                         </h5>
-                        <ul class="text-xs space-y-2 text-slate-400 font-semibold">
-                            <li><a href="{{ route('search', ['category' => 'educational-tools']) }}" class="hover:text-blue-400 transition-colors flex items-center gap-1.5"><span class="w-1 h-1 rounded-full bg-blue-500"></span> الألعاب والأدوات المادية</a></li>
-                            <li><a href="{{ route('search', ['category' => 'digital-worksheets']) }}" class="hover:text-blue-400 transition-colors flex items-center gap-1.5"><span class="w-1 h-1 rounded-full bg-blue-500"></span> شيتات وأوراق عمل PDF</a></li>
-                            <li><a href="{{ route('search', ['category' => 'educational-bundles']) }}" class="hover:text-blue-400 transition-colors flex items-center gap-1.5"><span class="w-1 h-1 rounded-full bg-blue-500"></span> باقات وعروض التوفير</a></li>
+                        <ul class="text-xs space-y-2 text-slate-600 font-bold">
+                            <li><a href="{{ route('search', ['category' => 'educational-tools']) }}" class="hover:text-[#2563ea] transition-colors flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> الألعاب والأدوات المادية</a></li>
+                            <li><a href="{{ route('search', ['category' => 'digital-worksheets']) }}" class="hover:text-[#2563ea] transition-colors flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> شيتات وأوراق عمل PDF</a></li>
+                            <li><a href="{{ route('search', ['category' => 'educational-bundles']) }}" class="hover:text-[#2563ea] transition-colors flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span> باقات وعروض التوفير</a></li>
                             <li class="pt-2">
-                                <a href="{{ route('booking.index') }}" class="inline-flex items-center gap-1.5 text-xs font-black text-blue-300 bg-blue-500/20 border border-blue-500/30 px-3 py-1.5 rounded-xl hover:bg-blue-500/30 transition-all">
+                                <a href="{{ route('booking.index') }}" class="inline-flex items-center gap-1.5 text-xs font-black text-[#2563ea] bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-xl hover:bg-[#2563ea] hover:text-white transition-all">
                                     <span>حجز موعد استشارة</span>
                                     <svg class="w-3.5 h-3.5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                                 </a>
@@ -622,24 +616,24 @@
 
                     <!-- Col 4: Working Hours & Support (2 cols) -->
                     <div class="md:col-span-2 flex flex-col gap-3">
-                        <h5 class="text-sm font-black text-white flex items-center gap-2 mb-1">
+                        <h5 class="text-sm font-black text-slate-900 flex items-center gap-2 mb-0.5">
                             <span class="w-2 h-4 bg-amber-500 rounded-full"></span>
                             مواعيد العمل
                         </h5>
                         
-                        <div class="bg-gradient-to-br from-amber-500/15 to-orange-500/10 border border-amber-500/30 p-3.5 rounded-2xl">
-                            <div class="flex items-center gap-1.5 text-amber-400 font-black text-xs mb-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <div class="bg-amber-50/90 border border-amber-200 p-3.5 rounded-2xl shadow-2xs">
+                            <div class="flex items-center gap-1.5 text-amber-900 font-black text-xs mb-1">
+                                <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 <span>أوقات العمل اليومية:</span>
                             </div>
-                            <span class="font-black text-white text-xs block">12:00 ظ - 9:00 م</span>
-                            <span class="text-[10px] text-amber-300/80 font-bold block mt-0.5">(يومياً عدا الجمعة)</span>
+                            <span class="font-black text-slate-900 text-xs block">12:00 ظ - 9:00 م</span>
+                            <span class="text-[10px] text-amber-800 font-bold block mt-0.5">(يومياً عدا الجمعة)</span>
                         </div>
 
                         <!-- Direct WhatsApp Support Button -->
                         <a href="https://wa.me/201550504512?text={{ urlencode('مرحباً مركز 2morro، أود الاستفسار عن الخدمات والمنتجات.') }}" 
                            target="_blank" 
-                           class="w-full bg-[#25D366] hover:bg-[#1EBE5D] text-white font-black text-xs py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 shadow-md transition-transform hover:scale-[1.02] active:scale-95">
+                           class="w-full bg-[#25D366] hover:bg-[#1EBE5D] text-white font-black text-xs py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-transform hover:scale-[1.02] active:scale-95">
                             <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.458L0 24zm6.002-3.693c1.615.957 3.178 1.462 4.736 1.463 5.485.002 9.948-4.463 9.95-9.953.001-2.66-1.025-5.16-2.887-7.026C16.001 2.923 13.506 1.897 10.85 1.897c-5.486 0-9.949 4.464-9.953 9.954-.001 2.052.541 4.06 1.567 5.814l-1.026 3.75 3.829-1.004z"></path></svg>
                             <span>تحدث معنا واتساب</span>
                         </a>
@@ -648,17 +642,17 @@
                 </div>
 
                 <!-- 3. Bottom Copyright & Payment Methods -->
-                <div class="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400 font-semibold text-center sm:text-right">
-                    <p class="text-[11px] sm:text-xs">
-                        جميع الحقوق محفوظة &copy; {{ date('Y') }} <span class="text-white font-bold">مركز ومتجر 2morro</span> | إشراف أ. هبة الله أكرم.
+                <div class="pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 font-bold text-center sm:text-right">
+                    <p class="text-[11px] sm:text-xs text-slate-600">
+                        جميع الحقوق محفوظة &copy; {{ date('Y') }} <span class="text-[#2563ea] font-extrabold">مركز ومتجر 2morro</span> | إشراف أ. هبة الله أكرم.
                     </p>
                     
-                    <div class="flex flex-wrap items-center gap-2 justify-center">
-                        <span class="px-2.5 py-1 bg-slate-800/80 border border-slate-700/80 rounded-lg text-[10px] font-black text-slate-300">InstaPay</span>
-                        <span class="px-2.5 py-1 bg-slate-800/80 border border-slate-700/80 rounded-lg text-[10px] font-black text-slate-300">Vodafone Cash</span>
-                        <span class="px-2.5 py-1 bg-slate-800/80 border border-slate-700/80 rounded-lg text-[10px] font-black text-slate-300">Orange Cash</span>
-                        <span class="px-2.5 py-1 bg-slate-800/80 border border-slate-700/80 rounded-lg text-[10px] font-black text-slate-300">WE Pay</span>
-                        <span class="px-2.5 py-1 bg-slate-800/80 border border-slate-700/80 rounded-lg text-[10px] font-black text-emerald-400">الدفع عند الاستلام</span>
+                    <div class="flex flex-wrap items-center gap-1.5 justify-center">
+                        <span class="px-2.5 py-1 bg-white border border-slate-200 shadow-2xs rounded-lg text-[10px] font-black text-slate-700">InstaPay</span>
+                        <span class="px-2.5 py-1 bg-white border border-slate-200 shadow-2xs rounded-lg text-[10px] font-black text-slate-700">Vodafone Cash</span>
+                        <span class="px-2.5 py-1 bg-white border border-slate-200 shadow-2xs rounded-lg text-[10px] font-black text-slate-700">Orange Cash</span>
+                        <span class="px-2.5 py-1 bg-white border border-slate-200 shadow-2xs rounded-lg text-[10px] font-black text-slate-700">WE Pay</span>
+                        <span class="px-2.5 py-1 bg-emerald-50 border border-emerald-200 shadow-2xs rounded-lg text-[10px] font-black text-emerald-700">الدفع عند الاستلام</span>
                     </div>
                 </div>
 
