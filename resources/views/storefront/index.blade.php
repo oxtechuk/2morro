@@ -50,7 +50,8 @@
          @touchstart.passive="handleTouchStart($event)"
          @touchend.passive="handleTouchEnd($event)">
         
-        <div class="relative w-full max-w-7xl mx-auto overflow-hidden bg-slate-50 rounded-2xl sm:rounded-3xl shadow-sm aspect-[1670/941]">
+        <div class="relative w-full max-w-7xl mx-auto overflow-hidden bg-slate-100 rounded-2xl sm:rounded-3xl shadow-sm min-h-[220px] sm:min-h-[360px] md:min-h-[460px] lg:min-h-[520px]"
+             style="aspect-ratio: 1670 / 941; width: 100%;">
             
             @forelse($banners as $index => $banner)
                 @php
@@ -59,19 +60,19 @@
                     $hasText = !empty($banner->title) || !empty($banner->subtitle) || !empty($banner->badge_text);
                 @endphp
                 <div x-show="currentSlide === {{ $index }}"
-                     x-cloak
                      x-transition:enter="transition ease-out duration-500"
                      x-transition:enter-start="opacity-0 scale-[1.01]"
                      x-transition:enter-end="opacity-100 scale-100"
                      x-transition:leave="transition ease-in duration-300 absolute inset-0"
                      x-transition:leave-start="opacity-100"
                      x-transition:leave-end="opacity-0"
-                     class="w-full h-full absolute inset-0 flex items-center">
+                     class="w-full h-full absolute inset-0 flex items-center justify-center overflow-hidden"
+                     style="{{ $index === 0 ? '' : 'display: none;' }}">
 
                     <!-- Direct Banner Image with exact 1670x941 fit -->
                     <img src="{{ $bannerImg }}" 
                          alt="{{ $banner->title ?: 'بنر العرض' }}" 
-                         class="w-full h-full object-cover object-center select-none"
+                         class="w-full h-full object-cover object-center select-none pointer-events-none"
                          loading="{{ $index === 0 ? 'eager' : 'lazy' }}">
 
                     <!-- Clickable Whole Banner Link (If link is set without text buttons) -->
@@ -132,7 +133,7 @@
                     $fallbackImage = \App\Models\Setting::get('hero_image', 'images/hero-child.jpg');
                     $fallbackVersion = file_exists(public_path($fallbackImage)) ? filemtime(public_path($fallbackImage)) : time();
                 @endphp
-                <div class="w-full h-full relative">
+                <div class="w-full h-full relative flex items-center justify-center">
                     <img src="{{ asset($fallbackImage) }}?v={{ $fallbackVersion }}" alt="بانر رئيسي" class="w-full h-full object-cover object-center">
                     <div class="absolute inset-0 z-10 flex items-center px-6 sm:px-12 text-right">
                         <div class="max-w-xl">
@@ -281,17 +282,17 @@
                     </div>
                 </div>
 
-                <!-- Banner Image (Direct clean image without background box or border - Enlarged) -->
-                <div class="my-auto py-2 flex-1 flex items-center justify-center relative z-10">
+                <!-- Banner Image (Maximized full clean display) -->
+                <div class="my-auto py-1 flex-1 flex items-center justify-center relative z-10 w-full">
                     @php
                         $promoImg = $promoSettings['deals_image'] ?: 'images/promo-gift.jpg';
                         $promoImgUrl = str_starts_with($promoImg, 'http') ? $promoImg : asset($promoImg);
                     @endphp
-                    <div class="w-full h-56 sm:h-64 lg:h-72 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+                    <div class="w-full h-72 sm:h-80 lg:h-96 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
                         <img src="{{ $promoImgUrl }}" 
                              alt="{{ $promoSettings['deals_title'] }}" 
                              onerror="this.onerror=null; this.src='{{ asset('images/promo-gift.jpg') }}';"
-                             class="w-auto h-full max-h-[220px] sm:max-h-[260px] lg:max-h-[300px] object-contain drop-shadow-2xl">
+                             class="w-full h-full max-h-[300px] sm:max-h-[350px] lg:max-h-[400px] object-contain drop-shadow-2xl">
                     </div>
                 </div>
 
