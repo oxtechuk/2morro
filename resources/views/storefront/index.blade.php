@@ -168,12 +168,6 @@
             @endif
 
         </div>
-    </div>     class="h-2 rounded-full transition-all pointer-events-auto shadow-md"></button>
-                    @endforeach
-                </div>
-            @endif
-
-        </div>
     </div>
 
     <!-- 2. Needs and Skills Quick Carousel (Smooth Touch Scrolling Chip Bar) -->
