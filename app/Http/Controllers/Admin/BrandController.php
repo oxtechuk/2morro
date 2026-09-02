@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Services\ImageOptimizerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -29,7 +30,7 @@ class BrandController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:190',
-            'logo_file' => 'required|image|mimes:jpeg,png,jpg,webp,svg|max:4096',
+            'logo_file' => 'required|image|mimes:jpeg,png,jpg,webp,svg|max:5120',
             'link' => 'nullable|string|max:255',
             'filter_keyword' => 'nullable|string|max:100',
             'row' => 'required|in:top,bottom',
@@ -39,10 +40,8 @@ class BrandController extends Controller
 
         $logoPath = 'images/logo.png';
         if ($request->hasFile('logo_file')) {
-            $file = $request->file('logo_file');
-            $filename = 'brand_' . time() . '_' . Str::random(8) . '.' . ($file->getClientOriginalExtension() ?: 'png');
-            $file->move(storage_path('app/public/brands'), $filename);
-            $logoPath = 'storage/brands/' . $filename;
+            $path = ImageOptimizerService::optimizeAndSave($request->file('logo_file'), 'brands', 500, 85);
+            $logoPath = 'storage/' . $path;
         }
 
         $slug = Str::slug($validated['name']) . '-' . rand(100, 999);
@@ -65,7 +64,7 @@ class BrandController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:190',
-            'logo_file' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:4096',
+            'logo_file' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:5120',
             'link' => 'nullable|string|max:255',
             'filter_keyword' => 'nullable|string|max:100',
             'row' => 'required|in:top,bottom',
@@ -74,10 +73,9 @@ class BrandController extends Controller
         ]);
 
         if ($request->hasFile('logo_file')) {
-            $file = $request->file('logo_file');
-            $filename = 'brand_' . time() . '_' . Str::random(8) . '.' . ($file->getClientOriginalExtension() ?: 'png');
-            $file->move(storage_path('app/public/brands'), $filename);
-            $validated['logo'] = 'storage/brands/' . $filename;
+            ImageOptimizerService::deleteOldImage($brand->logo);
+            $path = ImageOptimizerService::optimizeAndSave($request->file('logo_file'), 'brands', 500, 85);
+            $validated['logo'] = 'storage/' . $path;
         }
 
         $validated['is_active'] = $request->has('is_active');
@@ -96,6 +94,7 @@ class BrandController extends Controller
 
     public function destroy(Brand $brand)
     {
+        ImageOptimizerService::deleteOldImage($brand->logo);
         $brand->delete();
         return redirect()->route('admin.brands.index')->with('success', 'تم حذف البراند بنجاح.');
     }

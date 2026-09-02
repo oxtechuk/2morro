@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
+use App\Services\ImageOptimizerService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class BannerController extends Controller
 {
@@ -26,7 +26,7 @@ class BannerController extends Controller
             'title' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string',
             'badge_text' => 'nullable|string|max:100',
-            'image' => 'required|image|max:5120',
+            'image' => 'required|image|max:10240',
             'button_text' => 'nullable|string|max:100',
             'button_link' => 'nullable|string|max:255',
             'secondary_button_text' => 'nullable|string|max:100',
@@ -37,10 +37,8 @@ class BannerController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = \Illuminate\Support\Str::random(40) . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
-            $file->move(storage_path('app/public/banners'), $filename);
-            $validated['image'] = 'storage/banners/' . $filename;
+            $path = ImageOptimizerService::optimizeAndSave($request->file('image'), 'banners', 1600, 85);
+            $validated['image'] = 'storage/' . $path;
         }
 
         $validated['is_active'] = $request->has('is_active');
@@ -62,7 +60,7 @@ class BannerController extends Controller
             'title' => 'nullable|string|max:255',
             'subtitle' => 'nullable|string',
             'badge_text' => 'nullable|string|max:100',
-            'image' => 'nullable|image|max:5120',
+            'image' => 'nullable|image|max:10240',
             'button_text' => 'nullable|string|max:100',
             'button_link' => 'nullable|string|max:255',
             'secondary_button_text' => 'nullable|string|max:100',
@@ -73,10 +71,9 @@ class BannerController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = \Illuminate\Support\Str::random(40) . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
-            $file->move(storage_path('app/public/banners'), $filename);
-            $validated['image'] = 'storage/banners/' . $filename;
+            ImageOptimizerService::deleteOldImage($banner->image);
+            $path = ImageOptimizerService::optimizeAndSave($request->file('image'), 'banners', 1600, 85);
+            $validated['image'] = 'storage/' . $path;
         }
 
         $validated['is_active'] = $request->has('is_active');
@@ -89,6 +86,7 @@ class BannerController extends Controller
 
     public function destroy(Banner $banner)
     {
+        ImageOptimizerService::deleteOldImage($banner->image);
         $banner->delete();
         return redirect()->route('admin.banners.index')->with('success', 'تم حذف البانر بنجاح.');
     }

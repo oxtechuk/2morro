@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\AgeGroup;
 use App\Models\Skill;
 use App\Models\Need;
+use App\Services\ImageOptimizerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -43,7 +44,7 @@ class TaxonomyController extends Controller
             'name'        => 'required|string|max:255',
             'slug'        => 'nullable|string|max:255|unique:categories,slug',
             'description' => 'nullable|string',
-            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
             'is_active'   => 'nullable|boolean',
         ]);
 
@@ -51,17 +52,22 @@ class TaxonomyController extends Controller
             'name'        => $validated['name'],
             'description' => $validated['description'] ?? null,
             'slug'        => !empty($validated['slug']) ? Str::slug($validated['slug']) : Str::slug($validated['name']),
-            'is_active'   => $request->has('is_active'),
+            'is_active'   => $request->has('is_active') ? true : ($request->boolean('is_active', true)),
         ];
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = 'cat_' . time() . '_' . Str::random(8) . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
-            $file->move(storage_path('app/public/categories'), $filename);
-            $data['image'] = 'categories/' . $filename;
+            $data['image'] = ImageOptimizerService::optimizeAndSave($request->file('image'), 'categories', 600, 82);
         }
 
-        Category::create($data);
+        $category = Category::create($data);
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'تمت إضافة التصنيف بنجاح.',
+                'item'    => $category,
+            ]);
+        }
 
         return redirect()->route('admin.taxonomy.index', ['tab' => 'categories'])->with('success', 'تمت إضافة التصنيف بنجاح.');
     }
@@ -72,7 +78,7 @@ class TaxonomyController extends Controller
             'name'        => 'required|string|max:255',
             'slug'        => 'nullable|string|max:255|unique:categories,slug,' . $category->id,
             'description' => 'nullable|string',
-            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
             'is_active'   => 'nullable|boolean',
         ]);
 
@@ -84,16 +90,8 @@ class TaxonomyController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            if ($category->image) {
-                $oldPath = storage_path('app/public/' . $category->image);
-                if (file_exists($oldPath)) {
-                    @unlink($oldPath);
-                }
-            }
-            $file = $request->file('image');
-            $filename = 'cat_' . time() . '_' . Str::random(8) . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
-            $file->move(storage_path('app/public/categories'), $filename);
-            $data['image'] = 'categories/' . $filename;
+            ImageOptimizerService::deleteOldImage($category->image);
+            $data['image'] = ImageOptimizerService::optimizeAndSave($request->file('image'), 'categories', 600, 82);
         }
 
         $category->update($data);
@@ -103,12 +101,7 @@ class TaxonomyController extends Controller
 
     public function destroyCategory(Category $category)
     {
-        if ($category->image) {
-            $imgPath = storage_path('app/public/' . $category->image);
-            if (file_exists($imgPath)) {
-                @unlink($imgPath);
-            }
-        }
+        ImageOptimizerService::deleteOldImage($category->image);
         $category->products()->detach();
         $category->delete();
 
@@ -129,7 +122,15 @@ class TaxonomyController extends Controller
 
         $validated['slug'] = !empty($validated['slug']) ? Str::slug($validated['slug']) : Str::slug($validated['name']);
 
-        AgeGroup::create($validated);
+        $ageGroup = AgeGroup::create($validated);
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'تمت إضافة الفئة العمرية بنجاح.',
+                'item'    => $ageGroup,
+            ]);
+        }
 
         return redirect()->route('admin.taxonomy.index', ['tab' => 'age_groups'])->with('success', 'تمت إضافة الفئة العمرية بنجاح.');
     }
@@ -171,7 +172,15 @@ class TaxonomyController extends Controller
 
         $validated['slug'] = !empty($validated['slug']) ? Str::slug($validated['slug']) : Str::slug($validated['name']);
 
-        Skill::create($validated);
+        $skill = Skill::create($validated);
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'تمت إضافة المهارة بنجاح.',
+                'item'    => $skill,
+            ]);
+        }
 
         return redirect()->route('admin.taxonomy.index', ['tab' => 'skills'])->with('success', 'تمت إضافة المهارة بنجاح.');
     }
@@ -212,7 +221,15 @@ class TaxonomyController extends Controller
 
         $validated['slug'] = !empty($validated['slug']) ? Str::slug($validated['slug']) : Str::slug($validated['name']);
 
-        Need::create($validated);
+        $need = Need::create($validated);
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'تمت إضافة الاحتياج الخاص بنجاح.',
+                'item'    => $need,
+            ]);
+        }
 
         return redirect()->route('admin.taxonomy.index', ['tab' => 'needs'])->with('success', 'تمت إضافة الاحتياج الخاص بنجاح.');
     }

@@ -70,6 +70,24 @@
                 width: max-content;
                 animation: top-marquee 20s linear infinite;
             }
+
+            /* Skeleton Shimmer Loading Animations */
+            @keyframes skeleton-shimmer {
+                0% { background-position: -200% 0; }
+                100% { background-position: 200% 0; }
+            }
+            .skeleton-shimmer {
+                background: linear-gradient(90deg, #f8fafc 25%, #e2e8f0 50%, #f8fafc 75%);
+                background-size: 200% 100%;
+                animation: skeleton-shimmer 1.6s infinite linear;
+            }
+            .img-lazy-loading {
+                opacity: 0;
+                transition: opacity 0.3s ease-in;
+            }
+            .img-lazy-loaded {
+                opacity: 1 !important;
+            }
         </style>
         @yield('styles')
     </head>
@@ -713,6 +731,28 @@
             </button>
         </div>
 
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const lazyImages = document.querySelectorAll('img');
+                lazyImages.forEach(img => {
+                    if (!img.getAttribute('loading')) {
+                        img.setAttribute('loading', 'lazy');
+                    }
+                    if (!img.getAttribute('decoding')) {
+                        img.setAttribute('decoding', 'async');
+                    }
+                    if (img.complete) {
+                        img.classList.add('img-lazy-loaded');
+                    } else {
+                        img.classList.add('img-lazy-loading');
+                        img.addEventListener('load', () => {
+                            img.classList.remove('img-lazy-loading');
+                            img.classList.add('img-lazy-loaded');
+                        });
+                    }
+                });
+            });
+        </script>
     </body>
 </html>
 

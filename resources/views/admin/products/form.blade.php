@@ -277,10 +277,15 @@
                         <div class="row g-4">
                             <!-- Categories Sync -->
                             <div class="col-md-6 col-sm-12">
-                                <h6 class="fw-bold text-primary mb-2 border-bottom pb-2"><i class="bi bi-tag-fill me-1"></i>تصنيفات المتجر الأساسية</h6>
-                                <div class="row g-2 overflow-y-auto" style="max-height: 160px;">
+                                <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
+                                    <h6 class="fw-bold text-primary mb-0"><i class="bi bi-tag-fill me-1"></i>تصنيفات المتجر الأساسية</h6>
+                                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill py-0.5 px-2.5 fs-8 fw-bold" data-bs-toggle="modal" data-bs-target="#quickAddCategoryModal">
+                                        <i class="bi bi-plus-lg"></i> إضافة سريعة
+                                    </button>
+                                </div>
+                                <div class="row g-2 overflow-y-auto" id="categoriesListContainer" style="max-height: 160px;">
                                     @foreach($categories as $cat)
-                                        <div class="col-12">
+                                        <div class="col-12" id="cat_wrapper_{{ $cat->id }}">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="categories[]" value="{{ $cat->id }}" id="cat_{{ $cat->id }}" {{ in_array($cat->id, old('categories', $product->categories->pluck('id')->toArray())) ? 'checked' : '' }}>
                                                 <label class="form-check-label fs-7" for="cat_{{ $cat->id }}">{{ $cat->name }}</label>
@@ -292,10 +297,15 @@
 
                             <!-- Age Groups Sync -->
                             <div class="col-md-6 col-sm-12">
-                                <h6 class="fw-bold text-success mb-2 border-bottom pb-2"><i class="bi bi-calendar-range-fill me-1"></i>المراحل العمرية المناسبة للطفل</h6>
-                                <div class="row g-2 overflow-y-auto" style="max-height: 160px;">
+                                <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
+                                    <h6 class="fw-bold text-success mb-0"><i class="bi bi-calendar-range-fill me-1"></i>المراحل العمرية المناسبة للطفل</h6>
+                                    <button type="button" class="btn btn-outline-success btn-sm rounded-pill py-0.5 px-2.5 fs-8 fw-bold" data-bs-toggle="modal" data-bs-target="#quickAddAgeGroupModal">
+                                        <i class="bi bi-plus-lg"></i> إضافة سريعة
+                                    </button>
+                                </div>
+                                <div class="row g-2 overflow-y-auto" id="ageGroupsListContainer" style="max-height: 160px;">
                                     @foreach($ageGroups as $age)
-                                        <div class="col-12">
+                                        <div class="col-12" id="age_wrapper_{{ $age->id }}">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="age_groups[]" value="{{ $age->id }}" id="age_{{ $age->id }}" {{ in_array($age->id, old('age_groups', $product->ageGroups->pluck('id')->toArray())) ? 'checked' : '' }}>
                                                 <label class="form-check-label fs-7" for="age_{{ $age->id }}">{{ $age->name }}</label>
@@ -307,10 +317,15 @@
 
                             <!-- Skills Sync -->
                             <div class="col-md-6 col-sm-12">
-                                <h6 class="fw-bold text-warning mb-2 border-bottom pb-2"><i class="bi bi-lightbulb-fill me-1"></i>المهارات المستهدفة للتنمية</h6>
-                                <div class="row g-2 overflow-y-auto" style="max-height: 160px;">
+                                <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
+                                    <h6 class="fw-bold text-warning mb-0"><i class="bi bi-lightbulb-fill me-1"></i>المهارات المستهدفة للتنمية</h6>
+                                    <button type="button" class="btn btn-outline-warning text-dark btn-sm rounded-pill py-0.5 px-2.5 fs-8 fw-bold" data-bs-toggle="modal" data-bs-target="#quickAddSkillModal">
+                                        <i class="bi bi-plus-lg"></i> إضافة سريعة
+                                    </button>
+                                </div>
+                                <div class="row g-2 overflow-y-auto" id="skillsListContainer" style="max-height: 160px;">
                                     @foreach($skills as $skill)
-                                        <div class="col-12">
+                                        <div class="col-12" id="skill_wrapper_{{ $skill->id }}">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="skills[]" value="{{ $skill->id }}" id="skill_{{ $skill->id }}" {{ in_array($skill->id, old('skills', $product->skills->pluck('id')->toArray())) ? 'checked' : '' }}>
                                                 <label class="form-check-label fs-7" for="skill_{{ $skill->id }}">{{ $skill->name }}</label>
@@ -322,10 +337,15 @@
 
                             <!-- Needs Sync -->
                             <div class="col-md-6 col-sm-12">
-                                <h6 class="fw-bold text-danger mb-2 border-bottom pb-2"><i class="bi bi-heart-pulse-fill me-1"></i>الاحتياجات الخاصة / المشكلة التي يعالجها</h6>
-                                <div class="row g-2 overflow-y-auto" style="max-height: 160px;">
+                                <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
+                                    <h6 class="fw-bold text-danger mb-0"><i class="bi bi-heart-pulse-fill me-1"></i>الاحتياجات الخاصة / المشكلة التي يعالجها</h6>
+                                    <button type="button" class="btn btn-outline-danger btn-sm rounded-pill py-0.5 px-2.5 fs-8 fw-bold" data-bs-toggle="modal" data-bs-target="#quickAddNeedModal">
+                                        <i class="bi bi-plus-lg"></i> إضافة سريعة
+                                    </button>
+                                </div>
+                                <div class="row g-2 overflow-y-auto" id="needsListContainer" style="max-height: 160px;">
                                     @foreach($needs as $need)
-                                        <div class="col-12">
+                                        <div class="col-12" id="need_wrapper_{{ $need->id }}">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="needs[]" value="{{ $need->id }}" id="need_{{ $need->id }}" {{ in_array($need->id, old('needs', $product->needs->pluck('id')->toArray())) ? 'checked' : '' }}>
                                                 <label class="form-check-label fs-7" for="need_{{ $need->id }}">{{ $need->name }}</label>
@@ -386,6 +406,152 @@
 
     </form>
 </div>
+
+<!-- ========================================== -->
+<!-- QUICK ADD MODALS FOR FAST TAXONOMY CREATION -->
+<!-- ========================================== -->
+
+<!-- Quick Add Category Modal -->
+<div class="modal fade" id="quickAddCategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-start text-rtl">
+            <form id="quickCategoryForm" action="{{ route('admin.taxonomy.categories.store') }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-folder-plus text-primary me-1"></i> إضافة تصنيف جديد سريعاً</h5>
+                    <button type="button" class="btn-close ms-0 me-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">اسم التصنيف <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" placeholder="مثال: ألعاب مونتيسوري" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">وصف مختصر</label>
+                        <textarea name="description" class="form-control" rows="2" placeholder="وصف للتصنيف..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-primary fw-bold">
+                        <i class="bi bi-check-lg me-1"></i> حفظ وإضافة للمنتج
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Add Age Group Modal -->
+<div class="modal fade" id="quickAddAgeGroupModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-start text-rtl">
+            <form id="quickAgeGroupForm" action="{{ route('admin.taxonomy.age-groups.store') }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-person-plus text-success me-1"></i> إضافة فئة عمرية سريعة</h5>
+                    <button type="button" class="btn-close ms-0 me-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">اسم الفئة العمرية <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" placeholder="مثال: من 7 إلى 9 سنوات" required>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">العمر الأدنى</label>
+                            <input type="number" step="0.5" name="min_age" class="form-control" placeholder="مثال: 7">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">العمر الأقصى</label>
+                            <input type="number" step="0.5" name="max_age" class="form-control" placeholder="مثال: 9">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-success text-white fw-bold">
+                        <i class="bi bi-check-lg me-1"></i> حفظ وإضافة للمنتج
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Add Skill Modal -->
+<div class="modal fade" id="quickAddSkillModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-start text-rtl">
+            <form id="quickSkillForm" action="{{ route('admin.taxonomy.skills.store') }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-star text-warning me-1"></i> إضافة مهارة جديدة سريعة</h5>
+                    <button type="button" class="btn-close ms-0 me-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">اسم المهارة <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" placeholder="مثال: التفكير المنطقي والتحليلي" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">الوصف</label>
+                        <textarea name="description" class="form-control" rows="2" placeholder="شرح مبسط للمهارة..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-warning text-dark fw-bold">
+                        <i class="bi bi-check-lg me-1"></i> حفظ وإضافة للمنتج
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Add Need Modal -->
+<div class="modal fade" id="quickAddNeedModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-start text-rtl">
+            <form id="quickNeedForm" action="{{ route('admin.taxonomy.needs.store') }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold"><i class="bi bi-heart-pulse text-danger me-1"></i> إضافة احتياج خاص جديد</h5>
+                    <button type="button" class="btn-close ms-0 me-auto" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">اسم الحالة / الاحتياج <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" placeholder="مثال: صعوبات القراءة والكتابة (Dyslexia)" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">الوصف</label>
+                        <textarea name="description" class="form-control" rows="2" placeholder="ملاحظات وتفاصيل الحالة..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-danger fw-bold">
+                        <i class="bi bi-check-lg me-1"></i> حفظ وإضافة للمنتج
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification Container -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;">
+    <div id="quickToast" class="toast align-items-center text-bg-success border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body fs-7 fw-bold" id="quickToastMessage">
+                <i class="bi bi-check-circle-fill me-2 fs-6"></i> تمت الإضافة وتحديد الخيار بنجاح!
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -398,7 +564,7 @@
         nameInput.addEventListener('input', function() {
             let slugText = this.value
                 .toLowerCase()
-                .replace(/[^\w\s\u0600-\u06FF]/g, '') // Keep letters, spaces, Arabic chars
+                .replace(/[^\w\s\u0600-\u06FF]/g, '')
                 .replace(/\s+/g, '-');
             slugInput.value = slugText;
         });
@@ -412,25 +578,99 @@
 
     function handleTypeToggle() {
         if (!typeSelect) return;
-        
         const selectedValue = typeSelect.value;
         
-        // Hide/Show Stock container
         if (selectedValue === 'digital') {
             if (digitalTabItem) digitalTabItem.style.display = 'block';
             if (stockContainer) stockContainer.style.display = 'none';
-            if (stockInput) stockInput.value = '9999'; // Digital files have unlimited stock representation
+            if (stockInput) stockInput.value = '9999';
         } else {
             if (digitalTabItem) digitalTabItem.style.display = 'none';
             if (stockContainer) stockContainer.style.display = 'block';
-            if (stockInput && stockInput.value === '9999') stockInput.value = '10'; // default reset
+            if (stockInput && stockInput.value === '9999') stockInput.value = '10';
         }
     }
 
     if (typeSelect) {
         typeSelect.addEventListener('change', handleTypeToggle);
-        // Run on load
         handleTypeToggle();
     }
+
+    // =========================================================================
+    // AJAX Quick Add Handler for Taxonomy (Categories, AgeGroups, Skills, Needs)
+    // =========================================================================
+    function showToast(msg) {
+        const toastEl = document.getElementById('quickToast');
+        const toastMsg = document.getElementById('quickToastMessage');
+        toastMsg.innerHTML = '<i class="bi bi-check-circle-fill me-2 fs-6"></i> ' + msg;
+        const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+        toast.show();
+    }
+
+    function setupQuickForm(formId, modalId, containerId, inputName, prefix, labelNoun) {
+        const form = document.getElementById(formId);
+        if (!form) return;
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = form.querySelector('button[type="submit"]');
+            const origHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> جاري الحفظ...';
+
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+
+                if (data.success && data.item) {
+                    const item = data.item;
+                    const container = document.getElementById(containerId);
+                    
+                    // Create new checkbox item
+                    const colDiv = document.createElement('div');
+                    colDiv.className = 'col-12';
+                    colDiv.id = prefix + '_wrapper_' + item.id;
+                    colDiv.innerHTML = `
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="${inputName}[]" value="${item.id}" id="${prefix}_${item.id}" checked>
+                            <label class="form-check-label fs-7 fw-bold text-success" for="${prefix}_${item.id}">${item.name} <span class="badge bg-success-subtle text-success fs-9 ms-1">جديد</span></label>
+                        </div>
+                    `;
+                    container.prepend(colDiv);
+
+                    // Close modal & reset form
+                    const modalEl = document.getElementById(modalId);
+                    const modalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                    modalInstance.hide();
+                    form.reset();
+
+                    showToast(`تمت إضافة ${labelNoun} "<strong>${item.name}</strong>" وتحديده للمنتج بنجاح!`);
+                } else {
+                    alert(data.message || 'حدث خطأ أثناء الحفظ.');
+                }
+            })
+            .catch(err => {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+                alert('تعذر إتمام العملية. يرجى التأكد من ملء الحقول المطلوبة بشكل صحيح.');
+            });
+        });
+    }
+
+    setupQuickForm('quickCategoryForm', 'quickAddCategoryModal', 'categoriesListContainer', 'categories', 'cat', 'التصنيف');
+    setupQuickForm('quickAgeGroupForm', 'quickAddAgeGroupModal', 'ageGroupsListContainer', 'age_groups', 'age', 'الفئة العمرية');
+    setupQuickForm('quickSkillForm', 'quickAddSkillModal', 'skillsListContainer', 'skills', 'skill', 'المهارة');
+    setupQuickForm('quickNeedForm', 'quickAddNeedModal', 'needsListContainer', 'needs', 'need', 'الاحتياج');
 </script>
 @endsection

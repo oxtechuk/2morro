@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\AgeGroup;
 use App\Models\Skill;
 use App\Models\Need;
+use App\Services\ImageOptimizerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -136,13 +137,10 @@ class ProductController extends Controller
             $data['how_to_use'] = [];
         }
 
-        // Handle Primary Image Upload
-        // Handle Primary Image Upload
+        // Handle Primary Image Upload with WebP Optimization
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = Str::random(40) . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
-            $file->move(storage_path('app/public/products'), $filename);
-            $data['images'] = ['products/' . $filename];
+            $path = ImageOptimizerService::optimizeAndSave($request->file('image'), 'products', 1000, 82);
+            $data['images'] = [$path];
         } else {
             $data['images'] = [];
         }
@@ -229,12 +227,15 @@ class ProductController extends Controller
             $data['how_to_use'] = [];
         }
 
-        // Handle Primary Image Upload
+        // Handle Primary Image Upload with WebP Optimization
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = Str::random(40) . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
-            $file->move(storage_path('app/public/products'), $filename);
-            $data['images'] = ['products/' . $filename];
+            if (!empty($product->images) && is_array($product->images)) {
+                foreach ($product->images as $oldImg) {
+                    ImageOptimizerService::deleteOldImage($oldImg);
+                }
+            }
+            $path = ImageOptimizerService::optimizeAndSave($request->file('image'), 'products', 1000, 82);
+            $data['images'] = [$path];
         }
 
         // Handle Digital File Upload
@@ -275,17 +276,7 @@ class ProductController extends Controller
         // Delete images safely
         if (is_array($product->images) && !empty($product->images)) {
             foreach ($product->images as $img) {
-                try {
-                    $storagePath = storage_path('app/public/' . $img);
-                    $publicPath = public_path($img);
-                    if (file_exists($storagePath)) {
-                        @unlink($storagePath);
-                    } elseif (file_exists($publicPath)) {
-                        @unlink($publicPath);
-                    }
-                } catch (\Throwable $e) {
-                    // Ignore missing file or fileinfo errors
-                }
+                ImageOptimizerService::deleteOldImage($img);
             }
         }
 
