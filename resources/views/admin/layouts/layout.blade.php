@@ -7,6 +7,15 @@
     
     <title>@yield('title', 'لوحة التحكم | تمورو')</title>
 
+    <!-- Favicon (Store Logo) -->
+    @php
+        $favLogo = \App\Models\Setting::get('store_logo', 'images/logo.png');
+        $favVersion = file_exists(public_path($favLogo)) ? filemtime(public_path($favLogo)) : time();
+    @endphp
+    <link rel="icon" type="image/png" href="{{ asset($favLogo) }}?v={{ $favVersion }}">
+    <link rel="shortcut icon" href="{{ asset($favLogo) }}?v={{ $favVersion }}">
+    <link rel="apple-touch-icon" href="{{ asset($favLogo) }}?v={{ $favVersion }}">
+
     <!-- Google Fonts: Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -534,15 +543,21 @@
                 </a>
             </li>
             <li class="menu-item" data-tooltip="إدارة المنتجات">
-                <a href="{{ route('admin.products.index') }}" class="menu-link {{ request()->routeIs('admin.products.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.products.index') }}" class="menu-link {{ request()->routeIs('admin.products.index') || request()->routeIs('admin.products.create') || request()->routeIs('admin.products.edit') || request()->routeIs('admin.products.show') ? 'active' : '' }}">
                     <i class="bi bi-box-seam-fill text-success"></i>
                     <span class="menu-text">إدارة المنتجات</span>
                 </a>
             </li>
-            <li class="menu-item" data-tooltip="تصنيفات المتجر">
-                <a href="{{ route('admin.categories.index') }}" class="menu-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-                    <i class="bi bi-tags-fill text-secondary"></i>
-                    <span class="menu-text">تصنيفات المتجر</span>
+            <li class="menu-item" data-tooltip="استيراد وتصدير إكسيل">
+                <a href="{{ route('admin.products.importExport') }}" class="menu-link {{ request()->routeIs('admin.products.importExport') ? 'active' : '' }}">
+                    <i class="bi bi-file-earmark-spreadsheet-fill text-emerald" style="color: #059669;"></i>
+                    <span class="menu-text">استيراد وتصدير إكسيل</span>
+                </a>
+            </li>
+            <li class="menu-item" data-tooltip="التصنيفات والفلاتر">
+                <a href="{{ route('admin.taxonomy.index') }}" class="menu-link {{ request()->routeIs('admin.taxonomy.*') || request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+                    <i class="bi bi-diagram-3-fill text-primary"></i>
+                    <span class="menu-text">التصنيفات والفلاتر</span>
                 </a>
             </li>
             <li class="menu-item" data-tooltip="إدارة الطلبات">

@@ -7,6 +7,15 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
+        <!-- Favicon (Store Logo) -->
+        @php
+            $favLogo = \App\Models\Setting::get('store_logo', 'images/logo.png');
+            $favVersion = file_exists(public_path($favLogo)) ? filemtime(public_path($favLogo)) : time();
+        @endphp
+        <link rel="icon" type="image/png" href="{{ asset($favLogo) }}?v={{ $favVersion }}">
+        <link rel="shortcut icon" href="{{ asset($favLogo) }}?v={{ $favVersion }}">
+        <link rel="apple-touch-icon" href="{{ asset($favLogo) }}?v={{ $favVersion }}">
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />

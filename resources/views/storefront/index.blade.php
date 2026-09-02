@@ -6,7 +6,7 @@
 <div class="bg-white">
 
     <!-- 1. Touch-Swipe Responsive Hero Slider (سليدر لمسي متجاوب بالكامل مع مؤشرات وأسهم ذكية) -->
-    <div class="w-full relative overflow-hidden bg-slate-900 mb-6 select-none"
+    <div class="w-full relative overflow-hidden bg-transparent mb-6 select-none"
          x-data="{ 
             currentSlide: 0, 
             totalSlides: {{ $banners->count() > 0 ? $banners->count() : 1 }},
@@ -39,7 +39,7 @@
          @touchstart.passive="handleTouchStart($event)"
          @touchend.passive="handleTouchEnd($event)">
         
-        <div class="relative w-full overflow-hidden bg-slate-900 group min-h-[420px] sm:min-h-[500px] md:min-h-[560px]">
+        <div class="relative w-full overflow-hidden bg-transparent group min-h-[420px] sm:min-h-[500px] md:min-h-[560px]">
             
             @forelse($banners as $index => $banner)
                 <div x-show="currentSlide === {{ $index }}"
@@ -252,17 +252,17 @@
                     </div>
                 </div>
 
-                <!-- Banner Image (Direct clean image without background box or border) -->
-                <div class="my-2 flex items-center justify-center relative z-10">
+                <!-- Banner Image (Direct clean image without background box or border - Enlarged) -->
+                <div class="my-auto py-2 flex-1 flex items-center justify-center relative z-10">
                     @php
                         $promoImg = $promoSettings['deals_image'] ?: 'images/promo-gift.jpg';
                         $promoImgUrl = str_starts_with($promoImg, 'http') ? $promoImg : asset($promoImg);
                     @endphp
-                    <div class="w-32 h-32 sm:w-40 sm:h-40 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                    <div class="w-full h-56 sm:h-64 lg:h-72 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
                         <img src="{{ $promoImgUrl }}" 
                              alt="{{ $promoSettings['deals_title'] }}" 
                              onerror="this.onerror=null; this.src='{{ asset('images/promo-gift.jpg') }}';"
-                             class="max-w-full max-h-full object-contain drop-shadow-lg">
+                             class="w-auto h-full max-h-[220px] sm:max-h-[260px] lg:max-h-[300px] object-contain drop-shadow-2xl">
                     </div>
                 </div>
 

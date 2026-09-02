@@ -35,8 +35,16 @@ Route::get('/booking/success/{bookingNumber}', [BookingController::class, 'succe
 
 // Breeze dashboard & auth profile routes
 Route::get('/dashboard', function () {
+    if (auth()->check() && auth()->user()->isAdmin()) {
+        return redirect()->route('admin.dashboard');
+    }
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+// Admin shortcut route
+Route::get('/admin', function () {
+    return redirect()->route('admin.dashboard');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -55,6 +63,8 @@ use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\TaxonomyController;
+use App\Http\Controllers\Admin\ProductImportExportController;
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -84,10 +94,34 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/crm/customer/{user}/update-segment', [CrmController::class, 'updateSegment'])->name('crm.updateSegment');
     Route::post('/crm/customer/{user}/reset-download/{download}', [CrmController::class, 'resetDownload'])->name('crm.resetDownload');
 
+    // Taxonomy & Filters Hub (مركز التصنيفات والفلاتر الموحد)
+    Route::get('/taxonomy', [TaxonomyController::class, 'index'])->name('taxonomy.index');
+    Route::post('/taxonomy/categories', [TaxonomyController::class, 'storeCategory'])->name('taxonomy.categories.store');
+    Route::put('/taxonomy/categories/{category}', [TaxonomyController::class, 'updateCategory'])->name('taxonomy.categories.update');
+    Route::delete('/taxonomy/categories/{category}', [TaxonomyController::class, 'destroyCategory'])->name('taxonomy.categories.destroy');
+
+    Route::post('/taxonomy/age-groups', [TaxonomyController::class, 'storeAgeGroup'])->name('taxonomy.age-groups.store');
+    Route::put('/taxonomy/age-groups/{ageGroup}', [TaxonomyController::class, 'updateAgeGroup'])->name('taxonomy.age-groups.update');
+    Route::delete('/taxonomy/age-groups/{ageGroup}', [TaxonomyController::class, 'destroyAgeGroup'])->name('taxonomy.age-groups.destroy');
+
+    Route::post('/taxonomy/skills', [TaxonomyController::class, 'storeSkill'])->name('taxonomy.skills.store');
+    Route::put('/taxonomy/skills/{skill}', [TaxonomyController::class, 'updateSkill'])->name('taxonomy.skills.update');
+    Route::delete('/taxonomy/skills/{skill}', [TaxonomyController::class, 'destroySkill'])->name('taxonomy.skills.destroy');
+
+    Route::post('/taxonomy/needs', [TaxonomyController::class, 'storeNeed'])->name('taxonomy.needs.store');
+    Route::put('/taxonomy/needs/{need}', [TaxonomyController::class, 'updateNeed'])->name('taxonomy.needs.update');
+    Route::delete('/taxonomy/needs/{need}', [TaxonomyController::class, 'destroyNeed'])->name('taxonomy.needs.destroy');
+
+    // Products Bulk Import & Export via Excel/CSV
+    Route::get('/products/import-export', [ProductImportExportController::class, 'index'])->name('products.importExport');
+    Route::get('/products/export', [ProductImportExportController::class, 'export'])->name('products.export');
+    Route::get('/products/template', [ProductImportExportController::class, 'downloadTemplate'])->name('products.template');
+    Route::post('/products/import', [ProductImportExportController::class, 'import'])->name('products.import');
+
     // Products CRUD
     Route::resource('products', ProductController::class);
     
-    // Categories CRUD
+    // Categories CRUD (Alias to Taxonomy categories)
     Route::resource('categories', CategoryController::class)->except(['show']);
 
     // Orders Management

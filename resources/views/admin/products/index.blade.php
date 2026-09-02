@@ -15,7 +15,13 @@
                     </ol>
                 </nav>
             </div>
-            <div>
+            <div class="d-flex gap-2">
+                <a href="{{ route('admin.taxonomy.index') }}" class="btn btn-outline-secondary fw-semibold">
+                    <i class="bi bi-diagram-3 me-1"></i> التصنيفات والفلاتر
+                </a>
+                <a href="{{ route('admin.products.importExport') }}" class="btn btn-outline-success fw-bold">
+                    <i class="bi bi-file-earmark-spreadsheet me-1"></i> استيراد وتصدير إكسيل
+                </a>
                 <a href="{{ route('admin.products.create') }}" class="btn btn-primary fw-bold">
                     <i class="bi bi-plus-circle me-1"></i> إضافة منتج جديد
                 </a>

@@ -7,6 +7,15 @@
 
         <title>@yield('title', '2morro | أدوات تعليمية تنمي مهارات طفلك')</title>
 
+        <!-- Favicon (Store Logo) -->
+        @php
+            $favLogo = \App\Models\Setting::get('store_logo', 'images/logo.png');
+            $favVersion = file_exists(public_path($favLogo)) ? filemtime(public_path($favLogo)) : time();
+        @endphp
+        <link rel="icon" type="image/png" href="{{ asset($favLogo) }}?v={{ $favVersion }}">
+        <link rel="shortcut icon" href="{{ asset($favLogo) }}?v={{ $favVersion }}">
+        <link rel="apple-touch-icon" href="{{ asset($favLogo) }}?v={{ $favVersion }}">
+
         <!-- Google Fonts: Cairo -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
