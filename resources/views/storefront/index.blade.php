@@ -5,18 +5,21 @@
 @section('content')
 <div class="bg-white">
 
-    <!-- 1. Touch-Swipe Responsive Hero Slider (سليدر لمسي متجاوب بالكامل مع مؤشرات وأسهم ذكية) -->
-    <div class="w-full relative overflow-hidden bg-transparent mb-6 select-none"
+    <!-- 1. Touch-Swipe Responsive Hero Slider (سليدر متجاوب بمقاس 1670x941 بدون فلاتر وبأعلى دقة) -->
+    <div class="w-full relative overflow-hidden bg-transparent mb-4 sm:mb-6 select-none"
          x-data="{ 
             currentSlide: 0, 
             totalSlides: {{ $banners->count() > 0 ? $banners->count() : 1 }},
             touchStartX: 0,
             touchEndX: 0,
+            timer: null,
             next() {
                 this.currentSlide = (this.currentSlide + 1) % this.totalSlides;
+                this.resetTimer();
             },
             prev() {
                 this.currentSlide = (this.currentSlide - 1 + this.totalSlides) % this.totalSlides;
+                this.resetTimer();
             },
             handleTouchStart(e) {
                 this.touchStartX = e.changedTouches[0].screenX;
@@ -24,81 +27,104 @@
             handleTouchEnd(e) {
                 this.touchEndX = e.changedTouches[0].screenX;
                 if (this.touchStartX - this.touchEndX > 45) {
-                    this.next(); // Swiped left -> next slide
+                    this.next();
                 } else if (this.touchEndX - this.touchStartX > 45) {
-                    this.prev(); // Swiped right -> previous slide
+                    this.prev();
                 }
             },
-            autoSlide() {
-                setInterval(() => {
-                    this.next();
-                }, 6000);
+            startTimer() {
+                if (this.totalSlides > 1) {
+                    this.timer = setInterval(() => {
+                        this.currentSlide = (this.currentSlide + 1) % this.totalSlides;
+                    }, 5500);
+                }
+            },
+            resetTimer() {
+                if (this.timer) {
+                    clearInterval(this.timer);
+                    this.startTimer();
+                }
             }
          }"
-         x-init="autoSlide()"
+         x-init="startTimer()"
          @touchstart.passive="handleTouchStart($event)"
          @touchend.passive="handleTouchEnd($event)">
         
-        <div class="relative w-full overflow-hidden bg-transparent group min-h-[420px] sm:min-h-[500px] md:min-h-[560px]">
+        <div class="relative w-full max-w-7xl mx-auto overflow-hidden bg-slate-50 rounded-2xl sm:rounded-3xl shadow-sm aspect-[1670/941]">
             
             @forelse($banners as $index => $banner)
+                @php
+                    $bannerImg = asset($banner->image) . '?v=' . (file_exists(public_path($banner->image)) ? filemtime(public_path($banner->image)) : time());
+                    $bannerLink = $banner->button_link ?: ($banner->secondary_button_link ?: '#');
+                    $hasText = !empty($banner->title) || !empty($banner->subtitle) || !empty($banner->badge_text);
+                @endphp
                 <div x-show="currentSlide === {{ $index }}"
+                     x-cloak
                      x-transition:enter="transition ease-out duration-500"
-                     x-transition:enter-start="opacity-0"
-                     x-transition:enter-end="opacity-100"
-                     x-transition:leave="transition ease-in duration-300"
+                     x-transition:enter-start="opacity-0 scale-[1.01]"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-300 absolute inset-0"
                      x-transition:leave-start="opacity-100"
                      x-transition:leave-end="opacity-0"
-                     class="w-full flex items-center bg-cover bg-center min-h-[420px] sm:min-h-[500px] md:min-h-[560px] {{ $index === 0 ? '' : 'hidden' }}"
-                     style="background-image: url('{{ asset($banner->image) }}?v={{ file_exists(public_path($banner->image)) ? filemtime(public_path($banner->image)) : time() }}'); background-size: cover; background-position: center;">
+                     class="w-full h-full absolute inset-0 flex items-center">
 
-                    <!-- Subtle dark gradient overlay for text readability -->
-                    <div class="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/60 to-slate-950/30 sm:to-transparent"></div>
+                    <!-- Direct Banner Image with exact 1670x941 fit -->
+                    <img src="{{ $bannerImg }}" 
+                         alt="{{ $banner->title ?: 'بنر العرض' }}" 
+                         class="w-full h-full object-cover object-center select-none"
+                         loading="{{ $index === 0 ? 'eager' : 'lazy' }}">
 
-                    <!-- Slide Content -->
-                    <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 py-12 sm:py-20 {{ $banner->text_position === 'center' ? 'text-center mx-auto' : ($banner->text_position === 'left' ? 'text-left' : 'text-right') }}">
-                        
-                        <div class="max-w-2xl {{ $banner->text_position === 'center' ? 'mx-auto' : '' }}">
-                            <!-- Badge -->
-                            @if($banner->badge_text)
-                                <div class="inline-flex items-center gap-1.5 bg-[#EF4444] text-white text-[11px] sm:text-xs font-black px-3.5 py-1 rounded-full shadow-lg mb-3 sm:mb-4">
-                                    <span>{{ $banner->badge_text }}</span>
-                                </div>
-                            @endif
+                    <!-- Clickable Whole Banner Link (If link is set without text buttons) -->
+                    @if(!empty($banner->button_link) && empty($banner->button_text))
+                        <a href="{{ $banner->button_link }}" class="absolute inset-0 z-10 block" aria-label="{{ $banner->title ?: 'عرض البانر' }}"></a>
+                    @endif
 
-                            <!-- Title -->
-                            @if($banner->title)
-                                <h1 class="text-2xl sm:text-4xl lg:text-[52px] font-black text-white leading-[1.25] drop-shadow-xl" style="text-shadow: 0 3px 15px rgba(0,0,0,0.85);">
-                                    {{ $banner->title }}
-                                </h1>
-                            @endif
-
-                            <!-- Subtitle -->
-                            @if($banner->subtitle)
-                                <p class="text-slate-100 font-bold text-xs sm:text-base mt-2.5 sm:mt-4 leading-relaxed drop-shadow-lg max-w-xl {{ $banner->text_position === 'center' ? 'mx-auto' : '' }}" style="text-shadow: 0 2px 10px rgba(0,0,0,0.8);">
-                                    {{ $banner->subtitle }}
-                                </p>
-                            @endif
-
-                            <!-- Action Buttons -->
-                            <div class="flex flex-wrap items-center gap-3 mt-5 sm:mt-8 {{ $banner->text_position === 'center' ? 'justify-center' : '' }}">
-                                @if($banner->button_text)
-                                    <a href="{{ $banner->button_link ?: route('search') }}" class="bg-[#2563ea] hover:bg-blue-700 text-white text-xs sm:text-sm font-black py-3 sm:py-3.5 px-6 sm:px-8 rounded-full flex items-center justify-center gap-2 transition-all shadow-xl hover:scale-105 active:scale-95">
-                                        <svg class="w-4 h-4 text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                                        <span>{{ $banner->button_text }}</span>
-                                    </a>
+                    <!-- Slide Text & Button Overlay (Rendered only when text exists) -->
+                    @if($hasText || !empty($banner->button_text) || !empty($banner->secondary_button_text))
+                        <div class="absolute inset-0 z-20 flex items-center px-6 sm:px-12 lg:px-16 pointer-events-none {{ $banner->text_position === 'center' ? 'justify-center text-center' : ($banner->text_position === 'left' ? 'justify-start text-left' : 'justify-end text-right') }}">
+                            <div class="max-w-xl pointer-events-auto">
+                                <!-- Badge -->
+                                @if($banner->badge_text)
+                                    <div class="inline-flex items-center gap-1.5 bg-[#EF4444] text-white text-[11px] sm:text-xs font-black px-3 sm:px-4 py-1 rounded-full shadow-md mb-2 sm:mb-3">
+                                        <span>{{ $banner->badge_text }}</span>
+                                    </div>
                                 @endif
 
-                                @if($banner->secondary_button_text)
-                                    <a href="{{ $banner->secondary_button_link ?: route('search') }}" class="bg-black/50 hover:bg-black/70 backdrop-blur-md text-white border border-white/40 text-xs sm:text-sm font-black py-3 sm:py-3.5 px-5 sm:px-7 rounded-full flex items-center justify-center gap-1.5 transition-all shadow-lg hover:scale-105 active:scale-95">
-                                        <span>{{ $banner->secondary_button_text }}</span>
-                                        <svg class="w-3.5 h-3.5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                                    </a>
+                                <!-- Title -->
+                                @if($banner->title)
+                                    <h1 class="text-xl sm:text-3xl lg:text-[40px] font-black text-slate-900 leading-tight drop-shadow-xs">
+                                        {{ $banner->title }}
+                                    </h1>
+                                @endif
+
+                                <!-- Subtitle -->
+                                @if($banner->subtitle)
+                                    <p class="text-slate-800 font-bold text-xs sm:text-base mt-2 sm:mt-3 leading-relaxed max-w-lg">
+                                        {{ $banner->subtitle }}
+                                    </p>
+                                @endif
+
+                                <!-- Action Buttons -->
+                                @if(!empty($banner->button_text) || !empty($banner->secondary_button_text))
+                                    <div class="flex flex-wrap items-center gap-3 mt-4 sm:mt-6 {{ $banner->text_position === 'center' ? 'justify-center' : '' }}">
+                                        @if($banner->button_text)
+                                            <a href="{{ $banner->button_link ?: route('search') }}" class="bg-[#2563ea] hover:bg-blue-700 text-white text-xs sm:text-sm font-black py-2.5 sm:py-3 px-6 sm:px-8 rounded-full flex items-center justify-center gap-2 transition-all shadow-md hover:scale-105 active:scale-95">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                                                <span>{{ $banner->button_text }}</span>
+                                            </a>
+                                        @endif
+
+                                        @if($banner->secondary_button_text)
+                                            <a href="{{ $banner->secondary_button_link ?: route('search') }}" class="bg-white/95 hover:bg-white text-slate-800 border border-slate-200 text-xs sm:text-sm font-black py-2.5 sm:py-3 px-5 sm:px-6 rounded-full flex items-center justify-center gap-1.5 transition-all shadow-sm hover:scale-105 active:scale-95">
+                                                <span>{{ $banner->secondary_button_text }}</span>
+                                                <svg class="w-3.5 h-3.5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                            </a>
+                                        @endif
+                                    </div>
                                 @endif
                             </div>
                         </div>
-
-                    </div>
+                    @endif
 
                 </div>
             @empty
@@ -106,34 +132,43 @@
                     $fallbackImage = \App\Models\Setting::get('hero_image', 'images/hero-child.jpg');
                     $fallbackVersion = file_exists(public_path($fallbackImage)) ? filemtime(public_path($fallbackImage)) : time();
                 @endphp
-                <div class="w-full flex items-center bg-cover bg-center min-h-[420px] sm:min-h-[500px] md:min-h-[560px]" style="background-image: url('{{ asset($fallbackImage) }}?v={{ $fallbackVersion }}'); background-size: cover; background-position: center;">
-                    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 py-12 text-right w-full">
-                        <span class="bg-[#EF4444] text-white text-xs font-black px-3.5 py-1 rounded-full shadow-md">مركز تمورو التعليمي</span>
-                        <h1 class="text-2xl sm:text-4xl lg:text-5xl font-black text-white mt-3 leading-tight drop-shadow-xl" style="text-shadow: 0 3px 15px rgba(0,0,0,0.85);">{{ \App\Models\Setting::get('hero_title', 'أدوات تعليمية تنمي مهارات طفلك') }}</h1>
-                        <p class="text-slate-100 font-bold text-xs sm:text-base mt-2.5 drop-shadow-lg max-w-xl" style="text-shadow: 0 2px 10px rgba(0,0,0,0.8);">{{ \App\Models\Setting::get('hero_subtitle', 'تعلَم.. استمتع.. وتطور كل يوم مع أفضل الوسائل والألعاب التعليمية.') }}</p>
-                        <a href="{{ \App\Models\Setting::get('hero_btn1_link', '/search') }}" class="bg-[#2563ea] text-white text-xs sm:text-sm font-black py-3 px-7 rounded-full inline-block mt-5 shadow-xl">{{ \App\Models\Setting::get('hero_btn1_text', 'تسوق الآن') }}</a>
+                <div class="w-full h-full relative">
+                    <img src="{{ asset($fallbackImage) }}?v={{ $fallbackVersion }}" alt="بانر رئيسي" class="w-full h-full object-cover object-center">
+                    <div class="absolute inset-0 z-10 flex items-center px-6 sm:px-12 text-right">
+                        <div class="max-w-xl">
+                            <span class="bg-[#EF4444] text-white text-xs font-black px-3.5 py-1 rounded-full shadow-md">مركز تمورو التعليمي</span>
+                            <h1 class="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 mt-3 leading-tight">{{ \App\Models\Setting::get('hero_title', 'أدوات تعليمية تنمي مهارات طفلك') }}</h1>
+                            <p class="text-slate-700 font-bold text-xs sm:text-base mt-2.5 max-w-xl">{{ \App\Models\Setting::get('hero_subtitle', 'تعلَم.. استمتع.. وتطور كل يوم مع أفضل الوسائل والألعاب التعليمية.') }}</p>
+                            <a href="{{ \App\Models\Setting::get('hero_btn1_link', '/search') }}" class="bg-[#2563ea] text-white text-xs sm:text-sm font-black py-3 px-7 rounded-full inline-block mt-5 shadow-md">{{ \App\Models\Setting::get('hero_btn1_text', 'تسوق الآن') }}</a>
+                        </div>
                     </div>
                 </div>
             @endforelse
 
-            <!-- Navigation Controls (Responsive Touch Arrows & Indicators) -->
+            <!-- Navigation Controls (Arrows & Dots) -->
             @if($banners->count() > 1)
-                <!-- Prev / Next Arrows -->
-                <div class="absolute bottom-5 left-4 sm:left-10 z-30 flex items-center gap-2 bg-black/60 backdrop-blur-md p-1.5 rounded-full border border-white/20 shadow-2xl">
-                    <button @click="next()" title="التالي" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/10 hover:bg-[#EF4444] text-white flex items-center justify-center transition-all shadow-md active:scale-95">
+                <!-- Prev / Next Floating Arrows -->
+                <div class="absolute bottom-4 left-4 sm:left-8 z-30 flex items-center gap-1.5 bg-black/40 backdrop-blur-md p-1 rounded-full border border-white/20 shadow-lg">
+                    <button @click="next()" title="التالي" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/20 hover:bg-[#2563ea] text-white flex items-center justify-center transition-all shadow-xs active:scale-95">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
                     </button>
-                    <button @click="prev()" title="السابق" class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/10 hover:bg-[#EF4444] text-white flex items-center justify-center transition-all shadow-md active:scale-95">
+                    <button @click="prev()" title="السابق" class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/20 hover:bg-[#2563ea] text-white flex items-center justify-center transition-all shadow-xs active:scale-95">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
 
                 <!-- Indicator Dots -->
-                <div class="absolute bottom-5 inset-x-0 z-30 flex items-center justify-center gap-1.5 pointer-events-none">
+                <div class="absolute bottom-4 inset-x-0 z-30 flex items-center justify-center gap-1.5 pointer-events-none">
                     @foreach($banners as $index => $banner)
-                        <button @click="currentSlide = {{ $index }}" 
-                                :class="currentSlide === {{ $index }} ? 'w-7 sm:w-9 bg-[#EF4444]' : 'w-2 sm:w-2.5 bg-white/50 hover:bg-white'" 
-                                class="h-2 rounded-full transition-all pointer-events-auto shadow-md"></button>
+                        <button @click="currentSlide = {{ $index }}; resetTimer();" 
+                                :class="currentSlide === {{ $index }} ? 'w-6 sm:w-8 bg-[#2563ea]' : 'w-2 sm:w-2.5 bg-white/60 hover:bg-white'" 
+                                class="h-2 rounded-full transition-all pointer-events-auto shadow-sm"></button>
+                    @endforeach
+                </div>
+            @endif
+
+        </div>
+    </div>     class="h-2 rounded-full transition-all pointer-events-auto shadow-md"></button>
                     @endforeach
                 </div>
             @endif

@@ -37,7 +37,7 @@ class BannerController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $path = ImageOptimizerService::optimizeAndSave($request->file('image'), 'banners', 1600, 85);
+            $path = ImageOptimizerService::optimizeAndSave($request->file('image'), 'banners', 1920, 88);
             $validated['image'] = 'storage/' . $path;
         }
 
@@ -72,7 +72,7 @@ class BannerController extends Controller
 
         if ($request->hasFile('image')) {
             ImageOptimizerService::deleteOldImage($banner->image);
-            $path = ImageOptimizerService::optimizeAndSave($request->file('image'), 'banners', 1600, 85);
+            $path = ImageOptimizerService::optimizeAndSave($request->file('image'), 'banners', 1920, 88);
             $validated['image'] = 'storage/' . $path;
         }
 
