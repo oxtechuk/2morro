@@ -2,7 +2,18 @@
 
 namespace App\Providers;
 
+use App\Enums\OrderStatus;
+use App\Enums\Roles;
+use App\Models\GeneraleSetting;
+use App\Models\Order;
+use App\Models\User;
+use App\Repositories\LanguageRepository;
+use App\Repositories\ThemeColorRepository;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +30,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if(request()->ip() != '127.0.0.1'){
+            Schema::defaultStringLength(191);
+            if (!file_exists(base_path('storage/installed')) && !request()->is('install') && !request()->is('install/*')) {
+                header("Location: install");
+                exit;
+            }
+        }
     }
 }

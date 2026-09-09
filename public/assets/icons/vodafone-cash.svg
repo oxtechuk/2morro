@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 40" fill="none">
+    <rect width="130" height="40" rx="8" fill="#E60000"/>
+    <!-- Vodafone Speech Mark Logo -->
+    <g transform="translate(8, 7)">
+        <circle cx="13" cy="13" r="13" fill="#FFFFFF"/>
+        <path d="M13 6C9.13401 6 6 9.13401 6 13C6 16.866 9.13401 20 13 20C16.866 20 20 16.866 20 13C20 9.13401 16.866 6 13 6ZM13.8 17.2C12.1 17.2 10.7 15.8 10.7 14.1C10.7 12.4 12.1 11 13.8 11C15.5 11 16.9 12.4 16.9 14.1C16.9 15.8 15.5 17.2 13.8 17.2Z" fill="#E60000"/>
+        <path d="M13.8 11C12.1 11 10.7 12.4 10.7 14.1C10.7 15.8 12.1 17.2 13.8 17.2C15.5 17.2 16.9 15.8 16.9 14.1C16.9 12.4 15.5 11 13.8 11Z" fill="#E60000"/>
+        <path d="M15.5 7.5C13.5 6.5 10.5 7.5 9.5 9.5C8.5 11.5 9.5 14.5 11.5 15.5L14 16.5L15 13L15.5 7.5Z" fill="#E60000"/>
+    </g>
+    <!-- Text -->
+    <text x="40" y="24" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="800" fill="#FFFFFF">vodafone <tspan font-weight="900" fill="#FFF200">cash</tspan></text>
+</svg>

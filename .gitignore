@@ -1,25 +1,36 @@
 # ==========================================
-# Laravel & PHP
+# Laravel & PHP Dependencies
 # ==========================================
 /vendor/
 /node_modules/
-npm-debug.log
-yarn-error.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Environment & Sensitive files
+# ==========================================
+# Environment & Sensitive Files
+# ==========================================
 .env
 .env.backup
 .env.production
 .env.*.local
+!.env.example
 auth.json
+oauth-public.key
+oauth-private.key
 
-# Laravel Storage & Cache
+# ==========================================
+# Laravel Storage, Cache & Logs
+# ==========================================
 /bootstrap/cache/*
 !/bootstrap/cache/.gitignore
 /storage/*.key
 /storage/app/*
 !/storage/app/.gitignore
-!/storage/app/public/
+/storage/app/public/*
+!/storage/app/public/.gitignore
 /storage/framework/cache/*
 !/storage/framework/cache/.gitignore
 /storage/framework/sessions/*
@@ -31,19 +42,31 @@ auth.json
 /storage/logs/*
 !/storage/logs/.gitignore
 
-# Frontend Build & Assets (Vite / Mix)
-/public/build/
+# ==========================================
+# Frontend Build, Vite & Hot Reload
+# ==========================================
+.vite/
 /public/hot
 /public/storage
 
+# ==========================================
 # Testing & Coverage
+# ==========================================
 .phpunit.result.cache
 .phpunit.cache/
 coverage/
 *.phpunit.cache
 
 # ==========================================
-# Flutter / Dart (Mobile)
+# Database Dumps & Scratch Scripts
+# ==========================================
+*.sql
+*.sqlite
+*.sqlite-journal
+check_settings.php
+
+# ==========================================
+# Flutter / Dart (Mobile Apps)
 # ==========================================
 **/Flutter/**/.dart_tool/
 **/Flutter/**/.flutter-plugins
@@ -65,7 +88,7 @@ coverage/
 **/Flutter/**/ios/Flutter/app.framework
 
 # ==========================================
-# Large Archives, Updates & Temp Files
+# Large Archives, Updates & Backups
 # ==========================================
 *.zip
 *.tar

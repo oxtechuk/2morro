@@ -4,54 +4,40 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Brand extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'slug',
-        'logo',
-        'link',
-        'filter_keyword',
-        'row',
-        'is_active',
-        'sort_order',
-    ];
+    protected $guarded = ['id'];
 
-    protected $casts = [
-        'is_active' => 'boolean',
-        'sort_order' => 'integer',
-    ];
+    /**
+     * Get the shop from the brand.
+     */
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class);
+    }
 
+    public function translations(): HasMany
+    {
+        return $this->hasMany(TranslateUtility::class);
+    }
+
+    /**
+     * Get the products from the brand.
+     */
     public function products()
     {
         return $this->hasMany(Product::class);
     }
 
-    public function getTargetUrlAttribute(): string
+    /**
+     * Scope a query to only include active brands.
+     */
+    public function scopeIsActive($query)
     {
-        if ($this->link) {
-            return $this->link;
-        }
-
-        if ($this->filter_keyword) {
-            return route('search', ['q' => $this->filter_keyword]);
-        }
-
-        return route('search', ['brand' => $this->slug]);
-    }
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($brand) {
-            if (empty($brand->slug)) {
-                $brand->slug = Str::slug($brand->name) . '-' . rand(100, 999);
-            }
-        });
+        return $query->where('is_active', 1);
     }
 }

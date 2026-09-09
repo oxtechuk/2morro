@@ -2,106 +2,137 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CategoryRequest;
 use Illuminate\Support\Facades\Storage;
+use App\Repositories\CategoryRepository;
+use App\Http\Resources\AdminCategoryResource;
 
 class CategoryController extends Controller
 {
-    public function index()
+    /**
+     * Display a category listing.
+     */
+
+    public function index(Request $request)
     {
-        $categories = Category::withCount('products')->get();
-        return view('admin.categories.index', compact('categories'));
+        $categories = Category::whereNull('parent_id')->with('subCategories')->get();
+
+        function formatCategoryTree($categories, $level = 0)
+        {
+            $html = '<ul class="category-level-' . $level . '">';
+            foreach ($categories as $category) {
+                $html .= '<li id="' . $category->id . '" data-id="' . $category->id . '">';
+                $html .= '<div class="category-item">';
+                $html .= '<i class="fa-solid fa-folder-open mr-2"></i> ' . $category->name;
+                $html .= '</div>';
+                if ($category->subCategories->count()) {
+                    $html .= formatCategoryTree($category->subCategories, $level + 1);
+                }
+                $html .= '</li>';
+            }
+            $html .= '</ul>';
+
+            return $html;
+        }
+
+
+        $htmlTree = formatCategoryTree($categories);
+
+        return view('admin.category.index', compact('htmlTree'));
     }
 
+    /**
+     * create a new category
+     */
     public function create()
     {
-        $category = new Category(); // Empty model for form reuse
-        return view('admin.categories.form', compact('category'));
+
     }
 
-    public function store(Request $request)
+    /**
+     * store a new category
+     */
+    public function store(CategoryRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:categories,slug',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
-            'is_active' => 'nullable|boolean',
-        ]);
 
-        $data = $request->only(['name', 'description']);
-        $data['slug'] = $request->filled('slug') ? Str::slug($request->slug) : Str::slug($request->name);
-        $data['is_active'] = $request->has('is_active');
+        CategoryRepository::storeByRequest($request);
 
-        // Handle Image Upload
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('categories', 'public');
-            $data['image'] = $path;
+        return to_route('admin.category.index')->withSuccess(__('Category created successfully'));
+    }
+
+    public function show()
+    {
+        $category = Category::find(request('category_id'));
+
+        if (! $category) {
+            return $this->json('category not found', [], 422);
         }
 
-        Category::create($data);
-
-        return redirect()->route('admin.categories.index')->with('success', 'تم إضافة التصنيف بنجاح.');
+        return $this->json('details', [
+            'category' => AdminCategoryResource::make($category),
+        ]);
     }
 
+    /**
+     * edit a category
+     */
     public function edit(Category $category)
     {
-        return view('admin.categories.form', compact('category'));
+
     }
 
-    public function update(Request $request, Category $category)
+    /**
+     * update a category
+     */
+    public function update(CategoryRequest $request, Category $category)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:categories,slug,' . $category->id,
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
-            'is_active' => 'nullable|boolean',
-        ]);
+        $category = CategoryRepository::updateByRequest($request, $category);
 
-        $data = $request->only(['name', 'description']);
-        $data['slug'] = $request->filled('slug') ? Str::slug($request->slug) : Str::slug($request->name);
-        $data['is_active'] = $request->has('is_active');
+        return to_route('admin.category.index')->withSuccess(__('Category updated successfully'));
+    }
 
-        // Handle Image Upload
-        if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($category->image) {
-                try {
-                    $oldPath = storage_path('app/public/' . $category->image);
-                    if (file_exists($oldPath)) {
-                        @unlink($oldPath);
-                    }
-                } catch (\Throwable $e) {}
-            }
-            $file = $request->file('image');
-            $filename = \Illuminate\Support\Str::random(40) . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
-            $file->move(storage_path('app/public/categories'), $filename);
-            $data['image'] = 'categories/' . $filename;
-        }
+    /**
+     * category status toggle
+     */
+    public function statusToggle(Category $category)
+    {
+        $category->update(['status' => ! $category->status]);
 
-        $category->update($data);
-
-        return redirect()->route('admin.categories.index')->with('success', 'تم تحديث التصنيف بنجاح.');
+        return back()->withSuccess(__('Status updated successfully'));
     }
 
     public function destroy(Category $category)
     {
-        // Delete image if exists
-        if ($category->image) {
-            try {
-                $imgPath = storage_path('app/public/' . $category->image);
-                if (file_exists($imgPath)) {
-                    @unlink($imgPath);
-                }
-            } catch (\Throwable $e) {}
+        if (! $category) {
+            return back()->withError(__('Category not found'));
         }
-        
-        $category->delete();
 
-        return redirect()->route('admin.categories.index')->with('success', 'تم حذف التصنيف بنجاح.');
+        $this->deleteCategory($category);
+
+        return back()->withSuccess(__('Category deleted successfully'));
+    }
+
+    protected function deleteCategory(Category $category)
+    {
+        foreach ($category->subCategories as $subCategory) {
+            $this->deleteCategory($subCategory);
+        }
+        $category->delete();
+    }
+
+
+    public function menuUpdate(Request $request)
+    {
+        $parentId = $request->input('parent_id');
+        $position = $request->input('position');
+        $categoryId = $request->input('category_id');
+
+        $category = Category::find($categoryId);
+        $category->update(['parent_id' => $parentId, 'position' => $position]);
+
+        return $this->json('success', [], 200);
     }
 }

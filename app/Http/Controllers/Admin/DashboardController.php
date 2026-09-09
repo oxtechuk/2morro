@@ -2,210 +2,177 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Customer;
 use App\Models\Order;
-use App\Models\Booking;
 use App\Models\Product;
+use App\Models\Shop;
+use App\Models\Transaction;
 use App\Models\User;
-use App\Models\CustomerProfile;
-use App\Models\Download;
-use App\Models\Review;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use App\Models\Withdraw;
+use App\Repositories\FlashSaleRepository;
 
 class DashboardController extends Controller
 {
+    /**
+     * Show the application dashboard.
+     */
     public function index()
     {
-        // 1. Sales & Revenue KPIs
-        $totalSales = Order::where('payment_status', 'paid')->sum('total');
-        
-        $startThisMonth = Carbon::now()->startOfMonth();
-        $startLastMonth = Carbon::now()->subMonth()->startOfMonth();
-        $endLastMonth = Carbon::now()->subMonth()->endOfMonth();
+        $generaleSetting = generaleSetting('setting');
 
-        $thisMonthSales = Order::where('payment_status', 'paid')
-            ->where('created_at', '>=', $startThisMonth)
-            ->sum('total');
+        $totalCustomer = Customer::count();
 
-        $lastMonthSales = Order::where('payment_status', 'paid')
-            ->whereBetween('created_at', [$startLastMonth, $endLastMonth])
-            ->sum('total');
+        $totalRider = User::role('driver')->count();
 
-        $salesGrowth = 0;
-        if ($lastMonthSales > 0) {
-            $salesGrowth = round((($thisMonthSales - $lastMonthSales) / $lastMonthSales) * 100, 1);
-        } elseif ($thisMonthSales > 0) {
-            $salesGrowth = 100;
+        $shop = null;
+
+        if (! $generaleSetting || $generaleSetting?->shop_type != 'single') {
+            $totalShop = Shop::count();
+            $totalOrder = Order::count();
+            $totalProduct = Product::count();
+            $totalCategories = Category::count();
+        } else {
+            $shop = generaleSetting('shop');
+            $totalShop = 0;
+            $totalOrder = Order::where('shop_id', $shop?->id)->count();
+            $totalProduct = Product::where('shop_id', $shop?->id)->count();
+            $totalCategories = Category::count();
         }
 
-        // 2. Orders Statistics
-        $totalOrders = Order::count();
-        $pendingOrders = Order::whereIn('status', ['pending', 'processing'])->count();
-        $completedOrders = Order::where('status', 'delivered')->count();
-        $ordersRequiringProof = Order::whereNotNull('payment_screenshot')
-            ->where('payment_status', 'pending')
-            ->count();
+        $orderStatuses = OrderStatus::cases();
 
-        // 3. Consultation Bookings KPIs
-        $totalBookings = Booking::count();
-        $newBookingsCount = Booking::where('status', 'new')->count();
-        $confirmedBookingsCount = Booking::where('status', 'confirmed')->count();
-        $todayBookingsCount = Booking::whereDate('booking_date', Carbon::today())->count();
+        $topCustomers = Customer::withCount('orders')->orderBy('orders_count', 'desc')->limit(8)->get();
 
-        // 4. Products & Stock Alerts
-        $activeProductsCount = Product::where('is_active', true)->count();
-        $lowStockProducts = Product::where('type', 'physical')
-            ->where('stock', '<=', 5)
-            ->orderBy('stock', 'asc')
-            ->take(5)
-            ->get();
-        $lowStockCount = Product::where('type', 'physical')->where('stock', '<=', 5)->count();
-        $digitalProductsCount = Product::where('type', 'digital')->count();
+        $productObject = Product::when($shop, function ($query) use ($shop) {
+            return $query->where('shop_id', $shop?->id);
+        });
 
-        // 5. Customers & Downloads
-        $totalCustomers = User::where('email', '!=', 'admin@2morro.com')
-            ->where('email', 'not like', '%@2morro.com')
-            ->count();
-        
-        $totalDownloadsCount = class_exists(Download::class) ? Download::sum('download_count') : 0;
-        $pendingReviewsCount = class_exists(Review::class) ? Review::where('is_approved', false)->count() : 0;
+        $topSellingProducts = (clone $productObject)->withCount('orders')->orderBy('orders_count', 'desc')->limit(8)->get();
 
-        // 6. Recent Operational Feeds
-        $recentOrders = Order::with('items.product')->latest()->take(6)->get();
-        $recentBookings = Booking::latest()->take(6)->get();
-        $topProducts = Product::where('is_active', true)->take(5)->get();
+        $topReviewProducts = (clone $productObject)->withAvg('reviews as average_rating', 'rating')->orderBy('average_rating', 'desc')->limit(8)->get();
 
-        // 7. Monthly Sales Trend (Last 6 Months)
-        $isSqlite = DB::connection()->getDriverName() === 'sqlite';
-        $monthExpr = $isSqlite ? "strftime('%m', created_at)" : "DATE_FORMAT(created_at, '%m')";
+        $topShops = Shop::withCount('orders')->orderBy('orders_count', 'desc')->withAvg('reviews as average_rating', 'rating')->orderBy('average_rating', 'desc')->limit(8)->get();
 
-        $monthlyStats = Order::select(
-            DB::raw("{$monthExpr} as month"),
-            DB::raw("SUM(CASE WHEN payment_status = 'paid' THEN total ELSE 0 END) as sales"),
-            DB::raw("COUNT(*) as orders_count")
-        )
-        ->where('created_at', '>=', now()->subMonths(6))
-        ->groupBy('month')
-        ->orderBy('month')
-        ->get();
+        $latestOrders = Order::when($shop, function ($query) use ($shop) {
+            return $query->where('shop_id', $shop?->id);
+        })->latest('id')->limit(6)->get();
 
-        $monthsNames = [
-            '01' => 'يناير', '02' => 'فبراير', '03' => 'مارس',
-            '04' => 'أبريل', '05' => 'مايو', '06' => 'يونيو',
-            '07' => 'يوليو', '08' => 'أغسطس', '09' => 'سبتمبر',
-            '10' => 'أكتوبر', '11' => 'نوفمبر', '12' => 'ديسمبر'
-        ];
+        $topFavorites = (clone $productObject)->whereHas('favorites')->withCount('favorites')->orderBy('favorites_count', 'desc')->limit(8)->get();
 
-        $salesChartLabels = [];
-        $salesChartValues = [];
-        $ordersChartValues = [];
+        $pendingWithdraw = Withdraw::where('status', 'pending')->sum('amount');
+        $alreadyWithdraw = Withdraw::where('status', 'approved')->sum('amount');
+        $deniedWithdraw = Withdraw::where('status', 'denied')->sum('amount');
 
-        foreach ($monthlyStats as $row) {
-            $salesChartLabels[] = $monthsNames[$row->month] ?? $row->month;
-            $salesChartValues[] = (float) $row->sales;
-            $ordersChartValues[] = (int) $row->orders_count;
+        $totalCommission = Transaction::where('is_commission', true)->sum('amount');
+
+        $flashSale = FlashSaleRepository::getIncoming()->first();
+
+        return view('admin.dashboard', compact('totalShop', 'totalOrder', 'totalCustomer', 'totalProduct', 'orderStatuses', 'topCustomers', 'topSellingProducts', 'topReviewProducts', 'topShops', 'latestOrders', 'topFavorites', 'pendingWithdraw', 'alreadyWithdraw', 'deniedWithdraw', 'totalCommission', 'totalCategories', 'flashSale', 'totalRider'));
+    }
+
+    public function orderStatistics()
+    {
+        $type = request('type');
+        $date = request('date');
+        $generaleSetting = generaleSetting('setting');
+
+        $shop = $generaleSetting?->shop_type == 'single' ? generaleSetting('shop') : null;
+
+        if ($type == 'daily') {
+
+            $startDate = now()->startOfWeek();
+            $endDate = now()->endOfWeek();
+
+            $datesAndDays = [];
+
+            if ($date) {
+                $count = Order::when($shop, function ($query) use ($shop) {
+                    return $query->where('shop_id', $shop?->id);
+                })->whereDate('created_at', $date)->count();
+
+                $labels = [\Carbon\Carbon::parse($date)->format('l')];
+                $values = [$count];
+
+                return $this->json('single day order statistics', [
+                    'labels' => $labels,
+                    'values' => $values,
+                    'total' => array_sum($values),
+                ]);
+            }
+
+            for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
+                $datesAndDays[] = [
+                    'date' => $date->toDateString(),
+                    'label' => $date->format('l'),
+                    'value' => Order::when($shop, function ($query) use ($shop) {
+                        return $query->where('shop_id', $shop?->id);
+                    })->whereDate('created_at', $date->toDateString())->count(),
+                ];
+            }
+
+            $labels = array_column($datesAndDays, 'label');
+            $values = array_column($datesAndDays, 'value');
+
+            return $this->json('daily order statistics', [
+                'labels' => $labels,
+                'values' => $values,
+                'total' => array_sum($values),
+            ]);
+        } elseif ($type == 'monthly') {
+            $startDate = now()->startOfYear();
+            $endDate = now()->endOfYear();
+
+            $datesAndMonths = [];
+
+            for ($date = $startDate; $date->lte($endDate); $date->addMonth()) {
+                $datesAndMonths[] = [
+                    'date' => $date->toDateString(),
+                    'label' => $date->format('M'), // Get the month name
+                    'value' => Order::when($shop, function ($query) use ($shop) {
+                        return $query->where('shop_id', $shop?->id);
+                    })->whereMonth('created_at', $date->month)
+                        ->whereYear('created_at', $date->year)
+                        ->count(),
+                ];
+            }
+
+            $labels = array_column($datesAndMonths, 'label');
+            $values = array_column($datesAndMonths, 'value');
+
+            $total = array_sum($values);
+
+            return $this->json('monthly order statistics', [
+                'labels' => $labels,
+                'values' => $values,
+                'total' => $total,
+            ]);
+        } else {
+
+            $datesAndYears = [];
+
+            for ($date = now()->startOfYear(); $date->year >= now()->subYears(6)->year; $date->subYear()) {
+                $datesAndYears[] = [
+                    'date' => $date->toDateString(),
+                    'label' => $date->format('Y'),
+                    'value' => Order::when($shop, function ($query) use ($shop) {
+                        return $query->where('shop_id', $shop?->id);
+                    })->whereYear('created_at', $date->year)->count(),
+                ];
+            }
+
+            $labels = array_column($datesAndYears, 'label');
+            $values = array_column($datesAndYears, 'value');
+
+            $total = array_sum($values);
+
+            return $this->json('yearly order statistics', [
+                'labels' => $labels,
+                'values' => $values,
+                'total' => $total,
+            ]);
         }
-
-        if (empty($salesChartLabels)) {
-            $salesChartLabels = ['مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس'];
-            $salesChartValues = [1200, 2400, 3100, 4800, 6200, 8900];
-            $ordersChartValues = [5, 9, 14, 22, 28, 37];
-        }
-
-        // 8. Payment Methods Distribution
-        $paymentDistribution = Order::select('payment_method', DB::raw('count(*) as count'))
-            ->groupBy('payment_method')
-            ->get()
-            ->pluck('count', 'payment_method')
-            ->toArray();
-
-        $paymentLabels = [
-            'cod' => 'الدفع عند الاستلام (COD)',
-            'instapay' => 'إنستاباي (InstaPay)',
-            'wallet' => 'فودافون ومحافظ كاش',
-        ];
-
-        $paymentChartData = [
-            'labels' => array_values($paymentLabels),
-            'values' => [
-                $paymentDistribution['cod'] ?? 0,
-                $paymentDistribution['instapay'] ?? 0,
-                $paymentDistribution['wallet'] ?? 0,
-            ]
-        ];
-
-        // 9. Branch Bookings Distribution
-        $branchDistribution = Booking::select('branch', DB::raw('count(*) as count'))
-            ->groupBy('branch')
-            ->get()
-            ->pluck('count', 'branch')
-            ->toArray();
-
-        $branchLabels = [
-            'ibrahimya' => 'فرع الإبراهيمية',
-            'bitash' => 'فرع أول البيطاش',
-            'sidi_beshr' => 'فرع سيدي بشر',
-            'online' => 'استشارة أونلاين',
-        ];
-
-        $branchChartData = [
-            'labels' => array_values($branchLabels),
-            'values' => [
-                $branchDistribution['ibrahimya'] ?? ($branchDistribution['الإبراهيمية'] ?? 0),
-                $branchDistribution['bitash'] ?? ($branchDistribution['البيطاش'] ?? 0),
-                $branchDistribution['sidi_beshr'] ?? ($branchDistribution['سيدي بشر'] ?? 0),
-                $branchDistribution['online'] ?? ($branchDistribution['أونلاين'] ?? 0),
-            ]
-        ];
-
-        // 10. Customer Segments (CRM)
-        $segmentsDistribution = CustomerProfile::select('segment', DB::raw('count(*) as count'))
-            ->groupBy('segment')
-            ->get()
-            ->pluck('count', 'segment')
-            ->toArray();
-
-        $segmentsLabels = [
-            'parent' => 'أولياء أمور',
-            'specialist' => 'أخصائيين',
-            'nursery' => 'حضانات ومراكز',
-            'school' => 'مدارس ومؤسسات',
-        ];
-
-        $segmentStats = [];
-        foreach ($segmentsLabels as $key => $label) {
-            $segmentStats[$label] = $segmentsDistribution[$key] ?? 0;
-        }
-
-        return view('admin.dashboard', compact(
-            'totalSales',
-            'thisMonthSales',
-            'salesGrowth',
-            'totalOrders',
-            'pendingOrders',
-            'completedOrders',
-            'ordersRequiringProof',
-            'totalBookings',
-            'newBookingsCount',
-            'confirmedBookingsCount',
-            'todayBookingsCount',
-            'activeProductsCount',
-            'lowStockProducts',
-            'lowStockCount',
-            'digitalProductsCount',
-            'totalCustomers',
-            'totalDownloadsCount',
-            'pendingReviewsCount',
-            'recentOrders',
-            'recentBookings',
-            'topProducts',
-            'salesChartLabels',
-            'salesChartValues',
-            'ordersChartValues',
-            'paymentChartData',
-            'branchChartData',
-            'segmentStats'
-        ));
     }
 }

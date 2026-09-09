@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" fill="none">
+    <defs>
+        <linearGradient id="ipGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#4B1248" />
+            <stop offset="50%" stop-color="#831F82" />
+            <stop offset="100%" stop-color="#E53935" />
+        </linearGradient>
+    </defs>
+    <rect width="120" height="40" rx="8" fill="#5c155b"/>
+    <!-- InstaPay Stylized Text and Lightning -->
+    <path d="M14 11L9 22H15L13 29L23 18H17L19 11H14Z" fill="#FBBF24"/>
+    <text x="28" y="25" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="800" fill="#FFFFFF" letter-spacing="-0.5">Insta<tspan fill="#FBBF24">Pay</tspan></text>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 40" fill="none">
+    <rect width="130" height="40" rx="8" fill="#047857"/>
+    <!-- Bank pillars icon -->
+    <g transform="translate(10, 8)" fill="#FFFFFF">
+        <path d="M12 1L2 6V8H22V6L12 1Z"/>
+        <rect x="4" y="9" width="3" height="9" rx="0.5"/>
+        <rect x="10.5" y="9" width="3" height="9" rx="0.5"/>
+        <rect x="17" y="9" width="3" height="9" rx="0.5"/>
+        <rect x="2" y="19" width="20" height="3" rx="0.5"/>
+    </g>
+    <!-- Text -->
+    <text x="40" y="24" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Bank <tspan font-weight="800" fill="#A7F3D0">Transfer</tspan></text>
+</svg>
