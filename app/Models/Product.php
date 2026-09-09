@@ -52,43 +52,55 @@ class Product extends Model
      */
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class, 'product_categories');
+        return $this->belongsToMany(Category::class, Schema::hasTable('category_product') ? 'category_product' : 'product_categories');
     }
 
     /**
-     * Safe array accessors to prevent count() TypeError in Blade views
+     * Retrieve the skills associated with the product.
      */
-    public function getSkillsAttribute($value)
+    public function skills(): BelongsToMany
     {
-        if (is_array($value)) return $value;
-        if (is_string($value) && strlen(trim($value)) > 0) {
-            $decoded = json_decode($value, true);
-            if (is_array($decoded)) return $decoded;
-            return array_filter(array_map('trim', explode(',', $value)));
-        }
-        return [];
+        return $this->belongsToMany(Skill::class, 'product_skill');
     }
 
-    public function getNeedsAttribute($value)
+    /**
+     * Retrieve the needs associated with the product.
+     */
+    public function needs(): BelongsToMany
     {
-        if (is_array($value)) return $value;
-        if (is_string($value) && strlen(trim($value)) > 0) {
-            $decoded = json_decode($value, true);
-            if (is_array($decoded)) return $decoded;
-            return array_filter(array_map('trim', explode(',', $value)));
-        }
-        return [];
+        return $this->belongsToMany(Need::class, 'need_product');
     }
 
-    public function getAgeGroupsAttribute($value)
+    /**
+     * Retrieve the age groups associated with the product.
+     */
+    public function ageGroups(): BelongsToMany
     {
-        if (is_array($value)) return $value;
-        if (is_string($value) && strlen(trim($value)) > 0) {
-            $decoded = json_decode($value, true);
-            if (is_array($decoded)) return $decoded;
-            return array_filter(array_map('trim', explode(',', $value)));
-        }
-        return [];
+        return $this->belongsToMany(AgeGroup::class, 'age_group_product');
+    }
+
+    /**
+     * Retrieve the bundled products if this product is a bundle.
+     */
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'bundle_product', 'bundle_id', 'product_id')->withPivot('quantity');
+    }
+
+    /**
+     * Retrieve bundles containing this product.
+     */
+    public function bundles(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'bundle_product', 'product_id', 'bundle_id')->withPivot('quantity');
+    }
+
+    /**
+     * Retrieve the tags associated with the product.
+     */
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'product_tags');
     }
 
     public function getGalleryAttribute($value)
