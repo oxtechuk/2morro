@@ -71,6 +71,38 @@ class Product extends Model
         return $this->belongsToMany(Category::class, 'product_categories');
     }
 
+    /**
+     * Optional age groups relation
+     */
+    public function ageGroups(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'product_categories');
+    }
+
+    /**
+     * Optional goals relation
+     */
+    public function goals(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'product_categories');
+    }
+
+    /**
+     * Optional grades relation
+     */
+    public function grades(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'product_categories');
+    }
+
+    /**
+     * Optional tags relation
+     */
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'product_tags');
+    }
+
 
     /**
      * Retrieve the flash sales associated with the model.
