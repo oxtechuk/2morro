@@ -21,7 +21,14 @@ class Banner extends Model
 
     public function scopeActive($query)
     {
-        return $query->where('status', 1);
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasColumn('banners', 'status')) {
+                return $query->where('status', 1);
+            }
+        } catch (\Throwable $e) {
+        }
+
+        return $query;
     }
 
 

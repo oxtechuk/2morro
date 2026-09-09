@@ -42,7 +42,7 @@ class ShopDetailsResource extends JsonResource
             'shop_status' => (string) $shopStatus,
             'short_description' => $this->short_description,
             'description' => $this->description,
-            'banners' => BannerResource::collection($this->banners()->where('status', 1)->get()),
+            'banners' => BannerResource::collection($this->banners()->active()->get()),
         ];
     }
 }
