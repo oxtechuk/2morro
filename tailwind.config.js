@@ -1,55 +1,52 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
-import forms from '@tailwindcss/forms';
-
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
-        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-        './storage/framework/views/*.php',
-        './resources/views/**/*.blade.php',
+        "./resources/**/*.blade.php",
+        "./resources/**/*.js",
+        "./resources/**/*.vue",
     ],
-
     theme: {
         extend: {
-            fontFamily: {
-                sans: ['Cairo', ...defaultTheme.fontFamily.sans],
-                cairo: ['Cairo', 'sans-serif'],
-            },
             colors: {
-                brand: {
-                    navy: '#1360e2',
-                    'navy-dark': '#0B1E48',
-                    blue: '#2563EB',
-                    'blue-light': '#3B82F6',
-                    'blue-soft': '#EBF5FE',
-                    coral: '#EF4444',
-                    'coral-pink': '#F43F5E',
-                    'coral-soft': '#FEF2F2',
-                    turquoise: '#14B8A6',
-                    'turquoise-soft': '#F0FDFA',
-                    amber: '#F59E0B',
-                    'amber-soft': '#FFFBEB',
-                    purple: '#8B5CF6',
-                    'purple-soft': '#F5F3FF',
-                    green: '#F97316 ',
-                    'green-soft': '#ECFDF5',
-                }
+                primary: "var(--primary)",
+                "primary-50": "var(--primary-50)",
+                "primary-100": "var(--primary-100)",
+                "primary-200": "var(--primary-200)",
+                "primary-300": "var(--primary-300)",
+                "primary-400": "var(--primary-400)",
+                "primary-500": "var(--primary-500)",
+                "primary-600": "var(--primary-600)",
+                "primary-700": "var(--primary-700)",
+                "primary-800": "var(--primary-800)",
+                "primary-900": "var(--primary-900)",
+                "primary-950": "var(--primary-950)",
+                "error": "var(--color-error)",
+                "warning": "var(--color-warning)",
+                "info": "var(--color-info)",
+                "success": "var(--color-success)",
+                "black": "var(--color-black)"
             },
-            borderRadius: {
-                '2xl': '1rem',
-                '3xl': '1.5rem',
-                '4xl': '2rem',
-                '5xl': '2.5rem',
+            screens: {
+                xs: "375px",
+                sm2: "712px",
+                'm-xl': "1440px",
+                '3xl': "2560px"
             },
-            boxShadow: {
-                'soft': '0 4px 20px -2px rgba(16, 42, 99, 0.06)',
-                'soft-lg': '0 10px 30px -4px rgba(16, 42, 99, 0.1)',
-                'card': '0 2px 12px 0 rgba(0, 0, 0, 0.04)',
-                'card-hover': '0 12px 28px -4px rgba(16, 42, 99, 0.12)',
-            }
+            typography: {
+                DEFAULT: {
+                    css: {
+                        p: {
+                            marginTop: "0.5rem",
+                            marginBottom: "0.5rem",
+                        },
+                        img: {
+                            marginTop: "0.5rem",
+                            marginBottom: "0.5rem",
+                        }
+                    },
+                },
+            },
         },
     },
-
-    plugins: [forms],
+    plugins: [require("@tailwindcss/typography")],
 };
-
