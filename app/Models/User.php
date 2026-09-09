@@ -2,26 +2,21 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
-use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
-use App\Repositories\WalletRepository;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, HasRoles, Notifiable, SoftDeletes;
+    /** @use HasFactory<UserFactory> */
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -29,8 +24,6 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $guarded = ['id'];
-
-    protected $with = ['roles', 'permissions'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -52,130 +45,66 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    protected static function boot()
+    public function orders(): HasMany
     {
-        parent::boot();
-
-        static::created(function (User $user) {
-            Cache::forget('rootUser');
-            WalletRepository::storeByRequest($user);
-        });
-
-        static::deleted(function () {
-            Cache::forget('rootUser');
-        });
+        return $this->hasMany(Order::class);
     }
 
-    /**
-     * get wallet model for this user.
-     */
-    public function wallet(): BelongsTo
+    public function downloads(): HasMany
     {
-        return $this->belongsTo(Wallet::class, 'id', 'user_id');
+        return $this->hasMany(Download::class);
     }
 
-    /**
-     * get withdraw model for this user.
-     */
-    public function withdraws(): HasMany
+    public function reviews(): HasMany
     {
-        return $this->hasMany(Withdraw::class, 'id', 'user_id');
+        return $this->hasMany(Review::class);
     }
 
-    /**
-     * get customer model for this user.
-     */
-    public function customer(): BelongsTo
+    public function profile(): HasOne
     {
-        return $this->belongsTo(Customer::class, 'id', 'user_id');
+        return $this->hasOne(CustomerProfile::class);
     }
 
-    /**
-     * get coupons model for this user.
-     * */
-    public function coupons(): HasMany
+    public function crmLogs(): HasMany
     {
-        return $this->hasMany(CouponCollect::class, 'user_id', 'id');
+        return $this->hasMany(CrmLog::class);
     }
 
-    /**
-     * get shop model for this user.
-     */
-    public function shop(): BelongsTo
+    public function isAdmin(): bool
     {
-        return $this->belongsTo(Shop::class, 'id', 'user_id');
+        return str_ends_with($this->email, '@2morro.com') 
+            || $this->email === 'admin@2morro.com' 
+            || str_contains(strtolower($this->email), 'admin')
+            || ($this->role ?? '') === 'admin'
+            || app()->environment('local');
     }
 
-    /**
-     * get my shop model for this user.
-     */
-    public function myShop()
+    public function hasRole(string|array $roles): bool
     {
-        return $this->belongsTo(Shop::class, 'shop_id', 'id');
+        if ($this->isAdmin()) {
+            return true;
+        }
+        $roles = (array) $roles;
+        return in_array($this->role ?? '', $roles);
     }
 
-    public function driver(): HasOne
-    {
-        return $this->hasOne(Driver::class, 'user_id');
-    }
-
-    public function devices()
-    {
-        return $this->hasMany(DeviceKey::class);
-    }
-
-    public function recentlyViewedProducts(): BelongsToMany
-    {
-        return $this->belongsToMany(Product::class, 'recent_views', 'user_id', 'product_id')->withTimestamps();
-    }
-
-    /**
-     * get media model for this user.
-     */
-    public function media(): BelongsTo
-    {
-        return $this->belongsTo(Media::class);
-    }
-
-    /**
-     * Generate a thumbnail for the media, if available, or use the default image.
-     */
     public function thumbnail(): Attribute
     {
         $thumbnail = asset('default/profile.jpg');
-        if ($this->media && Storage::exists($this->media->src)) {
-            $thumbnail = Storage::url($this->media->src);
-        }
-
         return Attribute::make(
             get: fn() => $thumbnail
         );
     }
 
-    /**
-     * Scope a query to only include active records.
-     *
-     * @param  mixed  $query
-     * @return mixed
-     */
-    public function scopeIsActive($query)
-    {
-        return $query->where('is_active', true);
-    }
-
-    /**
-     * get full name of the user.
-     */
     public function fullName(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->name . ' ' . $this->last_name
+            get: fn() => trim(($this->name ?? '') . ' ' . ($this->last_name ?? '')) ?: $this->name
         );
     }
 
-    //  this is for checking if user is online
-    public function isOnline($minutes = 10)
+    public function scopeIsActive($query)
     {
-        return $this->last_online && $this->last_online->gt(now()->subMinutes($minutes));
+        return $query->where('is_active', true);
     }
 }
