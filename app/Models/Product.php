@@ -55,6 +55,14 @@ class Product extends Model
         return $this->belongsToMany(Category::class, 'product_categories');
     }
 
+    /**
+     * Optional skills relation
+     */
+    public function skills(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'product_categories');
+    }
+
 
     /**
      * Retrieve the flash sales associated with the model.
