@@ -63,6 +63,14 @@ class Product extends Model
         return $this->belongsToMany(Category::class, 'product_categories');
     }
 
+    /**
+     * Optional needs relation
+     */
+    public function needs(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'product_categories');
+    }
+
 
     /**
      * Retrieve the flash sales associated with the model.
