@@ -88,7 +88,7 @@
 
                     <!-- Logo -->
                     <div class="shrink-0">
-                        <img src="/assets/icons/instapay.svg" alt="InstaPay Logo" class="h-8 sm:h-9 object-contain rounded-md shadow-2xs" />
+                        <img :src="'assets/icons/instapay.svg'" alt="InstaPay Logo" class="h-8 sm:h-9 object-contain rounded-md shadow-2xs" />
                     </div>
                 </div>
 
@@ -155,7 +155,7 @@
 
                     <!-- Logo -->
                     <div class="shrink-0">
-                        <img src="/assets/icons/vodafone-cash.svg" alt="Vodafone Cash Logo" class="h-8 sm:h-9 object-contain rounded-md shadow-2xs" />
+                        <img :src="'assets/icons/vodafone-cash.svg'" alt="Vodafone Cash Logo" class="h-8 sm:h-9 object-contain rounded-md shadow-2xs" />
                     </div>
                 </div>
 
@@ -222,7 +222,7 @@
 
                     <!-- Logo -->
                     <div class="shrink-0">
-                        <img src="/assets/icons/bank-transfer.svg" alt="Bank Transfer Logo" class="h-8 sm:h-9 object-contain rounded-md shadow-2xs" />
+                        <img :src="'assets/icons/bank-transfer.svg'" alt="Bank Transfer Logo" class="h-8 sm:h-9 object-contain rounded-md shadow-2xs" />
                     </div>
                 </div>
 
@@ -302,7 +302,7 @@
 
                     <!-- Icon -->
                     <div class="hidden sm:flex items-center justify-center w-10 h-10 rounded-xl bg-slate-50 border border-slate-200/80 shrink-0 text-slate-700">
-                        <img src="/assets/icons/card.svg" alt="Card" class="w-6 h-6" />
+                        <img :src="'assets/icons/card.svg'" alt="Card" class="w-6 h-6" />
                     </div>
                 </div>
 
