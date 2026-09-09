@@ -13,6 +13,7 @@ use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Withdraw;
 use App\Repositories\FlashSaleRepository;
+use Illuminate\Support\Facades\Schema;
 
 class DashboardController extends Controller
 {
@@ -21,71 +22,112 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $generaleSetting = generaleSetting('setting');
+        $generaleSetting = function_exists('generaleSetting') ? generaleSetting('setting') : null;
+        $businessModel = $generaleSetting?->shop_type ?? 'single';
 
-        $totalCustomer = Customer::count();
+        $totalCustomer = Schema::hasTable('customers') 
+            ? Customer::count() 
+            : (Schema::hasTable('users') ? User::count() : 0);
 
-        $totalRider = User::role('driver')->count();
+        $totalRider = Schema::hasTable('drivers') 
+            ? \App\Models\Driver::count() 
+            : (Schema::hasTable('users') && Schema::hasColumn('users', 'role') ? User::where('role', 'driver')->count() : 0);
 
         $shop = null;
 
         if (! $generaleSetting || $generaleSetting?->shop_type != 'single') {
-            $totalShop = Shop::count();
-            $totalOrder = Order::count();
-            $totalProduct = Product::count();
-            $totalCategories = Category::count();
+            $totalShop = Schema::hasTable('shops') ? Shop::count() : 1;
+            $totalOrder = Schema::hasTable('orders') ? Order::count() : 0;
+            $totalProduct = Schema::hasTable('products') ? Product::count() : 0;
+            $totalCategories = Schema::hasTable('categories') ? Category::count() : 0;
         } else {
-            $shop = generaleSetting('shop');
+            $shop = function_exists('generaleSetting') ? generaleSetting('shop') : null;
             $totalShop = 0;
-            $totalOrder = Order::where('shop_id', $shop?->id)->count();
-            $totalProduct = Product::where('shop_id', $shop?->id)->count();
-            $totalCategories = Category::count();
+            $totalOrder = Schema::hasTable('orders') ? Order::when($shop, fn($q) => $q->where('shop_id', $shop?->id))->count() : 0;
+            $totalProduct = Schema::hasTable('products') ? Product::when($shop, fn($q) => $q->where('shop_id', $shop?->id))->count() : 0;
+            $totalCategories = Schema::hasTable('categories') ? Category::count() : 0;
         }
 
-        $orderStatuses = OrderStatus::cases();
+        $orderStatuses = enum_exists(OrderStatus::class) ? OrderStatus::cases() : [];
 
-        $topCustomers = Customer::withCount('orders')->orderBy('orders_count', 'desc')->limit(8)->get();
+        $topCustomers = (Schema::hasTable('customers') && Schema::hasTable('orders')) 
+            ? Customer::withCount('orders')->orderBy('orders_count', 'desc')->limit(8)->get() 
+            : collect([]);
 
-        $productObject = Product::when($shop, function ($query) use ($shop) {
+        $productObject = Schema::hasTable('products') ? Product::when($shop, function ($query) use ($shop) {
             return $query->where('shop_id', $shop?->id);
-        });
+        }) : null;
 
-        $topSellingProducts = (clone $productObject)->withCount('orders')->orderBy('orders_count', 'desc')->limit(8)->get();
+        $topSellingProducts = ($productObject && Schema::hasTable('orders')) 
+            ? (clone $productObject)->withCount('orders')->orderBy('orders_count', 'desc')->limit(8)->get() 
+            : ($productObject ? (clone $productObject)->latest('id')->limit(8)->get() : collect([]));
 
-        $topReviewProducts = (clone $productObject)->withAvg('reviews as average_rating', 'rating')->orderBy('average_rating', 'desc')->limit(8)->get();
+        $topReviewProducts = ($productObject && Schema::hasTable('reviews')) 
+            ? (clone $productObject)->withAvg('reviews as average_rating', 'rating')->orderBy('average_rating', 'desc')->limit(8)->get() 
+            : ($productObject ? (clone $productObject)->latest('id')->limit(8)->get() : collect([]));
 
-        $topShops = Shop::withCount('orders')->orderBy('orders_count', 'desc')->withAvg('reviews as average_rating', 'rating')->orderBy('average_rating', 'desc')->limit(8)->get();
+        $topShops = (Schema::hasTable('shops') && Schema::hasTable('orders')) 
+            ? Shop::withCount('orders')->orderBy('orders_count', 'desc')->limit(8)->get() 
+            : (Schema::hasTable('shops') ? Shop::limit(8)->get() : collect([]));
 
-        $latestOrders = Order::when($shop, function ($query) use ($shop) {
+        $latestOrders = Schema::hasTable('orders') ? Order::when($shop, function ($query) use ($shop) {
             return $query->where('shop_id', $shop?->id);
-        })->latest('id')->limit(6)->get();
+        })->latest('id')->limit(6)->get() : collect([]);
 
-        $topFavorites = (clone $productObject)->whereHas('favorites')->withCount('favorites')->orderBy('favorites_count', 'desc')->limit(8)->get();
+        $topFavorites = ($productObject && Schema::hasTable('favorites')) 
+            ? (clone $productObject)->whereHas('favorites')->withCount('favorites')->orderBy('favorites_count', 'desc')->limit(8)->get() 
+            : collect([]);
 
-        $pendingWithdraw = Withdraw::where('status', 'pending')->sum('amount');
-        $alreadyWithdraw = Withdraw::where('status', 'approved')->sum('amount');
-        $deniedWithdraw = Withdraw::where('status', 'denied')->sum('amount');
+        $pendingWithdraw = Schema::hasTable('withdraws') ? Withdraw::where('status', 'pending')->sum('amount') : 0;
+        $alreadyWithdraw = Schema::hasTable('withdraws') ? Withdraw::where('status', 'approved')->sum('amount') : 0;
+        $deniedWithdraw = Schema::hasTable('withdraws') ? Withdraw::where('status', 'denied')->sum('amount') : 0;
 
-        $totalCommission = Transaction::where('is_commission', true)->sum('amount');
+        $totalCommission = Schema::hasTable('transactions') ? Transaction::where('is_commission', true)->sum('amount') : 0;
 
-        $flashSale = FlashSaleRepository::getIncoming()->first();
+        $flashSale = (Schema::hasTable('flash_sales') && class_exists(FlashSaleRepository::class)) 
+            ? FlashSaleRepository::getIncoming()->first() 
+            : null;
 
-        return view('admin.dashboard', compact('totalShop', 'totalOrder', 'totalCustomer', 'totalProduct', 'orderStatuses', 'topCustomers', 'topSellingProducts', 'topReviewProducts', 'topShops', 'latestOrders', 'topFavorites', 'pendingWithdraw', 'alreadyWithdraw', 'deniedWithdraw', 'totalCommission', 'totalCategories', 'flashSale', 'totalRider'));
+        return view('admin.dashboard', compact(
+            'businessModel',
+            'totalShop',
+            'totalOrder',
+            'totalCustomer',
+            'totalProduct',
+            'orderStatuses',
+            'topCustomers',
+            'topSellingProducts',
+            'topReviewProducts',
+            'topShops',
+            'latestOrders',
+            'topFavorites',
+            'pendingWithdraw',
+            'alreadyWithdraw',
+            'deniedWithdraw',
+            'totalCommission',
+            'totalCategories',
+            'flashSale',
+            'totalRider'
+        ));
     }
 
     public function orderStatistics()
     {
         $type = request('type');
         $date = request('date');
-        $generaleSetting = generaleSetting('setting');
+        $generaleSetting = function_exists('generaleSetting') ? generaleSetting('setting') : null;
+        $shop = $generaleSetting?->shop_type == 'single' ? (function_exists('generaleSetting') ? generaleSetting('shop') : null) : null;
 
-        $shop = $generaleSetting?->shop_type == 'single' ? generaleSetting('shop') : null;
+        if (!Schema::hasTable('orders')) {
+            return response()->json([
+                'message' => 'no orders',
+                'data' => ['labels' => [], 'values' => [], 'total' => 0]
+            ]);
+        }
 
         if ($type == 'daily') {
-
             $startDate = now()->startOfWeek();
             $endDate = now()->endOfWeek();
-
             $datesAndDays = [];
 
             if ($date) {
@@ -96,10 +138,13 @@ class DashboardController extends Controller
                 $labels = [\Carbon\Carbon::parse($date)->format('l')];
                 $values = [$count];
 
-                return $this->json('single day order statistics', [
-                    'labels' => $labels,
-                    'values' => $values,
-                    'total' => array_sum($values),
+                return response()->json([
+                    'message' => 'single day order statistics',
+                    'data' => [
+                        'labels' => $labels,
+                        'values' => $values,
+                        'total' => array_sum($values),
+                    ]
                 ]);
             }
 
@@ -116,21 +161,23 @@ class DashboardController extends Controller
             $labels = array_column($datesAndDays, 'label');
             $values = array_column($datesAndDays, 'value');
 
-            return $this->json('daily order statistics', [
-                'labels' => $labels,
-                'values' => $values,
-                'total' => array_sum($values),
+            return response()->json([
+                'message' => 'daily order statistics',
+                'data' => [
+                    'labels' => $labels,
+                    'values' => $values,
+                    'total' => array_sum($values),
+                ]
             ]);
         } elseif ($type == 'monthly') {
             $startDate = now()->startOfYear();
             $endDate = now()->endOfYear();
-
             $datesAndMonths = [];
 
             for ($date = $startDate; $date->lte($endDate); $date->addMonth()) {
                 $datesAndMonths[] = [
                     'date' => $date->toDateString(),
-                    'label' => $date->format('M'), // Get the month name
+                    'label' => $date->format('M'),
                     'value' => Order::when($shop, function ($query) use ($shop) {
                         return $query->where('shop_id', $shop?->id);
                     })->whereMonth('created_at', $date->month)
@@ -142,15 +189,15 @@ class DashboardController extends Controller
             $labels = array_column($datesAndMonths, 'label');
             $values = array_column($datesAndMonths, 'value');
 
-            $total = array_sum($values);
-
-            return $this->json('monthly order statistics', [
-                'labels' => $labels,
-                'values' => $values,
-                'total' => $total,
+            return response()->json([
+                'message' => 'monthly order statistics',
+                'data' => [
+                    'labels' => $labels,
+                    'values' => $values,
+                    'total' => array_sum($values),
+                ]
             ]);
         } else {
-
             $datesAndYears = [];
 
             for ($date = now()->startOfYear(); $date->year >= now()->subYears(6)->year; $date->subYear()) {
@@ -166,12 +213,13 @@ class DashboardController extends Controller
             $labels = array_column($datesAndYears, 'label');
             $values = array_column($datesAndYears, 'value');
 
-            $total = array_sum($values);
-
-            return $this->json('yearly order statistics', [
-                'labels' => $labels,
-                'values' => $values,
-                'total' => $total,
+            return response()->json([
+                'message' => 'yearly order statistics',
+                'data' => [
+                    'labels' => $labels,
+                    'values' => $values,
+                    'total' => array_sum($values),
+                ]
             ]);
         }
     }
