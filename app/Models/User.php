@@ -103,6 +103,11 @@ class User extends Authenticatable
         );
     }
 
+    public function scopeRole($query, $role)
+    {
+        return $query->where('role', $role);
+    }
+
     public function scopeIsActive($query)
     {
         return $query->where('is_active', true);

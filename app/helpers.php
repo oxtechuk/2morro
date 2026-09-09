@@ -287,7 +287,7 @@ if (! function_exists('cartAccessToken')) {
         $guestToken = CartAccessToken::where('access_token', $accessTokenValue)->first();
         $isAuth = false;
 
-        if ($request->bearerToken()) {
+        if ($request->bearerToken() && class_exists(PersonalAccessToken::class)) {
             $accessToken = PersonalAccessToken::findToken($request->bearerToken());
             if ($accessToken) {
                 $user = $accessToken->tokenable;
