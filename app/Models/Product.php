@@ -56,51 +56,61 @@ class Product extends Model
     }
 
     /**
-     * Optional skills relation
+     * Safe array accessors to prevent count() TypeError in Blade views
      */
-    public function skills(): BelongsToMany
+    public function getSkillsAttribute($value)
     {
-        return $this->belongsToMany(Category::class, 'product_categories');
+        if (is_array($value)) return $value;
+        if (is_string($value) && strlen(trim($value)) > 0) {
+            $decoded = json_decode($value, true);
+            if (is_array($decoded)) return $decoded;
+            return array_filter(array_map('trim', explode(',', $value)));
+        }
+        return [];
     }
 
-    /**
-     * Optional needs relation
-     */
-    public function needs(): BelongsToMany
+    public function getNeedsAttribute($value)
     {
-        return $this->belongsToMany(Category::class, 'product_categories');
+        if (is_array($value)) return $value;
+        if (is_string($value) && strlen(trim($value)) > 0) {
+            $decoded = json_decode($value, true);
+            if (is_array($decoded)) return $decoded;
+            return array_filter(array_map('trim', explode(',', $value)));
+        }
+        return [];
     }
 
-    /**
-     * Optional age groups relation
-     */
-    public function ageGroups(): BelongsToMany
+    public function getAgeGroupsAttribute($value)
     {
-        return $this->belongsToMany(Category::class, 'product_categories');
+        if (is_array($value)) return $value;
+        if (is_string($value) && strlen(trim($value)) > 0) {
+            $decoded = json_decode($value, true);
+            if (is_array($decoded)) return $decoded;
+            return array_filter(array_map('trim', explode(',', $value)));
+        }
+        return [];
     }
 
-    /**
-     * Optional goals relation
-     */
-    public function goals(): BelongsToMany
+    public function getGalleryAttribute($value)
     {
-        return $this->belongsToMany(Category::class, 'product_categories');
+        if (is_array($value)) return $value;
+        if (is_string($value) && strlen(trim($value)) > 0) {
+            $decoded = json_decode($value, true);
+            if (is_array($decoded)) return $decoded;
+            return array_filter(array_map('trim', explode(',', $value)));
+        }
+        return [];
     }
 
-    /**
-     * Optional grades relation
-     */
-    public function grades(): BelongsToMany
+    public function getImagesAttribute($value)
     {
-        return $this->belongsToMany(Category::class, 'product_categories');
-    }
-
-    /**
-     * Optional tags relation
-     */
-    public function tags(): BelongsToMany
-    {
-        return $this->belongsToMany(Tag::class, 'product_tags');
+        if (is_array($value)) return $value;
+        if (is_string($value) && strlen(trim($value)) > 0) {
+            $decoded = json_decode($value, true);
+            if (is_array($decoded)) return $decoded;
+            return array_filter(array_map('trim', explode(',', $value)));
+        }
+        return [];
     }
 
 
