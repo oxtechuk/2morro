@@ -60,9 +60,29 @@ if (! function_exists('generaleSetting')) {
      */
     function generaleSetting($type = null, $authUser = null)
     {
-        // Cache general setting data for  30 days
+        // Cache general setting data for 30 days
         $generaleSetting = Cache::remember('generale_setting', 60 * 24 * 30, function () {
-            return GeneraleSetting::first();
+            if (Schema::hasTable('generate_settings')) {
+                return GeneraleSetting::first();
+            }
+            return (object) [
+                'id' => 1,
+                'name' => '2morro Store',
+                'title' => '2morro Store',
+                'currency' => 'ج.م',
+                'currency_position' => 'suffix',
+                'shop_type' => 'single',
+                'show_top_header' => false,
+                'top_header_text' => null,
+                'top_header_bg_color' => '#2563ea',
+                'top_header_text_color' => '#ffffff',
+                'top_header_link' => null,
+                'instapay_enabled' => false,
+                'vodafone_cash_enabled' => false,
+                'bank_transfer_enabled' => false,
+                'cash_on_delivery' => true,
+                'online_payment' => true,
+            ];
         });
 
         if ($type == 'setting' || $type == null) {
@@ -71,21 +91,24 @@ if (! function_exists('generaleSetting')) {
 
         if ($type == 'rootShop') {
             return Cache::remember('admin_shop', 60 * 24 * 7, function () {
-                return User::role('root')->whereHas('shop')->first()?->shop;
+                if (Schema::hasTable('shops')) {
+                    return Shop::first();
+                }
+                return null;
             });
         }
 
         if ($type == 'shop') {
             if ($generaleSetting?->shop_type == 'single') {
-                $shop = User::role('root')->whereHas('shop')->first()?->shop;
+                $shop = Schema::hasTable('shops') ? Shop::first() : null;
             } else {
                 /** @var User */
                 $user = $authUser ?? auth()->user();
                 $shop = $user?->shop ?? $user?->myShop;
             }
 
-            if (! $shop) {
-                $shop = User::role('root')->whereHas('shop')->first()?->shop;
+            if (! $shop && Schema::hasTable('shops')) {
+                $shop = Shop::first();
             }
 
             return $shop;
@@ -93,7 +116,10 @@ if (! function_exists('generaleSetting')) {
 
         if ($type == 'defaultCurrency') {
             $defaultCurrency = Cache::remember('default_currency', 60 * 24 * 30, function () {
-                return Currency::where('is_default', 1)->first();
+                if (Schema::hasTable('currencies')) {
+                    return Currency::where('is_default', 1)->first();
+                }
+                return (object) ['id' => 1, 'name' => 'EGP', 'symbol' => 'ج.م', 'rate' => 1];
             });
 
             return $defaultCurrency;
