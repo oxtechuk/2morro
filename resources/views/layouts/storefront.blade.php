@@ -458,6 +458,11 @@
                 <!-- 2. Main Streamlined Content Grid (الهيكل الأساسي المضموم والمنظم) -->
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 py-6 sm:py-8 text-right items-start">
                     
+                    @php
+                        $storeWaNumberRaw = \App\Models\Setting::get('store_whatsapp', '201550504512');
+                        $storeWaNumber = preg_replace('/[^0-9]/', '', $storeWaNumberRaw) ?: '201550504512';
+                    @endphp
+
                     <!-- Col 1: Brand, About & Socials (4 cols) -->
                     <div class="md:col-span-4 flex flex-col gap-3">
                         <div class="inline-block bg-white p-2 rounded-xl self-start shadow-xs border border-slate-200">
@@ -479,7 +484,7 @@
                         
                         <!-- Social Media Network Badges (Unified Sleek Icons) -->
                         <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
-                            <a href="https://wa.me/201550504512" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-lg bg-white text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 border border-slate-200 flex items-center justify-center transition-all shadow-2xs" title="واتساب">
+                            <a href="https://wa.me/{{ $storeWaNumber }}" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-lg bg-white text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 border border-slate-200 flex items-center justify-center transition-all shadow-2xs" title="واتساب">
                                 <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.458L0 24zm6.002-3.693c1.615.957 3.178 1.462 4.736 1.463 5.485.002 9.948-4.463 9.95-9.953.001-2.66-1.025-5.16-2.887-7.026C16.001 2.923 13.506 1.897 10.85 1.897c-5.486 0-9.949 4.464-9.953 9.954-.001 2.052.541 4.06 1.567 5.814l-1.026 3.75 3.829-1.004z"></path></svg>
                             </a>
                             <a href="https://www.facebook.com/2morroo" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-lg bg-white text-slate-600 hover:text-blue-600 hover:bg-blue-50 border border-slate-200 flex items-center justify-center transition-all shadow-2xs" title="فيسبوك">
@@ -566,7 +571,7 @@
                         </div>
 
                         <!-- Compact WhatsApp Button -->
-                        <a href="https://wa.me/201550504512?text={{ urlencode('مرحباً مركز 2morro، أود الاستفسار عن الخدمات والمنتجات.') }}" 
+                        <a href="https://wa.me/{{ $storeWaNumber }}?text={{ urlencode('مرحباً مركز 2morro، أود الاستفسار عن الخدمات والمنتجات.') }}" 
                            target="_blank" 
                            class="w-full bg-[#25D366] hover:bg-[#1EBE5D] text-white font-extrabold text-xs py-2 px-2.5 rounded-xl flex items-center justify-center gap-1.5 shadow-2xs transition-transform hover:scale-[1.02] active:scale-95">
                             <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.458L0 24zm6.002-3.693c1.615.957 3.178 1.462 4.736 1.463 5.485.002 9.948-4.463 9.95-9.953.001-2.66-1.025-5.16-2.887-7.026C16.001 2.923 13.506 1.897 10.85 1.897c-5.486 0-9.949 4.464-9.953 9.954-.001 2.052.541 4.06 1.567 5.814l-1.026 3.75 3.829-1.004z"></path></svg>

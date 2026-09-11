@@ -232,7 +232,10 @@
                             <div class="flex flex-col sm:flex-row items-center gap-2">
                                 <input type="file" name="payment_screenshot" class="block w-full text-xs text-slate-500 file:ml-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 transition-all cursor-pointer border border-slate-200 rounded-lg p-1 bg-slate-50">
                                 
-                                <a href="https://wa.me/201550504512?text={{ urlencode('مرحباً، أود تأكيد الطلب وإرسال إيصال التحويل.') }}" target="_blank" class="w-full sm:w-auto px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap flex-shrink-0 shadow-2xs">
+                                @php
+                                    $checkoutWaNum = preg_replace('/[^0-9]/', '', \App\Models\Setting::get('store_whatsapp', '201550504512')) ?: '201550504512';
+                                @endphp
+                                <a href="https://wa.me/{{ $checkoutWaNum }}?text={{ urlencode('مرحباً، أود تأكيد الطلب وإرسال إيصال التحويل.') }}" target="_blank" class="w-full sm:w-auto px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap flex-shrink-0 shadow-2xs">
                                     <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.458L0 24zm6.002-3.693c1.615.957 3.178 1.462 4.736 1.463 5.485.002 9.948-4.463 9.95-9.953.001-2.66-1.025-5.16-2.887-7.026C16.001 2.923 13.506 1.897 10.85 1.897c-5.486 0-9.949 4.464-9.953 9.954-.001 2.052.541 4.06 1.567 5.814l-1.026 3.75 3.829-1.004z"></path></svg>
                                     <span>واتساب المركز</span>
                                 </a>

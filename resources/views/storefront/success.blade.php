@@ -106,7 +106,10 @@
                     يمكنك إرسال رسالة مباشرة إلى رقم الواتساب الخاص بالدعم الفني مع رقم طلبك <b>({{ $order->order_number }})</b> وصورة التحويل لتأكيد الطلب وشحنه فوراً.
                 </p>
             </div>
-            <a href="https://wa.me/201550504512?text={{ urlencode('مرحباً، أود تأكيد الطلب رقم ' . $order->order_number . ' وإرسال إثبات الدفع.') }}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2.5 px-6 rounded-full flex items-center gap-1.5 transition-colors shadow-sm">
+            @php
+                $orderSuccessWaNum = preg_replace('/[^0-9]/', '', \App\Models\Setting::get('store_whatsapp', '201550504512')) ?: '201550504512';
+            @endphp
+            <a href="https://wa.me/{{ $orderSuccessWaNum }}?text={{ urlencode('مرحباً، أود تأكيد الطلب رقم ' . $order->order_number . ' وإرسال إثبات الدفع.') }}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2.5 px-6 rounded-full flex items-center gap-1.5 transition-colors shadow-sm">
                 <span>تأكيد عبر الواتساب الآن</span>
             </a>
         </div>
