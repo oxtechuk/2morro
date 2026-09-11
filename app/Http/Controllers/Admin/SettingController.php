@@ -27,6 +27,8 @@ class SettingController extends Controller
             'linktree_url' => 'https://linktr.ee/hebaalla?subscribe',
             'supervisor_name' => 'أ. هبة الله أكرم',
             'working_hours' => 'من 12:00 ظهراً إلى 9:00 مساءً (ماعدا الجمعة)',
+            'top_bar_text' => 'فروع مركز 2morro بالإسكندرية (الإبراهيمية - البيطاش - سيدي بشر) • جلسات وتقييمات في المركز وأونلاين • شحن مجاني للطلبات فوق 550 ج.م',
+            'top_bar_enabled' => '1',
             'meta_title' => 'متجر ومركز تمورو | تنمية مهارات الطفل وتخاطب وتأهيل',
             'meta_description' => 'مركز ومتجر تمورو لتنمية مهارات الطفل، جلسات تخاطب وتعديل سلوك وتدخل مبكر وأدوات وشيتات تعليمية بإشراف أ. هبة الله أكرم',
             
@@ -244,7 +246,8 @@ class SettingController extends Controller
         $toggles = [
             'payment_cod_enabled',
             'payment_paymob_enabled',
-            'whatsapp_gateway_enabled'
+            'whatsapp_gateway_enabled',
+            'top_bar_enabled'
         ];
 
         foreach ($toggles as $toggle) {

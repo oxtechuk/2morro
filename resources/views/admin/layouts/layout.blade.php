@@ -29,14 +29,14 @@
 
     <style>
         :root {
-            --app-bg: #f8fafc;
+            --app-bg: #f4f6f9;
             --card-bg: #ffffff;
             --border-subtle: #e2e8f0;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --primary-accent: #2563eb;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --primary-accent: #1d4ed8;
             --primary-soft: #eff6ff;
-            --sidebar-width: 260px;
+            --sidebar-width: 265px;
             --sidebar-collapsed-width: 76px;
             --header-height: 64px;
         }
@@ -46,11 +46,13 @@
             background-color: var(--app-bg);
             color: var(--text-main);
             overflow-x: hidden;
+            font-size: 0.95rem;
+            line-height: 1.6;
             letter-spacing: -0.01em;
             transition: background-color 0.25s ease, color 0.25s ease;
         }
 
-        /* ------------------ Sidebar Styling ------------------ */
+        /* ------------------ Sidebar Styling (Calm & Accessible) ------------------ */
         .sidebar {
             width: var(--sidebar-width);
             height: 100vh;
@@ -65,10 +67,11 @@
             flex-direction: column;
             overflow-y: auto;
             overflow-x: hidden;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.02);
         }
 
         .sidebar::-webkit-scrollbar {
-            width: 4px;
+            width: 5px;
         }
         .sidebar::-webkit-scrollbar-thumb {
             background-color: #cbd5e1;
@@ -89,7 +92,7 @@
         }
 
         .sidebar-brand-logo {
-            max-height: 40px;
+            max-height: 42px;
             width: auto;
             object-fit: contain;
             transition: all 0.25s ease;
@@ -97,37 +100,37 @@
 
         .sidebar-brand-icon {
             display: none;
-            width: 38px;
-            height: 38px;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #1d4ed8, #2563eb);
             color: #ffffff;
             border-radius: 10px;
             font-weight: 800;
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             align-items: center;
             justify-content: center;
         }
 
         .sidebar-menu {
-            padding: 16px 12px;
+            padding: 16px 14px;
             list-style: none;
             margin: 0;
             flex-grow: 1;
         }
 
         .menu-title {
-            font-size: 0.72rem;
+            font-size: 0.78rem;
             text-transform: uppercase;
-            font-weight: 700;
-            color: #94a3b8;
-            padding: 14px 12px 6px;
-            letter-spacing: 0.4px;
+            font-weight: 800;
+            color: #64748b;
+            padding: 16px 12px 6px;
+            letter-spacing: 0.5px;
             white-space: nowrap;
             transition: opacity 0.2s ease;
         }
 
         .menu-item {
-            margin-bottom: 3px;
+            margin-bottom: 4px;
             position: relative;
         }
 
@@ -135,42 +138,156 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 9px 14px;
-            color: #475569;
+            padding: 10px 14px;
+            color: #334155;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.18s ease;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
             white-space: nowrap;
+            width: 100%;
+            background: transparent;
+            border: none;
+            text-align: right;
+            cursor: pointer;
         }
 
         .menu-link:hover {
             background-color: #f1f5f9;
-            color: var(--primary-accent);
+            color: #0f172a;
         }
 
         .menu-link.active {
-            background-color: var(--primary-soft);
-            color: var(--primary-accent);
+            background-color: #eff6ff;
+            color: #1d4ed8;
             font-weight: 700;
+            box-shadow: inset 3px 0 0 #1d4ed8;
         }
 
-        .menu-link i {
-            font-size: 1.15rem;
-            width: 24px;
+        .menu-link i.menu-icon {
+            font-size: 1.2rem;
+            width: 26px;
             text-align: center;
             flex-shrink: 0;
-            transition: transform 0.2s ease;
+            color: #64748b;
+            transition: all 0.2s ease;
         }
 
-        .menu-link:hover i {
+        .menu-link:hover i.menu-icon {
+            color: #1d4ed8;
             transform: scale(1.08);
         }
 
-        .menu-text {
-            transition: opacity 0.2s ease;
-            flex-grow: 1;
+        .menu-link.active i.menu-icon {
+            color: #1d4ed8;
+        }
+
+        .menu-arrow {
+            font-size: 0.75rem;
+            transition: transform 0.25s ease;
+            color: #94a3b8;
+            margin-right: auto;
+            margin-left: 0;
+        }
+
+        .menu-link:not(.collapsed) .menu-arrow {
+            transform: rotate(180deg);
+            color: #1d4ed8;
+        }
+
+        /* Submenu Accordion Items */
+        .submenu {
+            list-style: none;
+            padding: 4px 18px 4px 0;
+            margin: 4px 0 6px 0;
+            position: relative;
+        }
+
+        .submenu::before {
+            content: '';
+            position: absolute;
+            right: 26px;
+            top: 6px;
+            bottom: 6px;
+            width: 2px;
+            background-color: #e2e8f0;
+            border-radius: 2px;
+        }
+
+        .submenu-item {
+            margin-bottom: 2px;
+        }
+
+        .submenu-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 7px 14px 7px 12px;
+            color: #475569;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .submenu-link:hover {
+            color: #0f172a;
+            background-color: #f1f5f9;
+        }
+
+        .submenu-link.active {
+            color: #1d4ed8;
+            background-color: #eff6ff;
+            font-weight: 700;
+        }
+
+        .submenu-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #cbd5e1;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .submenu-link:hover .submenu-dot {
+            background-color: #1d4ed8;
+            transform: scale(1.3);
+        }
+
+        .submenu-link.active .submenu-dot {
+            background-color: #1d4ed8;
+            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.2);
+        }
+
+        .sidebar-footer {
+            padding: 10px 14px;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .sidebar-collapse-btn {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-collapse-btn:hover {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-color: #bfdbfe;
         }
 
         /* ------------------ Collapsed Sidebar State ------------------ */
@@ -207,7 +324,13 @@
             position: relative;
         }
 
-        body.sidebar-collapsed .menu-link .menu-text {
+        body.sidebar-collapsed .menu-link .menu-text,
+        body.sidebar-collapsed .menu-arrow,
+        body.sidebar-collapsed .submenu {
+            display: none !important;
+        }
+
+        body.sidebar-collapsed .sidebar-collapse-btn span {
             display: none;
         }
 
@@ -230,15 +353,15 @@
             right: calc(100% + 8px);
             top: 50%;
             transform: translateY(-50%);
-            background: #1e293b;
+            background: #0f172a;
             color: #ffffff;
-            padding: 5px 12px;
-            font-size: 0.8rem;
+            padding: 6px 14px;
+            font-size: 0.85rem;
             font-weight: 600;
-            border-radius: 6px;
+            border-radius: 8px;
             white-space: nowrap;
             z-index: 1060;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.18);
             pointer-events: none;
         }
 
@@ -504,104 +627,157 @@
             <li class="menu-title">لوحة التحكم</li>
             <li class="menu-item" data-tooltip="الرئيسية">
                 <a href="{{ route('admin.dashboard') }}" class="menu-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                    <i class="bi bi-grid-fill text-primary"></i>
+                    <i class="bi bi-grid-fill menu-icon"></i>
                     <span class="menu-text">الرئيسية</span>
                 </a>
             </li>
             
-            <li class="menu-title">إدارة العملاء والاستشارات</li>
-            <li class="menu-item" data-tooltip="إدارة الحجوزات">
-                <a href="{{ route('admin.bookings.index') }}" class="menu-link {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">
-                    <i class="bi bi-calendar-check-fill text-warning"></i>
-                    <span class="menu-text">إدارة الحجوزات</span>
-                    @php
-                        $pendingBookingsCount = \App\Models\Booking::whereIn('status', ['new', 'pending'])->count();
-                    @endphp
-                    @if($pendingBookingsCount > 0)
-                        <span class="badge bg-warning text-dark ms-auto fw-black fs-8 px-2 py-0.5 rounded-pill">{{ $pendingBookingsCount }}</span>
-                    @endif
-                </a>
-            </li>
-            <li class="menu-item" data-tooltip="إدارة العملاء (CRM)">
-                <a href="{{ route('admin.crm.index') }}" class="menu-link {{ request()->routeIs('admin.crm.*') ? 'active' : '' }}">
-                    <i class="bi bi-people-fill text-info"></i>
-                    <span class="menu-text">إدارة العملاء (CRM)</span>
-                </a>
-            </li>
-
-            <li class="menu-title">إدارة المتجر والكتالوج</li>
-            <li class="menu-item" data-tooltip="بانرات السليدر الرئيسي">
-                <a href="{{ route('admin.banners.index') }}" class="menu-link {{ request()->routeIs('admin.banners.*') ? 'active' : '' }}">
-                    <i class="bi bi-images text-primary"></i>
-                    <span class="menu-text">بانرات السليدر الرئيسي</span>
-                </a>
-            </li>
-            <li class="menu-item" data-tooltip="البراندات والشركاء">
-                <a href="{{ route('admin.brands.index') }}" class="menu-link {{ request()->routeIs('admin.brands.*') ? 'active' : '' }}">
-                    <i class="bi bi-patch-check-fill text-primary"></i>
-                    <span class="menu-text">البراندات والشركاء</span>
-                </a>
-            </li>
-            <li class="menu-item" data-tooltip="إدارة المنتجات">
-                <a href="{{ route('admin.products.index') }}" class="menu-link {{ request()->routeIs('admin.products.index') || request()->routeIs('admin.products.create') || request()->routeIs('admin.products.edit') || request()->routeIs('admin.products.show') ? 'active' : '' }}">
-                    <i class="bi bi-box-seam-fill text-success"></i>
-                    <span class="menu-text">إدارة المنتجات</span>
-                </a>
-            </li>
-            <li class="menu-item" data-tooltip="استيراد وتصدير إكسيل">
-                <a href="{{ route('admin.products.importExport') }}" class="menu-link {{ request()->routeIs('admin.products.importExport') ? 'active' : '' }}">
-                    <i class="bi bi-file-earmark-spreadsheet-fill text-emerald" style="color: #059669;"></i>
-                    <span class="menu-text">استيراد وتصدير إكسيل</span>
-                </a>
-            </li>
-            <li class="menu-item" data-tooltip="التصنيفات والفلاتر">
-                <a href="{{ route('admin.taxonomy.index') }}" class="menu-link {{ request()->routeIs('admin.taxonomy.*') || request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-                    <i class="bi bi-diagram-3-fill text-primary"></i>
-                    <span class="menu-text">التصنيفات والفلاتر</span>
-                </a>
-            </li>
-            <li class="menu-item" data-tooltip="إدارة الطلبات">
-                <a href="{{ route('admin.orders.index') }}" class="menu-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
-                    <i class="bi bi-cart-fill text-danger"></i>
-                    <span class="menu-text">إدارة الطلبات والمبيعات</span>
-                    @php
-                        $pendingOrdersBadge = \App\Models\Order::whereIn('status', ['pending', 'processing'])->count();
-                    @endphp
-                    @if($pendingOrdersBadge > 0)
-                        <span class="badge bg-danger text-white ms-auto fw-black fs-8 px-2 py-0.5 rounded-pill">{{ $pendingOrdersBadge }}</span>
-                    @endif
-                </a>
-            </li>
-            <li class="menu-item" data-tooltip="تقييمات ومراجعات">
-                <a href="{{ route('admin.reviews.index') }}" class="menu-link {{ request()->routeIs('admin.reviews.*') ? 'active' : '' }}">
-                    <i class="bi bi-star-half text-warning"></i>
-                    <span class="menu-text">تقييمات ومراجعات</span>
-                    @php
-                        $unapprovedReviews = \App\Models\Review::where('is_approved', false)->count();
-                    @endphp
-                    @if($unapprovedReviews > 0)
-                        <span class="badge bg-danger text-white ms-auto fw-black fs-8 px-2 py-0.5 rounded-pill">{{ $unapprovedReviews }}</span>
-                    @endif
-                </a>
+            <li class="menu-title">العمليات والخدمات</li>
+            
+            <!-- Collapsible Group 1: العملاء والاستشارات -->
+            @php
+                $isCustomerGroupActive = request()->routeIs('admin.bookings.*') || request()->routeIs('admin.crm.*');
+            @endphp
+            <li class="menu-item" data-tooltip="العملاء والاستشارات">
+                <button type="button" class="menu-link {{ $isCustomerGroupActive ? '' : 'collapsed' }}" data-bs-toggle="collapse" data-bs-target="#menu-customers" aria-expanded="{{ $isCustomerGroupActive ? 'true' : 'false' }}">
+                    <i class="bi bi-people-fill menu-icon"></i>
+                    <span class="menu-text">العملاء والاستشارات</span>
+                    <i class="bi bi-chevron-down menu-arrow"></i>
+                </button>
+                <div class="collapse {{ $isCustomerGroupActive ? 'show' : '' }}" id="menu-customers">
+                    <ul class="submenu">
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.bookings.index') }}" class="submenu-link {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>إدارة الحجوزات</span>
+                                @php
+                                    $pendingBookingsCount = \App\Models\Booking::whereIn('status', ['new', 'pending'])->count();
+                                @endphp
+                                @if($pendingBookingsCount > 0)
+                                    <span class="badge ms-auto fw-black fs-8 px-2 py-0.5 rounded-pill" style="background-color: #fef08a; color: #854d0e;">{{ $pendingBookingsCount }}</span>
+                                @endif
+                            </a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.crm.index') }}" class="submenu-link {{ request()->routeIs('admin.crm.*') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>سجل العملاء (CRM)</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
 
-            <li class="menu-title">المتجر العام</li>
+            <!-- Collapsible Group 2: المتجر والمنتجات -->
+            @php
+                $isStoreGroupActive = request()->routeIs('admin.products.*') || request()->routeIs('admin.taxonomy.*') || request()->routeIs('admin.categories.*') || request()->routeIs('admin.brands.*') || request()->routeIs('admin.banners.*');
+            @endphp
+            <li class="menu-item" data-tooltip="المتجر والمنتجات">
+                <button type="button" class="menu-link {{ $isStoreGroupActive ? '' : 'collapsed' }}" data-bs-toggle="collapse" data-bs-target="#menu-store" aria-expanded="{{ $isStoreGroupActive ? 'true' : 'false' }}">
+                    <i class="bi bi-box-seam-fill menu-icon"></i>
+                    <span class="menu-text">المتجر والمنتجات</span>
+                    <i class="bi bi-chevron-down menu-arrow"></i>
+                </button>
+                <div class="collapse {{ $isStoreGroupActive ? 'show' : '' }}" id="menu-store">
+                    <ul class="submenu">
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.products.index') }}" class="submenu-link {{ (request()->routeIs('admin.products.index') || request()->routeIs('admin.products.create') || request()->routeIs('admin.products.edit') || request()->routeIs('admin.products.show')) && !request()->routeIs('admin.products.importExport') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>إدارة المنتجات</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.products.importExport') }}" class="submenu-link {{ request()->routeIs('admin.products.importExport') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>استيراد وتصدير إكسيل</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.taxonomy.index') }}" class="submenu-link {{ request()->routeIs('admin.taxonomy.*') || request()->routeIs('admin.categories.*') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>التصنيفات والفلاتر</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.brands.index') }}" class="submenu-link {{ request()->routeIs('admin.brands.*') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>البراندات والشركاء</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.banners.index') }}" class="submenu-link {{ request()->routeIs('admin.banners.*') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>بانرات السليدر</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <!-- Collapsible Group 3: الطلبات والمبيعات -->
+            @php
+                $isOrdersGroupActive = request()->routeIs('admin.orders.*') || request()->routeIs('admin.reviews.*');
+            @endphp
+            <li class="menu-item" data-tooltip="الطلبات والمبيعات">
+                <button type="button" class="menu-link {{ $isOrdersGroupActive ? '' : 'collapsed' }}" data-bs-toggle="collapse" data-bs-target="#menu-orders" aria-expanded="{{ $isOrdersGroupActive ? 'true' : 'false' }}">
+                    <i class="bi bi-cart-fill menu-icon"></i>
+                    <span class="menu-text">الطلبات والمبيعات</span>
+                    <i class="bi bi-chevron-down menu-arrow"></i>
+                </button>
+                <div class="collapse {{ $isOrdersGroupActive ? 'show' : '' }}" id="menu-orders">
+                    <ul class="submenu">
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.orders.index') }}" class="submenu-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>إدارة الطلبات</span>
+                                @php
+                                    $pendingOrdersBadge = \App\Models\Order::whereIn('status', ['pending', 'processing'])->count();
+                                @endphp
+                                @if($pendingOrdersBadge > 0)
+                                    <span class="badge bg-danger text-white ms-auto fw-black fs-8 px-2 py-0.5 rounded-pill">{{ $pendingOrdersBadge }}</span>
+                                @endif
+                            </a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.reviews.index') }}" class="submenu-link {{ request()->routeIs('admin.reviews.*') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>تقييمات ومراجعات</span>
+                                @php
+                                    $unapprovedReviews = \App\Models\Review::where('is_approved', false)->count();
+                                @endphp
+                                @if($unapprovedReviews > 0)
+                                    <span class="badge bg-danger text-white ms-auto fw-black fs-8 px-2 py-0.5 rounded-pill">{{ $unapprovedReviews }}</span>
+                                @endif
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="menu-title">المتجر والنظام</li>
             <li class="menu-item" data-tooltip="عرض المتجر">
                 <a href="{{ route('home') }}" target="_blank" class="menu-link">
-                    <i class="bi bi-shop text-muted"></i>
-                    <span class="menu-text">عرض المتجر</span>
+                    <i class="bi bi-shop menu-icon"></i>
+                    <span class="menu-text">عرض المتجر المباشر</span>
                     <i class="bi bi-arrow-up-left ms-auto fs-8 text-muted"></i>
                 </a>
             </li>
 
-            <li class="menu-title">تكوين النظام</li>
             <li class="menu-item" data-tooltip="إعدادات المتجر">
                 <a href="{{ route('admin.settings.index') }}" class="menu-link {{ request()->routeIs('admin.settings.index') ? 'active' : '' }}">
-                    <i class="bi bi-sliders text-secondary"></i>
-                    <span class="menu-text">إعدادات المتجر</span>
+                    <i class="bi bi-sliders menu-icon"></i>
+                    <span class="menu-text">إعدادات النظام</span>
                 </a>
             </li>
         </ul>
+
+        <!-- Sidebar Footer Toggle -->
+        <div class="sidebar-footer">
+            <button type="button" class="sidebar-collapse-btn" id="sidebar-footer-collapse-btn" title="طي / توسيع القائمة">
+                <i class="bi bi-arrow-bar-right fs-5" id="footer-toggle-icon"></i>
+                <span>طي القائمة الجانبية</span>
+            </button>
+        </div>
     </aside>
 
     <!-- Main Wrapper -->
@@ -690,28 +866,44 @@
         // 1. Collapsible Sidebar Logic
         const sidebar = document.getElementById('sidebar');
         const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
+        const sidebarFooterCollapseBtn = document.getElementById('sidebar-footer-collapse-btn');
         const backdrop = document.getElementById('sidebar-backdrop');
         const toggleIcon = document.getElementById('toggle-icon');
+        const footerToggleIcon = document.getElementById('footer-toggle-icon');
+
+        function toggleSidebarState() {
+            if (window.innerWidth < 992) {
+                // Mobile Drawer toggle
+                sidebar.classList.toggle('mobile-open');
+                backdrop.classList.toggle('active');
+            } else {
+                // Desktop Collapse toggle
+                document.body.classList.toggle('sidebar-collapsed');
+                const currentlyCollapsed = document.body.classList.contains('sidebar-collapsed');
+                localStorage.setItem('admin_sidebar_collapsed', currentlyCollapsed);
+                updateSidebarCollapseUI(currentlyCollapsed);
+            }
+        }
+
+        function updateSidebarCollapseUI(collapsed) {
+            if (footerToggleIcon) {
+                footerToggleIcon.className = collapsed ? 'bi bi-arrow-bar-left fs-5' : 'bi bi-arrow-bar-right fs-5';
+            }
+        }
 
         // Check stored collapse state on desktop
         const isCollapsed = localStorage.getItem('admin_sidebar_collapsed') === 'true';
         if (isCollapsed && window.innerWidth >= 992) {
             document.body.classList.add('sidebar-collapsed');
+            updateSidebarCollapseUI(true);
         }
 
         if (sidebarToggleBtn) {
-            sidebarToggleBtn.addEventListener('click', () => {
-                if (window.innerWidth < 992) {
-                    // Mobile Drawer toggle
-                    sidebar.classList.toggle('mobile-open');
-                    backdrop.classList.toggle('active');
-                } else {
-                    // Desktop Collapse toggle
-                    document.body.classList.toggle('sidebar-collapsed');
-                    const currentlyCollapsed = document.body.classList.contains('sidebar-collapsed');
-                    localStorage.setItem('admin_sidebar_collapsed', currentlyCollapsed);
-                }
-            });
+            sidebarToggleBtn.addEventListener('click', toggleSidebarState);
+        }
+
+        if (sidebarFooterCollapseBtn) {
+            sidebarFooterCollapseBtn.addEventListener('click', toggleSidebarState);
         }
 
         if (backdrop) {
@@ -720,6 +912,17 @@
                 backdrop.classList.remove('active');
             });
         }
+
+        // If in collapsed sidebar mode and user clicks a menu toggle, auto-expand sidebar
+        document.querySelectorAll('.sidebar-menu button[data-bs-toggle="collapse"]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (document.body.classList.contains('sidebar-collapsed')) {
+                    document.body.classList.remove('sidebar-collapsed');
+                    localStorage.setItem('admin_sidebar_collapsed', 'false');
+                    updateSidebarCollapseUI(false);
+                }
+            });
+        });
 
         // 2. Light / Dark Theme Toggle
         const themeToggle = document.getElementById('theme-toggle');

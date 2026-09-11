@@ -7,34 +7,34 @@
     
     <!-- 1. Hero Control & Quick Actions Header -->
     <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden" 
-         style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563ea 100%); color: #ffffff;">
+         style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e3a8a 100%); color: #ffffff;">
         <div class="card-body p-4 p-md-5 d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-4">
             <div>
-                <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-white bg-opacity-15 text-white fs-7 fw-bold mb-2">
-                    <span class="spinner-grow spinner-grow-sm text-warning" role="status"></span>
-                    <span>النظام متصل • مركز ومتجر 2morro</span>
+                <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill bg-white bg-opacity-10 border border-white border-opacity-20 text-white fs-7 fw-bold mb-3 shadow-xs">
+                    <span class="badge rounded-circle p-1 bg-success" style="width: 8px; height: 8px; display: inline-block;"></span>
+                    <span>النظام متصل • لوحة تحكم 2morro المركزية</span>
                 </div>
-                <h2 class="fw-black mb-1 text-white">لوحة الإدارة والتحكم الشاملة</h2>
-                <p class="text-white-50 fs-6 mb-0">مرحباً بك، يمكنك متابعة المبيعات الحية، حجوزات الاستشارات، والطلبات وإدارتها لحظياً.</p>
+                <h2 class="fw-black mb-1 text-white" style="font-size: 1.75rem;">لوحة الإدارة والتحكم الشاملة</h2>
+                <p class="text-white text-opacity-75 fs-6 mb-0">مرحباً بك، متابعة المبيعات الحية، حجوزات الاستشارات، والطلبات والمخزون وإدارتها لحظياً.</p>
             </div>
 
-            <!-- Quick Action Buttons -->
-            <div class="d-flex flex-wrap gap-2">
-                <a href="{{ route('admin.products.create') }}" class="btn btn-light fw-bold fs-7 rounded-3 shadow-sm d-flex align-items-center gap-1.5 hover-scale">
-                    <i class="bi bi-plus-circle-fill text-primary"></i>
+            <!-- Quick Action Buttons (Unified & Accessible Hierarchy) -->
+            <div class="d-flex flex-wrap gap-2.5">
+                <a href="{{ route('admin.products.create') }}" class="btn btn-light fw-bold fs-7 rounded-3 px-3 py-2 shadow-sm d-flex align-items-center gap-2 text-primary hover-scale">
+                    <i class="bi bi-plus-circle-fill"></i>
                     <span>إضافة منتج</span>
                 </a>
-                <a href="{{ route('admin.bookings.create') }}" class="btn btn-warning fw-bold fs-7 rounded-3 shadow-sm d-flex align-items-center gap-1.5 text-dark hover-scale">
-                    <i class="bi bi-calendar-plus-fill"></i>
-                    <span>حجز استشارة يدوي</span>
+                <a href="{{ route('admin.bookings.create') }}" class="btn btn-outline-light bg-white bg-opacity-10 border-white border-opacity-25 fw-bold fs-7 rounded-3 px-3 py-2 text-white d-flex align-items-center gap-2">
+                    <i class="bi bi-calendar-plus"></i>
+                    <span>حجز استشارة</span>
                 </a>
-                <a href="{{ route('admin.orders.index') }}" class="btn btn-outline-light fw-bold fs-7 rounded-3 d-flex align-items-center gap-1.5">
+                <a href="{{ route('admin.orders.index') }}" class="btn btn-outline-light bg-white bg-opacity-10 border-white border-opacity-25 fw-bold fs-7 rounded-3 px-3 py-2 text-white d-flex align-items-center gap-2">
                     <i class="bi bi-bag-check"></i>
                     <span>الطلبات</span>
                 </a>
-                <a href="{{ route('home') }}" target="_blank" class="btn btn-dark bg-black bg-opacity-30 border-white border-opacity-25 fw-bold fs-7 rounded-3 text-white d-flex align-items-center gap-1.5">
+                <a href="{{ route('home') }}" target="_blank" class="btn btn-outline-light bg-white bg-opacity-10 border-white border-opacity-25 fw-bold fs-7 rounded-3 px-3 py-2 text-white d-flex align-items-center gap-2">
                     <i class="bi bi-box-arrow-up-right"></i>
-                    <span>المتجر</span>
+                    <span>عرض المتجر</span>
                 </a>
             </div>
         </div>
@@ -45,19 +45,19 @@
         
         <!-- KPI 1: Paid Sales -->
         <div class="col-12 col-sm-6 col-xl-4">
-            <div class="card border-0 shadow-xs rounded-4 h-100 p-3 bg-white hover-shadow transition">
+            <div class="card border-0 shadow-xs rounded-4 h-100 p-4 bg-white hover-shadow transition">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <span class="text-muted fs-7 fw-bold d-block mb-1">إجمالي المبيعات المحصلة</span>
-                        <h3 class="fw-black text-dark mb-1">{{ number_format($totalSales, 2) }} <small class="fs-6 text-muted">ج.م</small></h3>
-                        <div class="d-flex align-items-center gap-1 fs-8">
-                            <span class="badge {{ $salesGrowth >= 0 ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }} fw-bold">
+                        <h3 class="fw-black text-dark mb-1" style="font-size: 1.85rem;">{{ number_format($totalSales, 2) }} <small class="fs-6 text-muted fw-bold">ج.م</small></h3>
+                        <div class="d-flex align-items-center gap-1.5 fs-8 mt-2">
+                            <span class="badge fw-bold px-2 py-1 rounded-pill" style="{{ $salesGrowth >= 0 ? 'background-color: #dcfce7; color: #166534;' : 'background-color: #fee2e2; color: #991b1b;' }}">
                                 {{ $salesGrowth >= 0 ? '+' : '' }}{{ $salesGrowth }}% هذا الشهر
                             </span>
                             <span class="text-muted">مقارنة بالشهر السابق</span>
                         </div>
                     </div>
-                    <div class="w-12 h-12 rounded-3 bg-primary-subtle text-primary d-flex align-items-center justify-content-center fs-3 flex-shrink-0" style="width: 52px; height: 52px;">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center fs-3 flex-shrink-0" style="width: 54px; height: 54px; background-color: #eff6ff; color: #1d4ed8;">
                         <i class="bi bi-cash-stack"></i>
                     </div>
                 </div>
@@ -66,23 +66,23 @@
 
         <!-- KPI 2: Total & Pending Orders -->
         <div class="col-12 col-sm-6 col-xl-4">
-            <div class="card border-0 shadow-xs rounded-4 h-100 p-3 bg-white hover-shadow transition">
+            <div class="card border-0 shadow-xs rounded-4 h-100 p-4 bg-white hover-shadow transition">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <span class="text-muted fs-7 fw-bold d-block mb-1">الطلبات والمبيعات</span>
-                        <h3 class="fw-black text-dark mb-1">{{ $totalOrders }} <small class="fs-6 text-muted">طلب</small></h3>
-                        <div class="d-flex align-items-center gap-1 fs-8">
-                            <span class="badge bg-warning-subtle text-warning-emphasis fw-bold">
+                        <h3 class="fw-black text-dark mb-1" style="font-size: 1.85rem;">{{ $totalOrders }} <small class="fs-6 text-muted fw-bold">طلب</small></h3>
+                        <div class="d-flex align-items-center gap-1.5 fs-8 mt-2">
+                            <span class="badge fw-bold px-2 py-1 rounded-pill" style="background-color: #fef3c7; color: #92400e;">
                                 {{ $pendingOrders }} معلق بانتظار التجهيز
                             </span>
                             @if($ordersRequiringProof > 0)
-                                <span class="badge bg-danger-subtle text-danger fw-bold">
-                                    {{ $ordersRequiringProof }} إيصال للمراجعة
+                                <span class="badge fw-bold px-2 py-1 rounded-pill" style="background-color: #fee2e2; color: #991b1b;">
+                                    {{ $ordersRequiringProof }} إيصال
                                 </span>
                             @endif
                         </div>
                     </div>
-                    <div class="w-12 h-12 rounded-3 bg-info-subtle text-info d-flex align-items-center justify-content-center fs-3 flex-shrink-0" style="width: 52px; height: 52px;">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center fs-3 flex-shrink-0" style="width: 54px; height: 54px; background-color: #eff6ff; color: #1d4ed8;">
                         <i class="bi bi-cart3"></i>
                     </div>
                 </div>
@@ -91,23 +91,23 @@
 
         <!-- KPI 3: Consultation Bookings -->
         <div class="col-12 col-sm-6 col-xl-4">
-            <div class="card border-0 shadow-xs rounded-4 h-100 p-3 bg-white hover-shadow transition">
+            <div class="card border-0 shadow-xs rounded-4 h-100 p-4 bg-white hover-shadow transition">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <span class="text-muted fs-7 fw-bold d-block mb-1">حجوزات الاستشارات والتقييم</span>
-                        <h3 class="fw-black text-dark mb-1">{{ $totalBookings }} <small class="fs-6 text-muted">حجز</small></h3>
-                        <div class="d-flex align-items-center gap-1 fs-8">
-                            <span class="badge bg-amber-subtle text-amber fw-bold" style="background-color: #FEF3C7; color: #B45309;">
+                        <h3 class="fw-black text-dark mb-1" style="font-size: 1.85rem;">{{ $totalBookings }} <small class="fs-6 text-muted fw-bold">حجز</small></h3>
+                        <div class="d-flex align-items-center gap-1.5 fs-8 mt-2">
+                            <span class="badge fw-bold px-2 py-1 rounded-pill" style="background-color: #fef3c7; color: #92400e;">
                                 {{ $newBookingsCount }} جديد بحاجة للتأكيد
                             </span>
                             @if($todayBookingsCount > 0)
-                                <span class="badge bg-primary-subtle text-primary fw-bold">
-                                    {{ $todayBookingsCount }} مواعيد اليوم
+                                <span class="badge fw-bold px-2 py-1 rounded-pill" style="background-color: #eff6ff; color: #1d4ed8;">
+                                    {{ $todayBookingsCount }} اليوم
                                 </span>
                             @endif
                         </div>
                     </div>
-                    <div class="w-12 h-12 rounded-3 bg-warning-subtle text-warning d-flex align-items-center justify-content-center fs-3 flex-shrink-0" style="width: 52px; height: 52px;">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center fs-3 flex-shrink-0" style="width: 54px; height: 54px; background-color: #eff6ff; color: #1d4ed8;">
                         <i class="bi bi-calendar2-heart"></i>
                     </div>
                 </div>
@@ -116,25 +116,25 @@
 
         <!-- KPI 4: Active Products & Low Stock -->
         <div class="col-12 col-sm-6 col-xl-4">
-            <div class="card border-0 shadow-xs rounded-4 h-100 p-3 bg-white hover-shadow transition">
+            <div class="card border-0 shadow-xs rounded-4 h-100 p-4 bg-white hover-shadow transition">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <span class="text-muted fs-7 fw-bold d-block mb-1">الكتالوج والمنتجات النشطة</span>
-                        <h3 class="fw-black text-dark mb-1">{{ $activeProductsCount }} <small class="fs-6 text-muted">منتج</small></h3>
-                        <div class="d-flex align-items-center gap-1 fs-8">
+                        <h3 class="fw-black text-dark mb-1" style="font-size: 1.85rem;">{{ $activeProductsCount }} <small class="fs-6 text-muted fw-bold">منتج</small></h3>
+                        <div class="d-flex align-items-center gap-1.5 fs-8 mt-2">
                             @if($lowStockCount > 0)
-                                <span class="badge bg-danger text-white fw-bold">
+                                <span class="badge fw-bold px-2 py-1 rounded-pill" style="background-color: #fee2e2; color: #991b1b;">
                                     {{ $lowStockCount }} منخفض المخزون
                                 </span>
                             @else
-                                <span class="badge bg-success-subtle text-success fw-bold">
+                                <span class="badge fw-bold px-2 py-1 rounded-pill" style="background-color: #dcfce7; color: #166534;">
                                     المخزون متوفر
                                 </span>
                             @endif
                             <span class="text-muted">{{ $digitalProductsCount }} شيتات رقمية</span>
                         </div>
                     </div>
-                    <div class="w-12 h-12 rounded-3 bg-success-subtle text-success d-flex align-items-center justify-content-center fs-3 flex-shrink-0" style="width: 52px; height: 52px;">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center fs-3 flex-shrink-0" style="width: 54px; height: 54px; background-color: #eff6ff; color: #1d4ed8;">
                         <i class="bi bi-box-seam"></i>
                     </div>
                 </div>
@@ -143,19 +143,19 @@
 
         <!-- KPI 5: Registered Customers -->
         <div class="col-12 col-sm-6 col-xl-4">
-            <div class="card border-0 shadow-xs rounded-4 h-100 p-3 bg-white hover-shadow transition">
+            <div class="card border-0 shadow-xs rounded-4 h-100 p-4 bg-white hover-shadow transition">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <span class="text-muted fs-7 fw-bold d-block mb-1">العملاء والمسجلين</span>
-                        <h3 class="fw-black text-dark mb-1">{{ $totalCustomers }} <small class="fs-6 text-muted">عميل</small></h3>
-                        <div class="d-flex align-items-center gap-1 fs-8">
-                            <span class="badge bg-purple-subtle text-purple fw-bold" style="background-color: #F3E8FF; color: #7E22CE;">
+                        <h3 class="fw-black text-dark mb-1" style="font-size: 1.85rem;">{{ $totalCustomers }} <small class="fs-6 text-muted fw-bold">عميل</small></h3>
+                        <div class="d-flex align-items-center gap-1.5 fs-8 mt-2">
+                            <span class="badge fw-bold px-2 py-1 rounded-pill" style="background-color: #f1f5f9; color: #334155;">
                                 عملاء متفاعلين
                             </span>
                             <a href="{{ route('admin.crm.index') }}" class="text-primary text-decoration-none fw-bold">إدارة CRM &larr;</a>
                         </div>
                     </div>
-                    <div class="w-12 h-12 rounded-3 text-purple d-flex align-items-center justify-content-center fs-3 flex-shrink-0" style="width: 52px; height: 52px; background-color: #F3E8FF; color: #7E22CE;">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center fs-3 flex-shrink-0" style="width: 54px; height: 54px; background-color: #eff6ff; color: #1d4ed8;">
                         <i class="bi bi-people"></i>
                     </div>
                 </div>
@@ -164,19 +164,19 @@
 
         <!-- KPI 6: Digital Downloads & PDF Activity -->
         <div class="col-12 col-sm-6 col-xl-4">
-            <div class="card border-0 shadow-xs rounded-4 h-100 p-3 bg-white hover-shadow transition">
+            <div class="card border-0 shadow-xs rounded-4 h-100 p-4 bg-white hover-shadow transition">
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <span class="text-muted fs-7 fw-bold d-block mb-1">تحميلات الشيتات الرقمية</span>
-                        <h3 class="fw-black text-dark mb-1">{{ $totalDownloadsCount }} <small class="fs-6 text-muted">تحميل</small></h3>
-                        <div class="d-flex align-items-center gap-1 fs-8">
-                            <span class="badge bg-teal-subtle text-teal fw-bold" style="background-color: #CCFBF1; color: #0F766E;">
+                        <h3 class="fw-black text-dark mb-1" style="font-size: 1.85rem;">{{ $totalDownloadsCount }} <small class="fs-6 text-muted fw-bold">تحميل</small></h3>
+                        <div class="d-flex align-items-center gap-1.5 fs-8 mt-2">
+                            <span class="badge fw-bold px-2 py-1 rounded-pill" style="background-color: #dcfce7; color: #166534;">
                                 وصول رقمي فوري 100%
                             </span>
                             <span class="text-muted">مشفر ومؤمن</span>
                         </div>
                     </div>
-                    <div class="w-12 h-12 rounded-3 d-flex align-items-center justify-content-center fs-3 flex-shrink-0" style="width: 52px; height: 52px; background-color: #CCFBF1; color: #0F766E;">
+                    <div class="rounded-3 d-flex align-items-center justify-content-center fs-3 flex-shrink-0" style="width: 54px; height: 54px; background-color: #eff6ff; color: #1d4ed8;">
                         <i class="bi bi-file-earmark-arrow-down"></i>
                     </div>
                 </div>
@@ -241,36 +241,36 @@
             <div class="card border-0 shadow-xs rounded-4 h-100 p-4 bg-white">
                 <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom">
                     <div class="d-flex align-items-center gap-2">
-                        <span class="w-2 h-4 bg-primary rounded-pill"></span>
+                        <span class="rounded-pill" style="width: 4px; height: 18px; background-color: #1d4ed8;"></span>
                         <h5 class="fw-black text-dark mb-0">أحدث طلبات المتجر</h5>
                     </div>
-                    <a href="{{ route('admin.orders.index') }}" class="btn btn-sm btn-light fw-bold text-primary rounded-3 fs-8">
+                    <a href="{{ route('admin.orders.index') }}" class="btn btn-sm btn-light fw-bold text-primary rounded-3 fs-8 px-3">
                         عرض كافة الطلبات &larr;
                     </a>
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0 text-right fs-7">
+                    <table class="table table-hover align-middle mb-0 text-right">
                         <thead class="table-light">
                             <tr>
-                                <th class="border-0">رقم الطلب</th>
-                                <th class="border-0">العميل</th>
-                                <th class="border-0">الإجمالي</th>
-                                <th class="border-0">الدفع</th>
-                                <th class="border-0">الإيصال</th>
-                                <th class="border-0">الحالة</th>
+                                <th class="border-0 text-dark fw-bold py-2.5">رقم الطلب</th>
+                                <th class="border-0 text-dark fw-bold py-2.5">العميل</th>
+                                <th class="border-0 text-dark fw-bold py-2.5">الإجمالي</th>
+                                <th class="border-0 text-dark fw-bold py-2.5">الدفع</th>
+                                <th class="border-0 text-dark fw-bold py-2.5">الإيصال</th>
+                                <th class="border-0 text-dark fw-bold py-2.5">الحالة</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($recentOrders as $order)
                                 <tr>
                                     <td class="fw-black text-primary">
-                                        <a href="{{ route('admin.orders.show', $order->id) }}" class="text-decoration-none">
+                                        <a href="{{ route('admin.orders.show', $order->id) }}" class="text-decoration-none fw-bold">
                                             {{ $order->order_number }}
                                         </a>
                                     </td>
                                     <td>
-                                        <div class="d-flex flex-col">
+                                        <div class="d-flex flex-column">
                                             <span class="fw-bold text-dark">{{ $order->customer_name }}</span>
                                             <span class="text-muted fs-8 font-monospace" dir="ltr">{{ $order->customer_phone }}</span>
                                         </div>
@@ -280,19 +280,19 @@
                                     </td>
                                     <td>
                                         @if($order->payment_method === 'cod')
-                                            <span class="badge bg-secondary-subtle text-secondary fs-8">عند الاستلام</span>
+                                            <span class="badge bg-secondary-subtle text-secondary fs-8 px-2 py-1">عند الاستلام</span>
                                         @elseif($order->payment_method === 'instapay')
-                                            <span class="badge bg-purple-subtle text-purple fs-8" style="background-color: #F3E8FF; color: #7E22CE;">إنستاباي</span>
+                                            <span class="badge fs-8 px-2 py-1" style="background-color: #F3E8FF; color: #7E22CE;">إنستاباي</span>
                                         @elseif($order->payment_method === 'bank')
-                                            <span class="badge bg-success-subtle text-success fs-8">تحويل بنكي IBAN</span>
+                                            <span class="badge bg-success-subtle text-success fs-8 px-2 py-1">تحويل بنكي</span>
                                         @else
-                                            <span class="badge bg-danger-subtle text-danger fs-8">فودافون كاش</span>
+                                            <span class="badge bg-danger-subtle text-danger fs-8 px-2 py-1">فودافون كاش</span>
                                         @endif
                                     </td>
                                     <td>
                                         @if($order->payment_screenshot)
-                                            <a href="{{ asset('storage/' . $order->payment_screenshot) }}" target="_blank" class="btn btn-xs btn-outline-primary py-0 px-2 fs-8 rounded-pill" title="مشاهدة صورة التحويل">
-                                                <i class="bi bi-image"></i> فحص
+                                            <a href="{{ asset('storage/' . $order->payment_screenshot) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2.5 fs-8 rounded-pill" title="مشاهدة صورة التحويل">
+                                                <i class="bi bi-image me-1"></i> فحص
                                             </a>
                                         @else
                                             <span class="text-muted fs-8">-</span>
@@ -300,11 +300,11 @@
                                     </td>
                                     <td>
                                         @if($order->status === 'delivered')
-                                            <span class="badge bg-success-subtle text-success fs-8">مكتمل</span>
+                                            <span class="badge px-2.5 py-1 rounded-pill" style="background-color: #dcfce7; color: #166534;">مكتمل</span>
                                         @elseif($order->status === 'cancelled')
-                                            <span class="badge bg-danger-subtle text-danger fs-8">ملغي</span>
+                                            <span class="badge px-2.5 py-1 rounded-pill" style="background-color: #fee2e2; color: #991b1b;">ملغي</span>
                                         @else
-                                            <span class="badge bg-warning-subtle text-warning-emphasis fs-8">قيد التنفيذ</span>
+                                            <span class="badge px-2.5 py-1 rounded-pill" style="background-color: #fef3c7; color: #92400e;">قيد التنفيذ</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -325,22 +325,22 @@
             <div class="card border-0 shadow-xs rounded-4 h-100 p-4 bg-white">
                 <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom">
                     <div class="d-flex align-items-center gap-2">
-                        <span class="w-2 h-4 bg-warning rounded-pill"></span>
+                        <span class="rounded-pill" style="width: 4px; height: 18px; background-color: #1d4ed8;"></span>
                         <h5 class="fw-black text-dark mb-0">أحدث حجوزات الاستشارات</h5>
                     </div>
-                    <a href="{{ route('admin.bookings.index') }}" class="btn btn-sm btn-light fw-bold text-dark rounded-3 fs-8">
+                    <a href="{{ route('admin.bookings.index') }}" class="btn btn-sm btn-light fw-bold text-dark rounded-3 fs-8 px-3">
                         عرض الكل &larr;
                     </a>
                 </div>
 
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0 text-right fs-7">
+                    <table class="table table-hover align-middle mb-0 text-right">
                         <thead class="table-light">
                             <tr>
-                                <th class="border-0">الطفل والسن</th>
-                                <th class="border-0">الفرع</th>
-                                <th class="border-0">الموعد</th>
-                                <th class="border-0 text-center">واتساب</th>
+                                <th class="border-0 text-dark fw-bold py-2.5">الطفل والسن</th>
+                                <th class="border-0 text-dark fw-bold py-2.5">الفرع</th>
+                                <th class="border-0 text-dark fw-bold py-2.5">الموعد</th>
+                                <th class="border-0 text-center text-dark fw-bold py-2.5">واتساب</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -353,7 +353,7 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <span class="badge bg-light text-dark fs-8 border">
+                                        <span class="badge bg-light text-dark fs-8 border px-2 py-1">
                                             @if($booking->branch === 'ibrahimya' || $booking->branch === 'الإبراهيمية') الإبراهيمية
                                             @elseif($booking->branch === 'bitash' || $booking->branch === 'البيطاش') البيطاش
                                             @elseif($booking->branch === 'sidi_beshr' || $booking->branch === 'سيدي بشر') سيدي بشر
@@ -375,10 +375,10 @@
                                         @endphp
                                         <a href="https://wa.me/{{ $cleanPhone }}?text={{ urlencode('مرحباً أستاذ/ة ' . $booking->parent_name . '، بخصوص موعد تقييم الطفل ' . $booking->child_name . ' في مركز 2morro...') }}" 
                                            target="_blank" 
-                                           class="btn btn-sm btn-success rounded-circle p-1 d-inline-flex align-items-center justify-content-center text-white" 
-                                           style="width: 28px; height: 28px;" 
+                                           class="btn btn-sm btn-success rounded-circle p-1 d-inline-flex align-items-center justify-content-center text-white shadow-xs" 
+                                           style="width: 32px; height: 32px;" 
                                            title="مراسلة واتساب فورية">
-                                            <i class="bi bi-whatsapp"></i>
+                                            <i class="bi bi-whatsapp fs-6"></i>
                                         </a>
                                     </td>
                                 </tr>

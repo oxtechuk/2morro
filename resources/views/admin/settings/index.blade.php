@@ -125,15 +125,50 @@
                                         <label class="form-label fw-bold">مواعيد العمل الرسمية</label>
                                         <input type="text" name="working_hours" class="form-control" value="{{ $settings['working_hours'] ?? 'من 12:00 ظهراً إلى 9:00 مساءً (ماعدا الجمعة)' }}">
                                     </div>
-                                    <hr class="my-4">
-                                    <h6 class="fw-bold mb-2">بيانات تهيئة محركات البحث (SEO Settings)</h6>
+                                    <hr class="my-3">
+                                    
+                                    <!-- Top Announcement Bar (التوب بار العلوي) -->
                                     <div class="col-12">
-                                        <label class="form-label fw-bold">عنوان الميتا (Meta Title)</label>
-                                        <input type="text" name="meta_title" class="form-control" value="{{ $settings['meta_title'] }}">
+                                        <div class="p-3 bg-light rounded-3 border">
+                                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <i class="bi bi-megaphone-fill text-primary fs-5"></i>
+                                                    <h6 class="fw-bold mb-0 text-dark">شريط الإعلانات العلوي المتحرك (Top Bar / Announcement Bar)</h6>
+                                                </div>
+                                                <div class="form-check form-switch m-0">
+                                                    <input class="form-check-input" type="checkbox" name="top_bar_enabled" value="1" id="top_bar_enabled" {{ ($settings['top_bar_enabled'] ?? '1') === '1' ? 'checked' : '' }}>
+                                                    <label class="form-check-label fw-bold text-dark fs-8" for="top_bar_enabled">تفعيل الشريط العلوي</label>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label class="form-label fw-bold">نص شريط الإعلانات العلوي (التوب بار)</label>
+                                                <input type="text" name="top_bar_text" class="form-control" value="{{ $settings['top_bar_text'] ?? 'فروع مركز 2morro بالإسكندرية (الإبراهيمية - البيطاش - سيدي بشر) • جلسات وتقييمات في المركز وأونلاين • شحن مجاني للطلبات فوق 550 ج.م' }}" placeholder="اكتب النص الذي يظهر في أعلى شريط أزرق متحرك بالمتجر...">
+                                                <small class="text-muted d-block mt-1">هذا النص يظهر ويتحرك بسلاسة في الشريط الأزرق أعلى الموقع للزوار على الكمبيوتر والموبايل.</small>
+                                            </div>
+                                        </div>
                                     </div>
+
+                                    <hr class="my-3">
+                                    
+                                    <!-- Browser Title Bar & Meta Title -->
                                     <div class="col-12">
-                                        <label class="form-label fw-bold">وصف الميتا (Meta Description)</label>
-                                        <textarea name="meta_description" class="form-control" rows="3">{{ $settings['meta_description'] }}</textarea>
+                                        <div class="p-3 bg-light rounded-3 border">
+                                            <div class="d-flex align-items-center gap-2 mb-3">
+                                                <i class="bi bi-window-desktop text-primary fs-5"></i>
+                                                <h6 class="fw-bold mb-0 text-dark">عنوان التايتل بار ومحركات البحث (Title Bar & Meta Title)</h6>
+                                            </div>
+                                            <div class="row g-3">
+                                                <div class="col-12">
+                                                    <label class="form-label fw-bold">كتابة عنوان التايتل بار (Browser Title / Meta Title)</label>
+                                                    <input type="text" name="meta_title" class="form-control" value="{{ $settings['meta_title'] }}" placeholder="مثال: متجر ومركز تمورو | تنمية مهارات الطفل وتخاطب وتأهيل">
+                                                    <small class="text-muted d-block mt-1">هذا النص هو الذي يظهر في أعلى تاب المتصفح (Title Bar) وفي نتائج بحث Google ومشاركات السوشيال ميديا.</small>
+                                                </div>
+                                                <div class="col-12">
+                                                    <label class="form-label fw-bold">وصف الميتا ومحركات البحث (Meta Description)</label>
+                                                    <textarea name="meta_description" class="form-control" rows="3" placeholder="وصف المتجر ومحتواه...">{{ $settings['meta_description'] }}</textarea>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

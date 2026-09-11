@@ -50,8 +50,8 @@
          @touchstart.passive="handleTouchStart($event)"
          @touchend.passive="handleTouchEnd($event)">
         
-        <div class="relative w-full overflow-hidden bg-slate-100 shadow-xs min-h-[220px] sm:min-h-[360px] md:min-h-[480px] lg:min-h-[560px]"
-             style="aspect-ratio: 1670 / 941; width: 100%;">
+        <div class="relative w-full overflow-hidden bg-slate-100 shadow-xs min-h-[110px] sm:min-h-[180px] md:min-h-[240px] lg:min-h-[280px]"
+             style="aspect-ratio: 1670 / 470; width: 100%;">
             
             @forelse($banners as $index => $banner)
                 @php
