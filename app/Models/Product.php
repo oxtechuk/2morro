@@ -4,10 +4,46 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
     use HasFactory;
+
+    protected static function booted()
+    {
+        static::creating(function ($product) {
+            if (empty($product->slug)) {
+                $product->slug = Str::slug($product->name) ?: 'product-' . time();
+            } else {
+                $product->slug = Str::slug($product->slug);
+            }
+            $baseSlug = $product->slug ?: 'product-' . time();
+            $slug = $baseSlug;
+            $count = 1;
+            while (static::where('slug', $slug)->exists()) {
+                $slug = $baseSlug . '-' . $count++;
+            }
+            $product->slug = $slug;
+        });
+
+        static::updating(function ($product) {
+            if (empty($product->slug)) {
+                $product->slug = Str::slug($product->name) ?: 'product-' . $product->id;
+            } else {
+                $product->slug = Str::slug($product->slug);
+            }
+            if ($product->isDirty('slug')) {
+                $baseSlug = $product->slug ?: 'product-' . $product->id;
+                $slug = $baseSlug;
+                $count = 1;
+                while (static::where('slug', $slug)->where('id', '!=', $product->id)->exists()) {
+                    $slug = $baseSlug . '-' . $count++;
+                }
+                $product->slug = $slug;
+            }
+        });
+    }
 
     protected $fillable = [
         'name',

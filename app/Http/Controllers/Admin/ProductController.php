@@ -99,7 +99,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:products,slug',
+            'slug' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'short_description' => 'nullable|string|max:500',
             'price' => 'required|numeric|min:0',
@@ -121,7 +121,8 @@ class ProductController extends Controller
             'sku', 'type', 'stock', 'video_url', 'badge', 'whats_included', 'suitable_for'
         ]);
 
-        $data['slug'] = $request->filled('slug') ? Str::slug($request->slug) : Str::slug($request->name);
+        $rawSlug = $request->filled('slug') ? $request->slug : $request->name;
+        $data['slug'] = $this->generateUniqueSlug($rawSlug);
         $data['is_active'] = $request->has('is_active');
 
         // Convert new-line separated inputs to arrays
@@ -189,7 +190,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:products,slug,' . $product->id,
+            'slug' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'short_description' => 'nullable|string|max:500',
             'price' => 'required|numeric|min:0',
@@ -211,7 +212,8 @@ class ProductController extends Controller
             'sku', 'type', 'stock', 'video_url', 'badge', 'whats_included', 'suitable_for'
         ]);
 
-        $data['slug'] = $request->filled('slug') ? Str::slug($request->slug) : Str::slug($request->name);
+        $rawSlug = $request->filled('slug') ? $request->slug : $request->name;
+        $data['slug'] = $this->generateUniqueSlug($rawSlug, $product->id);
         $data['is_active'] = $request->has('is_active');
 
         // Convert new-line separated inputs to arrays
@@ -301,5 +303,24 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('admin.products.index')->with('success', 'تم حذف المنتج بنجاح.');
+    }
+
+    protected function generateUniqueSlug(string $title, ?int $ignoreId = null): string
+    {
+        $baseSlug = Str::slug($title);
+        if (empty($baseSlug)) {
+            $baseSlug = 'product-' . ($ignoreId ?: time());
+        }
+
+        $slug = $baseSlug;
+        $count = 1;
+
+        while (Product::where('slug', $slug)
+            ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
+            ->exists()) {
+            $slug = $baseSlug . '-' . $count++;
+        }
+
+        return $slug;
     }
 }
