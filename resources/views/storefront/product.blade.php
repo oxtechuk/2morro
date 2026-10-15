@@ -168,7 +168,7 @@
                             <input type="hidden" name="product_id" value="{{ $product->id }}">
                             <input type="hidden" name="quantity" :value="qty">
                             <input type="hidden" name="buy_now" value="1">
-                            <button type="submit" class="w-full bg-[#EF4444] hover:bg-red-600 text-white font-bold text-sm py-3.5 px-8 rounded-2xl flex items-center justify-center gap-1.5 transition-all shadow-md">
+                            <button type="submit" class="w-full bg-[#f76d11] hover:bg-[#e05e0a] text-white font-bold text-sm py-3.5 px-8 rounded-2xl flex items-center justify-center gap-1.5 transition-all shadow-md">
                                 شراء الآن
                             </button>
                         </form>

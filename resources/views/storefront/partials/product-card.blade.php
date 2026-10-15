@@ -141,7 +141,7 @@
                         <input type="hidden" name="buy_now" value="1">
                         <button type="submit" 
                                 title="شراء فوري والدفع مباشرة" 
-                                class="w-full h-8 sm:h-9 rounded-xl bg-[#EF4444] hover:bg-red-600 text-white font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 transition-all duration-200 active:scale-95 shadow-2xs hover:shadow-xs group/buy cursor-pointer">
+                                class="w-full h-8 sm:h-9 rounded-xl bg-[#f76d11] hover:bg-[#e05e0a] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center gap-1 transition-all duration-200 active:scale-95 shadow-2xs hover:shadow-xs group/buy cursor-pointer">
                             <svg class="w-3.5 h-3.5 transition-transform group-hover/buy:scale-110 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                             </svg>
