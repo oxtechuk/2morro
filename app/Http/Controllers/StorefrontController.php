@@ -274,6 +274,89 @@ class StorefrontController extends Controller
         ));
     }
 
+    // Live autocomplete search API for products
+    public function autocomplete(Request $request)
+    {
+        $q = trim((string) $request->input('q', ''));
+
+        if (mb_strlen($q) < 1) {
+            return response()->json([
+                'success' => true,
+                'products' => [],
+                'total' => 0,
+            ]);
+        }
+
+        $query = Product::where('is_active', true)
+            ->with(['categories', 'skills', 'needs'])
+            ->where(function ($sub) use ($q) {
+                $sub->where('name', 'like', "%{$q}%")
+                    ->orWhere('short_description', 'like', "%{$q}%")
+                    ->orWhere('sku', 'like', "%{$q}%")
+                    ->orWhereHas('categories', function ($catQ) use ($q) {
+                        $catQ->where('name', 'like', "%{$q}%");
+                    })
+                    ->orWhereHas('skills', function ($skillQ) use ($q) {
+                        $skillQ->where('name', 'like', "%{$q}%");
+                    })
+                    ->orWhereHas('needs', function ($needQ) use ($q) {
+                        $needQ->where('name', 'like', "%{$q}%");
+                    });
+            });
+
+        $totalCount = $query->count();
+
+        // Order with name match priority
+        $products = $query->orderByRaw("
+            CASE 
+                WHEN name LIKE ? THEN 1 
+                WHEN name LIKE ? THEN 2 
+                ELSE 3 
+            END, id DESC", ["{$q}%", "%{$q}%"])
+            ->take(8)
+            ->get();
+
+        $formatted = $products->map(function ($product) {
+            // Determine image
+            $imageUrl = null;
+            if (!empty($product->images) && is_array($product->images) && count($product->images) > 0) {
+                $img = $product->images[0];
+                $imageUrl = str_starts_with($img, 'http') ? $img : asset('storage/' . $img);
+            }
+
+            // Type badge in Arabic
+            $typeLabels = [
+                'physical' => 'أداة تعليمية',
+                'digital' => 'شيت رقمي',
+                'bundle' => 'باقة متكاملة',
+                'course' => 'كورس تدريبي',
+                'session' => 'جلسة استشارية',
+            ];
+            $typeLabel = $typeLabels[$product->type] ?? ($product->categories->first()?->name ?? 'منتج');
+
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'slug' => $product->slug,
+                'url' => route('product', $product->slug),
+                'price' => number_format((float)$product->price, 2),
+                'sale_price' => $product->sale_price ? number_format((float)$product->sale_price, 2) : null,
+                'is_sale' => $product->sale_price && (float)$product->sale_price < (float)$product->price,
+                'type_label' => $typeLabel,
+                'badge' => $product->badge,
+                'image_url' => $imageUrl,
+                'category_name' => $product->categories->first()?->name ?? null,
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'query' => $q,
+            'products' => $formatted,
+            'total' => $totalCount,
+        ]);
+    }
+
     // Dynamic XML Sitemap
     public function sitemap()
     {

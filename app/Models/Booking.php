@@ -12,6 +12,7 @@ class Booking extends Model
     protected $fillable = [
         'booking_number',
         'user_id',
+        'booking_branch_id',
         'parent_name',
         'parent_phone',
         'parent_email',
@@ -22,6 +23,11 @@ class Booking extends Model
         'branch',
         'booking_date',
         'booking_time',
+        'price',
+        'payment_method',
+        'payment_status',
+        'payment_receipt',
+        'payment_reference',
         'notes',
         'status',
         'admin_notes',
@@ -31,6 +37,7 @@ class Booking extends Model
     protected $casts = [
         'booking_date' => 'date',
         'created_by_admin' => 'boolean',
+        'price' => 'decimal:2',
     ];
 
     // Arabic mapping for Service Types
@@ -47,7 +54,7 @@ class Booking extends Model
         'stuttering' => 'جلسات علاج التأتأة والتهتهة واللدغات',
     ];
 
-    // Arabic mapping for Branches
+    // Arabic mapping for Branches (fallback)
     public static array $branches = [
         'ibrahimiya' => 'فرع الإبراهيمية (أول لاجتيه من شارع أبو قير)',
         'bitash' => 'فرع أول البيطاش (أمام بنك القاهرة - عمارة مركز القلب)',
@@ -69,9 +76,29 @@ class Booking extends Model
         'cancelled' => 'ملغي',
     ];
 
+    // Payment Methods
+    public static array $paymentMethods = [
+        'vodafone_cash' => 'فودافون كاش (Vodafone Cash)',
+        'instapay' => 'إنستاباي (InstaPay)',
+        'bank_transfer' => 'تحويل بنكي',
+        'at_center' => 'الدفع في مقر المركز',
+    ];
+
+    // Payment Statuses
+    public static array $paymentStatuses = [
+        'pending' => 'قيد مراجعة التحويل',
+        'paid' => 'تم الدفع وتأكيد الإيصال',
+        'at_center' => 'الدفع عند الحضور',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function bookingBranch()
+    {
+        return $this->belongsTo(BookingBranch::class, 'booking_branch_id');
     }
 
     public function getServiceTypeLabelAttribute(): string
@@ -81,6 +108,9 @@ class Booking extends Model
 
     public function getBranchLabelAttribute(): string
     {
+        if ($this->bookingBranch) {
+            return $this->bookingBranch->name . ($this->bookingBranch->address ? ' (' . $this->bookingBranch->address . ')' : '');
+        }
         return self::$branches[$this->branch] ?? $this->branch;
     }
 
@@ -92,6 +122,36 @@ class Booking extends Model
     public function getStatusLabelAttribute(): string
     {
         return self::$statuses[$this->status] ?? $this->status;
+    }
+
+    public function getPaymentMethodLabelAttribute(): string
+    {
+        return self::$paymentMethods[$this->payment_method] ?? ($this->payment_method ?: 'لم يحدد');
+    }
+
+    public function getPaymentStatusLabelAttribute(): string
+    {
+        return self::$paymentStatuses[$this->payment_status] ?? $this->payment_status;
+    }
+
+    public function getPaymentStatusBadgeAttribute(): string
+    {
+        return match ($this->payment_status) {
+            'paid' => 'bg-success text-white',
+            'at_center' => 'bg-info text-white',
+            default => 'bg-warning text-dark',
+        };
+    }
+
+    public function getReceiptUrlAttribute(): ?string
+    {
+        if (!$this->payment_receipt) {
+            return null;
+        }
+        if (str_starts_with($this->payment_receipt, 'http')) {
+            return $this->payment_receipt;
+        }
+        return asset('storage/' . $this->payment_receipt);
     }
 
     public function getStatusBadgeAttribute(): string

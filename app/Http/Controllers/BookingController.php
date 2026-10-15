@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\BookingBranch;
 use App\Models\User;
 use App\Models\CustomerProfile;
 use App\Models\CrmLog;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -16,15 +18,45 @@ class BookingController extends Controller
     public function index()
     {
         $services = Booking::$services;
-        $branches = Booking::$branches;
         $formats = Booking::$formats;
 
-        $bookingImage = \App\Models\Setting::get('booking_image', 'images/hero-child.jpg');
-        $bookingTitle = \App\Models\Setting::get('booking_page_title', 'حجز استشارة وتقييم مهارات الطفل');
-        $bookingSubtitle = \App\Models\Setting::get('booking_page_subtitle', 'مركز 2morro المتخصص في رعاية وتأهيل وتنمية قدرات الأطفال بإشراف أ. هبة الله أكرم.');
-        $bookingQuote = \App\Models\Setting::get('booking_page_quote', '« عندما تشعرين بأن طفلك بحاجة لدعم وتأهيل في مهاراته اللغوية أو السلوكية أو الحركية، فإن التدخل المبكر يصنع الفارق في مستقبله »');
+        // Fetch dynamic active branches from database
+        $branchesList = BookingBranch::where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
 
-        return view('storefront.booking', compact('services', 'branches', 'formats', 'bookingImage', 'bookingTitle', 'bookingSubtitle', 'bookingQuote'));
+        // Fallback array for legacy references if needed
+        $branches = [];
+        foreach ($branchesList as $b) {
+            $branches[$b->slug] = $b->name . ($b->address ? ' (' . $b->address . ')' : '');
+        }
+
+        // Settings
+        $bookingImage = Setting::get('booking_image', 'images/hero-child.jpg');
+        $bookingTitle = Setting::get('booking_page_title', 'حجز استشارة وتقييم مهارات الطفل');
+        $bookingSubtitle = Setting::get('booking_page_subtitle', 'مركز 2morro المتخصص في رعاية وتأهيل وتنمية قدرات الأطفال بإشراف أ. هبة الله أكرم.');
+        $bookingQuote = Setting::get('booking_page_quote', '« عندما تشعرين بأن طفلك بحاجة لدعم وتأهيل في مهاراته اللغوية أو السلوكية أو الحركية، فإن التدخل المبكر يصنع الفارق في مستقبله »');
+
+        // Payment Settings
+        $paymentSettings = [
+            'vodafone_cash' => Setting::get('booking_vodafone_cash', '01550504512'),
+            'instapay' => Setting::get('booking_instapay', '2morro@instapay'),
+            'bank_details' => Setting::get('booking_bank_details', 'بنك مصر - حساب رقم 123456789 - مركز تمورو للتأهيل'),
+            'instructions' => Setting::get('booking_payment_instructions', 'يرجى تحويل قيمة الحجز عبر فودافون كاش أو إنستاباي، ثم إرفاق صورة إشعار التحويل (سكرين شوت) لتأكيد حجز الموعد مباشرة.'),
+            'allow_cash_at_center' => Setting::get('booking_allow_cash_at_center', '1') === '1',
+        ];
+
+        return view('storefront.booking', compact(
+            'services',
+            'branches',
+            'branchesList',
+            'formats',
+            'bookingImage',
+            'bookingTitle',
+            'bookingSubtitle',
+            'bookingQuote',
+            'paymentSettings'
+        ));
     }
 
     // Handle Booking Submission
@@ -38,9 +70,12 @@ class BookingController extends Controller
             'child_age' => 'required|string|max:50',
             'service_type' => 'required|string',
             'session_format' => 'required|string|in:in_center,online',
-            'branch' => 'required_if:session_format,in_center|nullable|string',
+            'branch_id' => 'required_if:session_format,in_center|nullable',
             'booking_date' => 'required|date|after_or_equal:today',
-            'booking_time' => 'required|string|max:50',
+            'booking_time' => 'required|string|max:100',
+            'payment_method' => 'required|string|in:vodafone_cash,instapay,bank_transfer,at_center',
+            'payment_receipt' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'payment_reference' => 'nullable|string|max:190',
             'notes' => 'nullable|string|max:1000',
         ], [
             'parent_name.required' => 'يرجى إدخال اسم ولي الأمر.',
@@ -48,19 +83,52 @@ class BookingController extends Controller
             'child_name.required' => 'يرجى إدخال اسم الطفل.',
             'child_age.required' => 'يرجى إدخال عمر الطفل.',
             'service_type.required' => 'يرجى اختيار نوع الاستشارة / الجلسة المطلوبة.',
-            'branch.required_if' => 'يرجى تحديد الفرع المفضل للمقابلة في المركز.',
+            'branch_id.required_if' => 'يرجى تحديد الفرع المفضل للمقابلة في المركز.',
             'booking_date.required' => 'يرجى اختيار التاريخ المناسب للحجز.',
             'booking_date.after_or_equal' => 'تاريخ الحجز يجب أن يكون اليوم أو تاريخاً قادماً.',
             'booking_time.required' => 'يرجى اختيار الفترة الزمنية المناسبة.',
+            'payment_method.required' => 'يرجى اختيار طريقة الدفع المناسبة.',
+            'payment_receipt.image' => 'يجب أن يكون إشعار الدفع صورة صالحة (JPG, PNG, WEBP).',
+            'payment_receipt.max' => 'حجم صورة الإشعار لا يجب أن يتجاوز 5 ميجابايت.',
         ]);
 
-        // 1. Identify or Create User for CRM tracking
+        // Require receipt if paying via electronic methods
+        if (in_array($validated['payment_method'], ['vodafone_cash', 'instapay', 'bank_transfer']) && !$request->hasFile('payment_receipt')) {
+            return back()->withErrors(['payment_receipt' => 'يرجى رفع صورة سكرين شوت لإشعار تحويل الدفع لتأكيد الحجز.'])->withInput();
+        }
+
+        // 1. Identify Branch & Price
+        $branchModel = null;
+        if ($validated['session_format'] === 'online') {
+            $branchModel = BookingBranch::where('is_online', true)->first();
+        } elseif (!empty($validated['branch_id'])) {
+            $branchModel = is_numeric($validated['branch_id']) 
+                ? BookingBranch::find($validated['branch_id']) 
+                : BookingBranch::where('slug', $validated['branch_id'])->first();
+        }
+
+        if (!$branchModel) {
+            $branchModel = BookingBranch::first();
+        }
+
+        $price = $branchModel ? $branchModel->price : 300.00;
+        $branchSlug = $branchModel ? $branchModel->slug : ($validated['session_format'] === 'online' ? 'online' : 'ibrahimiya');
+        $branchId = $branchModel ? $branchModel->id : null;
+
+        // 2. Upload Receipt Screenshot if provided
+        $receiptPath = null;
+        if ($request->hasFile('payment_receipt')) {
+            $file = $request->file('payment_receipt');
+            $filename = 'receipt_' . time() . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+            $receiptPath = $file->storeAs('booking_receipts', $filename, 'public');
+        }
+
+        // 3. Identify or Create User for CRM tracking
         $userId = Auth::id();
         if (!$userId) {
             $user = !empty($validated['parent_email']) ? User::where('email', $validated['parent_email'])->first() : null;
 
             if (!$user) {
-                // Generate a temporary dummy email if not provided
                 $email = $validated['parent_email'] ?: 'client_' . time() . '_' . rand(100, 999) . '@2morro.center';
                 $user = User::create([
                     'name' => $validated['parent_name'],
@@ -71,25 +139,26 @@ class BookingController extends Controller
             $userId = $user->id;
         }
 
-        // 2. Ensure Customer Profile in CRM
-        $profile = CustomerProfile::firstOrCreate(
+        // 4. Ensure Customer Profile in CRM
+        CustomerProfile::firstOrCreate(
             ['user_id' => $userId],
             ['segment' => 'parent', 'loyalty_points' => 10]
         );
 
-        // 3. Generate unique Booking Number (e.g. BK-260819-1234)
+        // 5. Generate unique Booking Number
         $bookingNumber = 'BK-' . date('ymd') . '-' . rand(1000, 9999);
         while (Booking::where('booking_number', $bookingNumber)->exists()) {
             $bookingNumber = 'BK-' . date('ymd') . '-' . rand(1000, 9999);
         }
 
-        // 4. Determine final branch
-        $finalBranch = ($validated['session_format'] === 'online') ? 'online' : ($validated['branch'] ?? 'ibrahimiya');
+        // 6. Payment status logic
+        $paymentStatus = ($validated['payment_method'] === 'at_center') ? 'at_center' : 'pending';
 
-        // 5. Create the Booking Record
+        // 7. Create the Booking Record
         $booking = Booking::create([
             'booking_number' => $bookingNumber,
             'user_id' => $userId,
+            'booking_branch_id' => $branchId,
             'parent_name' => $validated['parent_name'],
             'parent_phone' => $validated['parent_phone'],
             'parent_email' => $validated['parent_email'] ?? null,
@@ -97,30 +166,35 @@ class BookingController extends Controller
             'child_age' => $validated['child_age'],
             'service_type' => $validated['service_type'],
             'session_format' => $validated['session_format'],
-            'branch' => $finalBranch,
+            'branch' => $branchSlug,
             'booking_date' => $validated['booking_date'],
             'booking_time' => $validated['booking_time'],
+            'price' => $price,
+            'payment_method' => $validated['payment_method'],
+            'payment_status' => $paymentStatus,
+            'payment_receipt' => $receiptPath,
+            'payment_reference' => $validated['payment_reference'] ?? null,
             'notes' => $validated['notes'] ?? null,
             'status' => 'pending',
             'created_by_admin' => false,
         ]);
 
-        // 5. Create CRM Activity Log
+        // 8. Create CRM Activity Log
         CrmLog::create([
             'user_id' => $userId,
             'admin_id' => null,
             'type' => 'system',
-            'details' => 'حجز استشارة / تقييم جديد (' . $booking->service_type_label . ') برقم حجز #' . $booking->booking_number . ' للطفل: ' . $booking->child_name . ' - الفرع: ' . $booking->branch_label,
+            'details' => 'حجز استشارة / تقييم جديد (' . $booking->service_type_label . ') برقم حجز #' . $booking->booking_number . ' للطفل: ' . $booking->child_name . ' - الفرع: ' . $booking->branch_label . ' - السعر: ' . number_format($price, 2) . ' ج.م (' . $booking->payment_method_label . ')',
         ]);
 
         return redirect()->route('booking.success', $booking->booking_number)
-            ->with('success', 'تم استلام طلب حجز الاستشارة بنجاح وسيتم التواصل معكم لتأكيد الموعد.');
+            ->with('success', 'تم استلام طلب حجز الاستشارة بنجاح وإرفاق إشعار الدفع وسيتم مراجعته وتأكيد الموعد.');
     }
 
     // Booking Success Confirmation Page
     public function success($bookingNumber)
     {
-        $booking = Booking::where('booking_number', $bookingNumber)->firstOrFail();
+        $booking = Booking::with('bookingBranch')->where('booking_number', $bookingNumber)->firstOrFail();
 
         return view('storefront.booking-success', compact('booking'));
     }

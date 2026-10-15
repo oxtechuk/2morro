@@ -29,6 +29,15 @@ class Product extends Model
 
     protected $appends = ['thumbnail'];
 
+    protected $casts = [
+        'benefits' => 'array',
+        'how_to_use' => 'array',
+        'images' => 'array',
+        'is_active' => 'boolean',
+        'price' => 'decimal:2',
+        'sale_price' => 'decimal:2',
+    ];
+
     /**
      * Retrieve the shop that this model belongs to.
      *

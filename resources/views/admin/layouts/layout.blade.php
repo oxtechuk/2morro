@@ -657,6 +657,11 @@
                                     <span class="badge ms-auto fw-black fs-8 px-2 py-0.5 rounded-pill" style="background-color: #fef08a; color: #854d0e;">{{ $pendingBookingsCount }}</span>
                                 @endif
                             </a>
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.bookings.settings') }}" class="submenu-link {{ request()->routeIs('admin.bookings.settings') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>الفروع والمواعيد والأسعار</span>
+                            </a>
                         </li>
                         <li class="submenu-item">
                             <a href="{{ route('admin.crm.index') }}" class="submenu-link {{ request()->routeIs('admin.crm.*') ? 'active' : '' }}">

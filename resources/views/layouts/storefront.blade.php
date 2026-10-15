@@ -296,7 +296,7 @@
 
             </div>
 
-            <!-- Sleek Dropdown Search Overlay -->
+            <!-- Sleek Dropdown Search Overlay with Live Autocomplete -->
             <div x-show="searchOpen" 
                  x-cloak
                  x-transition:enter="transition ease-out duration-200"
@@ -305,13 +305,155 @@
                  x-transition:leave="transition ease-in duration-150"
                  x-transition:leave-start="opacity-100 translate-y-0"
                  x-transition:leave-end="opacity-0 -translate-y-2"
-                 class="border-t border-slate-100 bg-white/98 backdrop-blur-lg py-3 px-4 sm:px-8 shadow-md">
-                <div class="max-w-3xl mx-auto flex items-center gap-3">
-                    <form action="{{ route('search') }}" method="GET" class="flex-1 relative flex items-center bg-[#F8FAFC] border border-slate-200 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100 rounded-full h-10 px-4">
-                        <input type="text" name="q" value="{{ request('q') }}" placeholder="ابحث عن منتج، شيت رقمي، أو مهارة مستهدفة..." class="w-full bg-transparent border-0 text-sm font-semibold focus:ring-0 text-slate-800 placeholder-slate-400 px-2">
-                        <button type="submit" class="text-white font-bold text-xs bg-[#2563ea] hover:bg-blue-700 px-4 py-1.5 rounded-full transition-colors">بحث</button>
+                 @keydown.escape.window="searchOpen = false"
+                 class="border-t border-slate-100 bg-white/98 backdrop-blur-lg py-3 px-4 sm:px-8 shadow-md relative z-50"
+                 x-data="productAutocomplete()">
+                
+                <div class="max-w-3xl mx-auto flex items-center gap-3 relative">
+                    
+                    <!-- Search Input & Form -->
+                    <form action="{{ route('search') }}" method="GET" @submit="handleSubmit($event)" class="flex-1 relative flex items-center bg-[#F8FAFC] border border-slate-200 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100 rounded-full h-11 px-4 transition-all">
+                        
+                        <!-- Search Icon -->
+                        <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+
+                        <!-- Input with Autocomplete events -->
+                        <input type="text" 
+                               name="q" 
+                               x-ref="searchInput"
+                               x-model="query"
+                               @input.debounce.250ms="fetchSuggestions()"
+                               @focus="if(query.trim().length >= 1) isOpen = true"
+                               @keydown.arrow-down.prevent="highlightNext()"
+                               @keydown.arrow-up.prevent="highlightPrev()"
+                               @keydown.enter="handleEnter($event)"
+                               autocomplete="off"
+                               placeholder="ابحث عن اسم منتج، شيت رقمي، أو مهارة مستهدفة..." 
+                               class="w-full bg-transparent border-0 text-xs sm:text-sm font-bold focus:ring-0 text-slate-800 placeholder-slate-400 px-3 outline-none">
+                        
+                        <!-- Loading spinner -->
+                        <template x-if="isLoading">
+                            <svg class="animate-spin w-4 h-4 text-blue-600 flex-shrink-0 mr-2" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                            </svg>
+                        </template>
+
+                        <!-- Clear Button -->
+                        <button type="button" x-show="query.length > 0" @click="clearSearch()" class="text-slate-400 hover:text-slate-600 px-1 text-sm font-bold ml-1 cursor-pointer">
+                            ✕
+                        </button>
+
+                        <button type="submit" class="text-white font-black text-xs bg-[#2563ea] hover:bg-blue-700 px-4 sm:px-5 py-2 rounded-full transition-colors flex-shrink-0 shadow-xs cursor-pointer">
+                            بحث
+                        </button>
                     </form>
-                    <button @click="searchOpen = false" class="p-2 text-slate-400 hover:text-slate-600 text-lg font-bold">✕</button>
+
+                    <!-- Close Button -->
+                    <button @click="searchOpen = false; isOpen = false" class="p-2 text-slate-400 hover:text-slate-600 text-lg font-bold transition-colors cursor-pointer">
+                        ✕
+                    </button>
+
+                    <!-- Live Autocomplete Floating Dropdown Panel -->
+                    <div x-show="isOpen && query.trim().length >= 1" 
+                         x-cloak
+                         @click.away="isOpen = false"
+                         x-transition:enter="transition ease-out duration-150"
+                         x-transition:enter-start="opacity-0 translate-y-1"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-100"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 translate-y-1"
+                         class="absolute top-full right-0 left-12 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-200/90 z-[999] overflow-hidden max-h-[460px] overflow-y-auto">
+                        
+                        <!-- Header badge -->
+                        <div class="px-4 py-2.5 bg-slate-50 border-b border-slate-100 flex items-center justify-between text-xs text-slate-500 font-bold">
+                            <span class="flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                                <span>المنتجات المقترحة</span>
+                            </span>
+                            <span x-text="totalCount + ' نتيجة'" class="text-[11px] text-slate-400 font-bold"></span>
+                        </div>
+
+                        <!-- Results List -->
+                        <template x-if="products.length > 0">
+                            <ul class="divide-y divide-slate-100">
+                                <template x-for="(product, index) in products" :key="product.id">
+                                    <li :class="{ 'bg-blue-50/80': highlightedIndex === index, 'hover:bg-slate-50': highlightedIndex !== index }">
+                                        <a :href="product.url" class="flex items-center gap-3.5 p-3 sm:px-4 transition-colors">
+                                            
+                                            <!-- Product Thumbnail -->
+                                            <div class="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200/80 overflow-hidden flex-shrink-0 flex items-center justify-center">
+                                                <template x-if="product.image_url">
+                                                    <img :src="product.image_url" :alt="product.name" class="w-full h-full object-cover">
+                                                </template>
+                                                <template x-if="!product.image_url">
+                                                    <span class="text-xl">📦</span>
+                                                </template>
+                                            </div>
+
+                                            <!-- Product Info -->
+                                            <div class="flex-1 min-w-0 text-right">
+                                                <div class="flex items-center gap-2 mb-0.5">
+                                                    <h4 class="text-xs sm:text-sm font-black text-slate-900 truncate" x-text="product.name"></h4>
+                                                    <template x-if="product.badge">
+                                                        <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-orange-100 text-orange-700 whitespace-nowrap" x-text="product.badge"></span>
+                                                    </template>
+                                                </div>
+                                                <div class="flex items-center gap-2 text-[11px] text-slate-500">
+                                                    <span class="text-blue-600 font-bold" x-text="product.type_label"></span>
+                                                    <template x-if="product.category_name">
+                                                        <span class="text-slate-300">•</span>
+                                                    </template>
+                                                    <template x-if="product.category_name">
+                                                        <span class="truncate" x-text="product.category_name"></span>
+                                                    </template>
+                                                </div>
+                                            </div>
+
+                                            <!-- Price & Action -->
+                                            <div class="text-left flex-shrink-0">
+                                                <template x-if="product.is_sale">
+                                                    <div>
+                                                        <span class="text-xs sm:text-sm font-black text-emerald-600 block" x-text="product.sale_price + ' ج.م'"></span>
+                                                        <span class="text-[10px] text-slate-400 line-through block" x-text="product.price + ' ج.م'"></span>
+                                                    </div>
+                                                </template>
+                                                <template x-if="!product.is_sale">
+                                                    <span class="text-xs sm:text-sm font-black text-slate-900 block" x-text="product.price + ' ج.م'"></span>
+                                                </template>
+                                            </div>
+
+                                        </a>
+                                    </li>
+                                </template>
+                            </ul>
+                        </template>
+
+                        <!-- Footer: View All Results Link -->
+                        <template x-if="products.length > 0">
+                            <div class="p-3 bg-slate-50 border-t border-slate-100 text-center">
+                                <a :href="'{{ route('search') }}?q=' + encodeURIComponent(query)" class="text-xs font-black text-[#2563ea] hover:text-blue-800 flex items-center justify-center gap-1.5 transition-colors">
+                                    <span>عرض جميع نتائج البحث لـ &quot;<span x-text="query"></span>&quot;</span>
+                                    <span class="font-bold font-mono">(<span x-text="totalCount"></span> منتجات)</span>
+                                    <span class="text-sm">←</span>
+                                </a>
+                            </div>
+                        </template>
+
+                        <!-- Empty State: No results found -->
+                        <template x-if="!isLoading && products.length === 0 && query.trim().length >= 1">
+                            <div class="p-6 text-center text-slate-500">
+                                <span class="text-2xl block mb-1.5">🔍</span>
+                                <p class="text-xs font-bold text-slate-700">لم نجد أي منتجات مطابقة لـ &quot;<span x-text="query"></span>&quot;</p>
+                                <p class="text-[11px] text-slate-400 mt-1">جرب البحث بكلمات عامة مثل: تخاطب، كروت، ألعاب، أو شيتات</p>
+                            </div>
+                        </template>
+
+                    </div>
+
                 </div>
             </div>
 
@@ -720,6 +862,95 @@
         </div>
 
         <script>
+            function productAutocomplete() {
+                return {
+                    query: '{{ request('q') }}',
+                    products: [],
+                    totalCount: 0,
+                    isLoading: false,
+                    isOpen: false,
+                    highlightedIndex: -1,
+                    
+                    init() {
+                        this.$watch('searchOpen', (val) => {
+                            if (val) {
+                                setTimeout(() => {
+                                    this.$refs.searchInput?.focus();
+                                    if (this.query.trim().length >= 1) {
+                                        this.fetchSuggestions();
+                                    }
+                                }, 100);
+                            } else {
+                                this.isOpen = false;
+                            }
+                        });
+                    },
+
+                    fetchSuggestions() {
+                        const q = this.query.trim();
+                        if (q.length < 1) {
+                            this.products = [];
+                            this.totalCount = 0;
+                            this.isOpen = false;
+                            return;
+                        }
+
+                        this.isLoading = true;
+                        this.isOpen = true;
+                        this.highlightedIndex = -1;
+
+                        fetch(`{{ route('search.autocomplete') }}?q=${encodeURIComponent(q)}`, {
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            this.products = data.products || [];
+                            this.totalCount = data.total || 0;
+                            this.isLoading = false;
+                            this.isOpen = true;
+                        })
+                        .catch(() => {
+                            this.isLoading = false;
+                        });
+                    },
+
+                    highlightNext() {
+                        if (!this.isOpen || this.products.length === 0) return;
+                        this.highlightedIndex = (this.highlightedIndex + 1) % this.products.length;
+                    },
+
+                    highlightPrev() {
+                        if (!this.isOpen || this.products.length === 0) return;
+                        this.highlightedIndex = (this.highlightedIndex - 1 + this.products.length) % this.products.length;
+                    },
+
+                    handleEnter(e) {
+                        if (this.isOpen && this.highlightedIndex >= 0 && this.products[this.highlightedIndex]) {
+                            e.preventDefault();
+                            window.location.href = this.products[this.highlightedIndex].url;
+                        }
+                    },
+
+                    clearSearch() {
+                        this.query = '';
+                        this.products = [];
+                        this.totalCount = 0;
+                        this.isOpen = false;
+                        this.$refs.searchInput?.focus();
+                    },
+
+                    handleSubmit(e) {
+                        if (this.highlightedIndex >= 0 && this.products[this.highlightedIndex]) {
+                            e.preventDefault();
+                            window.location.href = this.products[this.highlightedIndex].url;
+                        }
+                    }
+                };
+            }
+
             document.addEventListener('DOMContentLoaded', function() {
                 const lazyImages = document.querySelectorAll('img');
                 lazyImages.forEach(img => {

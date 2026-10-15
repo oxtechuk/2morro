@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 // Storefront routes
 Route::get('/', [StorefrontController::class, 'index'])->name('home');
 Route::get('/product/{product:slug}', [StorefrontController::class, 'product'])->name('product');
+Route::get('/search/autocomplete', [StorefrontController::class, 'autocomplete'])->name('search.autocomplete');
 Route::get('/search', [StorefrontController::class, 'search'])->name('search');
 Route::get('/sitemap.xml', [StorefrontController::class, 'sitemap']);
 
@@ -69,7 +70,12 @@ use App\Http\Controllers\Admin\ProductImportExportController;
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
-    // Consultation Bookings Management (إدارة الحجوزات والاستشارات)
+    // Consultation Bookings & Branch Schedules Management (إدارة الحجوزات، الفروع، المواعيد والأسعار)
+    Route::get('bookings/settings', [AdminBookingController::class, 'settings'])->name('bookings.settings');
+    Route::post('bookings/settings', [AdminBookingController::class, 'updateSettings'])->name('bookings.settings.update');
+    Route::post('bookings/branches', [AdminBookingController::class, 'storeBranch'])->name('bookings.branches.store');
+    Route::put('bookings/branches/{branch}', [AdminBookingController::class, 'updateBranch'])->name('bookings.branches.update');
+    Route::delete('bookings/branches/{branch}', [AdminBookingController::class, 'destroyBranch'])->name('bookings.branches.destroy');
     Route::resource('bookings', AdminBookingController::class);
 
     // Brands & Partners Management (إدارة البراندات والشركاء)
