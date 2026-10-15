@@ -14,7 +14,7 @@
             <div class="flex flex-col items-end gap-3">
                 <div @click="showChat(order.shop?.id)"
                     class="w-8 h-8 flex justify-center items-center bg-red-50 rounded-lg cursor-pointer">
-                    <img src="/public/assets/icons/shop-chat/chat.svg" alt="chat" class="w-6 h-6">
+                    <img :src="'/assets/icons/shop-chat/chat.svg'" alt="chat" class="w-6 h-6">
                 </div>
                 <div class="text-xs sm:text-sm font-normal px-2 py-1 rounded-[10px] inline-block  text-ellipsis overflow-hidden"
                     :class="order.order_status">

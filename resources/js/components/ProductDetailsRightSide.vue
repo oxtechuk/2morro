@@ -70,7 +70,7 @@
                 <div v-if="authStore.token"
                     class="w-8 h-8 flex justify-center items-center bg-red-50 rounded-lg cursor-pointer"
                     @click="showChat(product.shop?.id, authStore?.user?.id, product.id)">
-                    <img src="/public/assets/icons/shop-chat/chat.svg" alt="chat" class="w-6 h-6">
+                    <img :src="'/assets/icons/shop-chat/chat.svg'" alt="chat" class="w-6 h-6">
                 </div>
             </div>
 

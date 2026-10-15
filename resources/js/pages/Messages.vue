@@ -14,7 +14,7 @@
                         <div class="p-2 lg:p-4 border-b relative">
                             <input type="text" placeholder="Search Seller" @keyup="searchShops($event)"
                                 class="w-full pl-10 py-3 md:py-4 pr-4 border rounded-lg text-sm md:text-base" />
-                            <img src="/public/assets/icons/shop-chat/search.svg" alt="search"
+                            <img :src="'/assets/icons/shop-chat/search.svg'" alt="search"
                                 class="w-5 h-5 lg:w-6 lg:h-6 absolute top-[50%] translate-y-[-50%] left-4 lg:left-8">
                         </div>
                         <!-- Seller List -->
@@ -133,7 +133,7 @@
                                         @keydown.enter.exact.prevent="sendMessage" @keydown.shift.enter=""
                                         class="flex-1 border-0 rounded-lg text-sm focus:outline-none resize-none break-words"></textarea>
                                     <button type="submit" class="text-white mr-3">
-                                        <img src="/public/assets/icons/shop-chat/sent-chat.svg" alt="chat"
+                                        <img :src="'/assets/icons/shop-chat/sent-chat.svg'" alt="chat"
                                             class="w-6 h-6">
                                     </button>
                                 </div>

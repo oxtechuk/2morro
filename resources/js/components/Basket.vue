@@ -42,7 +42,7 @@
                     @click.stop="openChat(shop)"
                 >
                     <img
-                        src="/public/assets/icons/shop-chat/chat.svg"
+                        :src="'/assets/icons/shop-chat/chat.svg'"
                         alt="chat"
                         class="w-6 h-6"
                     />

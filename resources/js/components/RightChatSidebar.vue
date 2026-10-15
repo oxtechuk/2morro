@@ -77,7 +77,7 @@
                             @keydown.enter.exact.prevent="sendMessage" @keydown.shift.enter=""
                             class="flex-1 border-0 rounded-lg text-sm focus:outline-none resize-none break-words"></textarea>
                         <button type="submit" class="text-white mr-3">
-                            <img src="/public/assets/icons/shop-chat/sent-chat.svg" alt="chat" class="w-6 h-6">
+                            <img :src="'/assets/icons/shop-chat/sent-chat.svg'" alt="chat" class="w-6 h-6">
                         </button>
                     </div>
                 </div>

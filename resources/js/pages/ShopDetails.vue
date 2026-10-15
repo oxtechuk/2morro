@@ -114,7 +114,7 @@
                                 class="w-12 h-12 flex justify-center items-center bg-red-50 rounded-lg cursor-pointer"
                             >
                                 <img
-                                    src="/public/assets/icons/shop-chat/chat.svg"
+                                    :src="'/assets/icons/shop-chat/chat.svg'"
                                     alt="chat"
                                     class="w-8 h-8"
                                 />
