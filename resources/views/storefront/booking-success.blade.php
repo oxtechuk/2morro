@@ -65,8 +65,9 @@
 
             <!-- WhatsApp Pre-filled Confirmation Link -->
             @php
+                $bookingWaNum = preg_replace('/[^0-9]/', '', \App\Models\Setting::get('store_whatsapp', '201550504512')) ?: '201550504512';
                 $waMsg = "مرحباً مركز 2morro، لقد قمت بحجز استشارة برقم ({$booking->booking_number}) للطفل ({$booking->child_name} - {$booking->child_age}) - خدمة: ({$booking->service_type_label}) بتاريخ ({$booking->booking_date->format('Y/m/d')} - {$booking->booking_time}) بفرع: ({$booking->branch_label}). أود تأكيد الموعد.";
-                $waUrl = "https://wa.me/201550504512?text=" . urlencode($waMsg);
+                $waUrl = "https://wa.me/{$bookingWaNum}?text=" . urlencode($waMsg);
             @endphp
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-3">

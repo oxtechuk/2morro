@@ -1,4 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap');
+@font-face {
+    font-family: 'Bahij TheSansArabic';
+    src: url('/fonts/Bahij_TheSansArabic-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
 
 @tailwind base;
 @tailwind components;
@@ -10,7 +16,7 @@
         -webkit-tap-highlight-color: transparent;
     }
     body {
-        font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+        font-family: 'Bahij TheSansArabic', 'Cairo', system-ui, -apple-system, sans-serif;
         color: #1e293b;
         background-color: #FFFFFF;
         -webkit-font-smoothing: antialiased;

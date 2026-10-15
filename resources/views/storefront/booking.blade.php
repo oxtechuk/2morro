@@ -94,9 +94,13 @@
 
                         <!-- Direct WhatsApp Contact Button -->
                         <div class="pt-2">
-                            <a href="https://wa.me/201550504512" target="_blank" class="w-full py-3 px-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-black flex items-center justify-center gap-2 shadow-xs transition-all hover:scale-[1.02] active:scale-95">
+                            @php
+                                $bookingWaRaw = \App\Models\Setting::get('store_whatsapp', '201550504512');
+                                $bookingWaNum = preg_replace('/[^0-9]/', '', $bookingWaRaw) ?: '201550504512';
+                            @endphp
+                            <a href="https://wa.me/{{ $bookingWaNum }}" target="_blank" class="w-full py-3 px-4 rounded-2xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-black flex items-center justify-center gap-2 shadow-xs transition-all hover:scale-[1.02] active:scale-95">
                                 <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.458L0 24zm6.002-3.693c1.615.957 3.178 1.462 4.736 1.463 5.485.002 9.948-4.463 9.95-9.953.001-2.66-1.025-5.16-2.887-7.026C16.001 2.923 13.506 1.897 10.85 1.897c-5.486 0-9.949 4.464-9.953 9.954-.001 2.052.541 4.06 1.567 5.814l-1.026 3.75 3.829-1.004z"></path></svg>
-                                <span>استفسار فوري عبر واتساب (01550504512)</span>
+                                <span>استفسار فوري عبر واتساب ({{ $bookingWaRaw }})</span>
                             </a>
                         </div>
 

@@ -96,6 +96,7 @@ class CheckoutController extends Controller
         $whatsappNumber = \App\Models\Setting::get('store_whatsapp', '201550504512');
         $supervisorName = \App\Models\Setting::get('supervisor_name', 'أ. هبة الله أكرم');
         $workingHours = \App\Models\Setting::get('working_hours', 'من 12:00 ظهراً إلى 9:00 مساءً (ماعدا الجمعة)');
+        $codEnabled = \App\Models\Setting::get('payment_cod_enabled', '1') == '1';
 
         return view('storefront.checkout', compact(
             'cart',
@@ -103,6 +104,7 @@ class CheckoutController extends Controller
             'shippingFee',
             'total',
             'physicalCount',
+            'codEnabled',
             'instapayAddress',
             'walletNumber',
             'walletNumbers',
@@ -136,6 +138,11 @@ class CheckoutController extends Controller
             'payment_method' => 'required|in:cod,instapay,wallet,bank',
             'notes' => 'nullable|string',
         ];
+
+        $codEnabled = \App\Models\Setting::get('payment_cod_enabled', '1') == '1';
+        if ($request->input('payment_method') === 'cod' && !$codEnabled) {
+            return back()->withInput()->with('error', 'طريقة الدفع عند الاستلام غير مفعلة حالياً.');
+        }
 
         // Proof of payment is required for InstaPay, Wallet, and Bank Transfer
         if (in_array($request->input('payment_method'), ['instapay', 'wallet', 'bank'])) {
