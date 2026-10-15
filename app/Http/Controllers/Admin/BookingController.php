@@ -269,7 +269,7 @@ class BookingController extends Controller
         $paymentSettings = [
             'vodafone_cash' => Setting::get('booking_vodafone_cash', '01550504512'),
             'instapay' => Setting::get('booking_instapay', '2morro@instapay'),
-            'bank_details' => Setting::get('booking_bank_details', 'بنك مصر - حساب رقم 123456789 - باسم مركز تمورو'),
+            'bank_details' => Setting::get('booking_bank_details', ''),
             'instructions' => Setting::get('booking_payment_instructions', 'يرجى تحويل قيمة الحجز عبر فودافون كاش أو إنستاباي، ثم إرفاق صورة إشعار التحويل (سكرين شوت) لتأكيد حجز الموعد مباشرة.'),
             'allow_cash_at_center' => Setting::get('booking_allow_cash_at_center', '1') === '1',
             'booking_image' => Setting::get('booking_image', 'images/hero-child.jpg'),

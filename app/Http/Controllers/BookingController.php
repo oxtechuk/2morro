@@ -41,9 +41,7 @@ class BookingController extends Controller
         $paymentSettings = [
             'vodafone_cash' => Setting::get('booking_vodafone_cash', '01550504512'),
             'instapay' => Setting::get('booking_instapay', '2morro@instapay'),
-            'bank_details' => Setting::get('booking_bank_details', 'بنك مصر - حساب رقم 123456789 - مركز تمورو للتأهيل'),
             'instructions' => Setting::get('booking_payment_instructions', 'يرجى تحويل قيمة الحجز عبر فودافون كاش أو إنستاباي، ثم إرفاق صورة إشعار التحويل (سكرين شوت) لتأكيد حجز الموعد مباشرة.'),
-            'allow_cash_at_center' => Setting::get('booking_allow_cash_at_center', '1') === '1',
         ];
 
         return view('storefront.booking', compact(
@@ -73,8 +71,8 @@ class BookingController extends Controller
             'branch_id' => 'required_if:session_format,in_center|nullable',
             'booking_date' => 'required|date|after_or_equal:today',
             'booking_time' => 'required|string|max:100',
-            'payment_method' => 'required|string|in:vodafone_cash,instapay,bank_transfer,at_center',
-            'payment_receipt' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'payment_method' => 'required|string|in:vodafone_cash,instapay',
+            'payment_receipt' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
             'payment_reference' => 'nullable|string|max:190',
             'notes' => 'nullable|string|max:1000',
         ], [
@@ -87,15 +85,11 @@ class BookingController extends Controller
             'booking_date.required' => 'يرجى اختيار التاريخ المناسب للحجز.',
             'booking_date.after_or_equal' => 'تاريخ الحجز يجب أن يكون اليوم أو تاريخاً قادماً.',
             'booking_time.required' => 'يرجى اختيار الفترة الزمنية المناسبة.',
-            'payment_method.required' => 'يرجى اختيار طريقة الدفع المناسبة.',
+            'payment_method.required' => 'يرجى اختيار طريقة الدفع المناسبة (فودافون كاش أو إنستاباي).',
+            'payment_receipt.required' => 'يرجى رفع صورة سكرين شوت لإشعار تحويل الدفع لتأكيد الحجز.',
             'payment_receipt.image' => 'يجب أن يكون إشعار الدفع صورة صالحة (JPG, PNG, WEBP).',
             'payment_receipt.max' => 'حجم صورة الإشعار لا يجب أن يتجاوز 5 ميجابايت.',
         ]);
-
-        // Require receipt if paying via electronic methods
-        if (in_array($validated['payment_method'], ['vodafone_cash', 'instapay', 'bank_transfer']) && !$request->hasFile('payment_receipt')) {
-            return back()->withErrors(['payment_receipt' => 'يرجى رفع صورة سكرين شوت لإشعار تحويل الدفع لتأكيد الحجز.'])->withInput();
-        }
 
         // 1. Identify Branch & Price
         $branchModel = null;
@@ -152,7 +146,7 @@ class BookingController extends Controller
         }
 
         // 6. Payment status logic
-        $paymentStatus = ($validated['payment_method'] === 'at_center') ? 'at_center' : 'pending';
+        $paymentStatus = 'pending';
 
         // 7. Create the Booking Record
         $booking = Booking::create([
