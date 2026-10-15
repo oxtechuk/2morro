@@ -66,9 +66,9 @@ class BookingController extends Controller
             'parent_email' => 'nullable|email|max:190',
             'child_name' => 'required|string|max:190',
             'child_age' => 'required|string|max:50',
-            'service_type' => 'required|string',
-            'session_format' => 'required|string|in:in_center,online',
-            'branch_id' => 'required_if:session_format,in_center|nullable',
+            'service_type' => 'nullable|string',
+            'session_format' => 'required|string|in:in_center,in_center_normal,in_center_urgent,online',
+            'branch_id' => 'required_unless:session_format,online|nullable',
             'booking_date' => 'required|date|after_or_equal:today',
             'booking_time' => 'required|string|max:100',
             'payment_method' => 'required|string|in:vodafone_cash,instapay',
@@ -80,8 +80,7 @@ class BookingController extends Controller
             'parent_phone.required' => 'يرجى إدخال رقم هاتف / واتساب للتواصل.',
             'child_name.required' => 'يرجى إدخال اسم الطفل.',
             'child_age.required' => 'يرجى إدخال عمر الطفل.',
-            'service_type.required' => 'يرجى اختيار نوع الاستشارة / الجلسة المطلوبة.',
-            'branch_id.required_if' => 'يرجى تحديد الفرع المفضل للمقابلة في المركز.',
+            'branch_id.required_unless' => 'يرجى تحديد الفرع المفضل للمقابلة في المركز.',
             'booking_date.required' => 'يرجى اختيار التاريخ المناسب للحجز.',
             'booking_date.after_or_equal' => 'تاريخ الحجز يجب أن يكون اليوم أو تاريخاً قادماً.',
             'booking_time.required' => 'يرجى اختيار الفترة الزمنية المناسبة.',
@@ -90,6 +89,11 @@ class BookingController extends Controller
             'payment_receipt.image' => 'يجب أن يكون إشعار الدفع صورة صالحة (JPG, PNG, WEBP).',
             'payment_receipt.max' => 'حجم صورة الإشعار لا يجب أن يتجاوز 5 ميجابايت.',
         ]);
+
+        // Default service type if not selected
+        if (empty($validated['service_type'])) {
+            $validated['service_type'] = 'general_evaluation';
+        }
 
         // 1. Identify Branch & Price
         $branchModel = null;
@@ -105,7 +109,14 @@ class BookingController extends Controller
             $branchModel = BookingBranch::first();
         }
 
-        $price = $branchModel ? $branchModel->price : 300.00;
+        $price = $branchModel ? (float) $branchModel->price : 300.00;
+
+        // Apply urgent consultation fee (+150 EGP) if urgent in-center session chosen
+        if ($validated['session_format'] === 'in_center_urgent') {
+            $urgentFee = (float) Setting::get('booking_urgent_fee', '150.00');
+            $price += $urgentFee;
+        }
+
         $branchSlug = $branchModel ? $branchModel->slug : ($validated['session_format'] === 'online' ? 'online' : 'ibrahimiya');
         $branchId = $branchModel ? $branchModel->id : null;
 

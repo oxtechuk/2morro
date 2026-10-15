@@ -64,8 +64,10 @@ class Booking extends Model
 
     // Formats
     public static array $formats = [
-        'in_center' => 'في مقر المركز',
-        'online' => 'أونلاين عن بُعد',
+        'in_center' => 'في المركز (عادي)',
+        'in_center_normal' => 'في المركز (عادي)',
+        'in_center_urgent' => 'في المركز (مستعجل)',
+        'online' => 'أونلاين عن بُعد (Zoom)',
     ];
 
     // Statuses
