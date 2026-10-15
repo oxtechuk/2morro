@@ -34,6 +34,9 @@
         <!-- Tailwind CSS & Vite -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+        <!-- Alpine.js (Core Interaction Engine for Search Modal, Mobile Menu Drawer, Cart & Dropdowns) -->
+        <script defer src="{{ asset('js/alpine.min.js') }}" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js';"></script>
+
         <style>
             [x-cloak] { display: none !important; }
             :root {
