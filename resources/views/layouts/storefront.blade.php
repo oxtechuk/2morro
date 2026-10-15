@@ -66,6 +66,12 @@
             .hover\:bg-\[\#2563ea\]:hover {
                 background-color: #1d4ed8 !important;
             }
+            .bg-\[\#f76d11\] {
+                background-color: #f76d11 !important;
+            }
+            .hover\:bg-\[\#e05e0a\]:hover {
+                background-color: #e05e0a !important;
+            }
             .hover\:text-\[\#1360e2\]:hover,
             .hover\:text-\[\#2563eb\]:hover,
             .hover\:text-\[\#2563ea\]:hover {
