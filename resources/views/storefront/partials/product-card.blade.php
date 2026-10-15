@@ -140,7 +140,7 @@
                         <input type="hidden" name="quantity" value="1">
                         <input type="hidden" name="buy_now" value="1">
                         <button type="submit" 
-                                title="شراء فوري والدفع مباشرة" 
+                                title="شراء فوري" 
                                 style="background-color: #f76d11 !important; color: #ffffff !important;"
                                 onmouseover="this.style.backgroundColor='#e05e0a'"
                                 onmouseout="this.style.backgroundColor='#f76d11'"
