@@ -64,6 +64,8 @@ coverage/
 *.sqlite
 *.sqlite-journal
 check_settings.php
+scratch_*.php
+setup_assets.php
 
 # ==========================================
 # Flutter / Dart (Mobile Apps)

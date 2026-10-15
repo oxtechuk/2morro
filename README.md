@@ -1,58 +1,157 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🛍️ 2morro E-Commerce Platform | متجر تمورو الإلكتروني
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+<div align="center">
 
-## About Laravel
+![2morro Logo](public/assets/logo.png)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+[![Laravel](https://img.shields.io/badge/Laravel-11%2F12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+[![Vue.js](https://img.shields.io/badge/Vue.js-3.x-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)](https://vuejs.org/)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**منصة تجارة إلكترونية متكاملة حديثة مبنية بأحدث تقنيات الويب**  
+*Modern, scalable, multi-vendor e-commerce platform & online marketplace*
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+</div>
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 📖 جدول المحتويات | Table of Contents
+- [نظرة عامة | Overview](#-نظرة-عامة--overview)
+- [المميزات الرئيسية | Key Features](#-المميزات-الرئيسية--key-features)
+- [المتطلبات الأساسية | Requirements](#-المتطلبات-الأساسية--requirements)
+- [خطوات التثبيت والتشغيل | Installation](#-خطوات-التثبيت-والتشغيل--installation)
+- [الأوامر المتاحة | Available Commands](#-الأوامر-المتاحة--available-commands)
+- [هيكل المشروع | Project Structure](#-هيكل-المشروع--project-structure)
+- [البيئة والتهيئة | Environment Setup](#-البيئة-والتهيئة--environment-setup)
+- [المساهمة والترخيص | License](#-الترخيص--license)
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## 🌟 نظرة عامة | Overview
 
-## Agentic Development
+**متجر تمورو (2morro)** هو منصة تجارة إلكترونية متطورة وسريعة، تهدف إلى تقديم تجربة تسوق رقمية سلسة، تتميز بواجهة مستخدم تفاعلية مستندة إلى **Vue 3** و **Tailwind CSS** مع خلفية برمجية قوية وآمنة عبر إطار عمل **Laravel**.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
 
+## ✨ المميزات الرئيسية | Key Features
+
+- 🛍️ **كتالوج المنتجات والأقسام**: تصفح ذكي، فلاتر متعددة، بحث متقدم وسريع.
+- ⚡ **أداء فائق وSPA**: واجهة مبنية بتقنية Vue 3 وتكامل كامل مع Vite.
+- 💳 **بوابات دفع متعددة وآمنة**: دعم لخيارات الدفع الإلكتروني والنقدي عند الاستلام.
+- 📱 **تصميم متجاوب بالكامل (Responsive)**: متوافق مع كافة أحجام الشاشات والهواتف الذكية.
+- 🌐 **دعم كامل للغة العربية والإنجليزية**: دعم كامل لاتجاهات النصوص RTL & LTR.
+- 📊 **لوحة تحكم وإدارة متكاملة (Admin Dashboard)**: إدارة الطلبات، المنتجات، العملاء، والمخزون.
+- 🔒 **حماية وأمان عالي**: حماية متكاملة ضد هجمات الويب وإدارة الصلاحيات والمصادقة.
+
+---
+
+## ⚙️ المتطلبات الأساسية | Requirements
+
+قبل البدء، تأكد من تثبيت الحزم والبرمجيات التالية في بيئة عملك:
+
+- **PHP**: `^8.2` أو `^8.3` (مع ملحقات: `OpenSSL`, `PDO`, `Mbstring`, `Tokenizer`, `XML`, `Ctype`, `JSON`, `BCMath`, `cURL`)
+- **Composer**: `^2.x`
+- **Node.js**: `^18.x` أو `^20.x`
+- **NPM**: `^9.x` أو `^10.x`
+- **Database**: MySQL `^8.0` أو MariaDB `^10.4` أو SQLite
+
+---
+
+## 🚀 خطوات التثبيت والتشغيل | Installation
+
+### 1. استنساخ المستودع (Clone Repository)
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/oxtechuk/2morro.git
+cd 2morro
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. تثبيت اعتماديات PHP (Install Composer Dependencies)
+```bash
+composer install
+```
 
-## Contributing
+### 3. تثبيت اعتماديات الواجهة الأمامية (Install NPM Packages)
+```bash
+npm install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. إعداد ملف البيئة (Configure Environment)
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+قم بفتح ملف `.env` وضبط معلومات الاتصال بقاعدة البيانات ومفتاح التطبيق.
 
-## Code of Conduct
+### 5. تشغيل التهجيرات والبيانات الأولية (Database Migrations & Seeders)
+```bash
+php artisan migrate --seed
+php artisan storage:link
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 6. تشغيل خادم التطوير (Run Local Development Server)
+للتشغيل المزدوج للباك إند والفرونت إند:
+```bash
+# تشغيل سيرفر الـ Laravel
+php artisan serve
 
-## Security Vulnerabilities
+# في نافذة طرفية ثانية: تشغيل مجمع Vite
+npm run dev
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+أو استخدام أمر لارافيل المجمع:
+```bash
+composer run dev
+```
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🛠️ بناء النسخة النهائية للإنتاج | Production Build
+
+لبناء ملفات الواجهة الأمامية للإنتاج:
+```bash
+npm run build
+```
+
+وتحسين أداء التطبيق:
+```bash
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+---
+
+## 📁 هيكل المشروع | Project Structure
+
+```text
+2morro/
+├── app/               # نماذج ووحدات تحكم وقواعد العمل (Controllers, Models, Middleware)
+├── Admin/             # ملفات ولوحة الإدارة
+├── bootstrap/         # إعدادات تحميل النظام
+├── config/            # ملفات تكوين النظام
+├── database/          # التهجيرات والـ Seeders والـ Factories
+├── public/            # نقطة الدخول العامة والملفات الثابتة والأصول
+│   └── assets/        # الصور والأيقونات وشعار الموقع
+├── resources/         # ملفات الواجهة (Vue components, Blade views, CSS, JS)
+│   ├── css/           # تنسيقات Tailwind CSS و App styles
+│   ├── js/            # مكونات Vue و Pinia store والموجهات
+│   └── views/         # قوالب Blade الرئيسية
+├── routes/            # مسارات التطبيق (web.php, api.php, console.php)
+├── storage/           # ملفات التخزين المؤقت والتقارير المرفوعة
+└── tests/             # اختبارات النظام ووحدات التحقق (PHPUnit)
+```
+
+---
+
+## 🛡️ الأمان والخصوصية | Security & Git Best Practices
+
+- تم استبعاد مجلدات الاعتماديات `vendor/` و `node_modules/` تلقائياً من المستودع.
+- ملفات المفاتيح والبيئة الحساسة `.env` مستبعدة بالكامل لحماية بياناتك السرية.
+- تأكد دائماً من عدم رفع مفاتيح API أو كلمات المرور إلى GitHub.
+
+---
+
+## 📄 الترخيص | License
+
+هذا المشروع خاص بـ **2morro Store**. جميع الحقوق محفوظة © 2026.

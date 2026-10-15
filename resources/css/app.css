@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Bahij TheSansArabic';
-    src: url('/fonts/Bahij_TheSansArabic-Bold.ttf') format('truetype');
+    src: url('../../public/fonts/Bahij_TheSansArabic-Bold.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
