@@ -4,7 +4,24 @@ import vue from "@vitejs/plugin-vue";
 
 export default defineConfig({
     plugins: [
-        vue(),
+        {
+            name: "ignore-missing-assets",
+            resolveId(id) {
+                if (id.includes("public/assets")) {
+                    return id;
+                }
+            },
+            load(id) {
+                if (id.includes("public/assets")) {
+                    return 'export default ""';
+                }
+            },
+        },
+        vue({
+            template: {
+                transformAssetUrls: false,
+            },
+        }),
         laravel({
             input: ["resources/css/app.css", "resources/js/app.js"],
             refresh: true,
