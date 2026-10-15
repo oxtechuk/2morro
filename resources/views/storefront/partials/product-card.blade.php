@@ -1,7 +1,7 @@
 <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/80 hover:border-blue-200 p-2.5 sm:p-3.5 shadow-2xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group h-full relative overflow-hidden">
     
     <!-- Image Box (مقاس موحد إجباري بنسبة 1:1 مربع مع تغطية كاملة واحترافية) -->
-    <div class="relative bg-slate-100 rounded-xl sm:rounded-2xl aspect-square w-full overflow-hidden">
+    <div class="relative bg-slate-100 rounded-xl sm:rounded-2xl aspect-square w-full overflow-hidden" style="aspect-ratio: 1 / 1; width: 100%;">
         
         <!-- Badges (Top Right) -->
         <div class="absolute top-2 right-2 z-10 flex flex-col items-end gap-1">
@@ -34,7 +34,7 @@
         </div>
 
         <!-- Product Image with reliable fallback -->
-        <a href="{{ route('product', $product->slug) }}" class="w-full h-full block overflow-hidden">
+        <a href="{{ route('product', $product->slug) }}" class="w-full h-full block overflow-hidden" style="width: 100%; height: 100%;">
             @php
                 $imgUrl = null;
                 if ($product->images && count($product->images) > 0) {
@@ -57,6 +57,7 @@
                  alt="{{ $product->name }}" 
                  loading="lazy"
                  onerror="this.onerror=null; this.src='{{ asset('storage/products/sample-cards.jpg') }}';"
+                 style="width: 100%; height: 100%; object-fit: cover; object-position: center;"
                  class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out block">
         </a>
     </div>
