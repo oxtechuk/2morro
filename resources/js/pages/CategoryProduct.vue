@@ -461,7 +461,7 @@
                                                                                 5
                                                                             "
                                                                             class="w-5 h-5"
-                                                                            src="../../../public/assets/icons/rating/5-star.svg"
+                                                                            :src="'/assets/icons/' + rating + '-star.svg'"
                                                                             alt=""
                                                                         />
                                                                         <img
@@ -470,7 +470,7 @@
                                                                                 4
                                                                             "
                                                                             class="w-5 h-5"
-                                                                            src="../../../public/assets/icons/rating/4-star.svg"
+                                                                            :src="'/assets/icons/' + rating + '-star.svg'"
                                                                             alt=""
                                                                         />
                                                                         <img
@@ -479,7 +479,7 @@
                                                                                 3
                                                                             "
                                                                             class="w-5 h-5"
-                                                                            src="../../../public/assets/icons/rating/3-star.svg"
+                                                                            :src="'/assets/icons/' + rating + '-star.svg'"
                                                                             alt=""
                                                                         />
                                                                         <img
@@ -488,7 +488,7 @@
                                                                                 2
                                                                             "
                                                                             class="w-5 h-5"
-                                                                            src="../../../public/assets/icons/rating/2-star.svg"
+                                                                            :src="'/assets/icons/' + rating + '-star.svg'"
                                                                             alt=""
                                                                         />
                                                                         <img
@@ -497,7 +497,7 @@
                                                                                 1
                                                                             "
                                                                             class="w-5 h-5"
-                                                                            src="../../../public/assets/icons/rating/1-star.svg"
+                                                                            :src="'/assets/icons/' + rating + '-star.svg'"
                                                                             alt=""
                                                                         />
                                                                     </div>
