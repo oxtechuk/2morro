@@ -444,8 +444,8 @@
                                         <div id="uploadPreviewState" class="hidden flex flex-col items-center gap-2">
                                             <div class="relative group">
                                                 <img id="receiptPreviewImg" src="" alt="معاينة إشعار الدفع" class="max-h-48 rounded-xl border border-slate-200 shadow-sm object-contain mx-auto">
-                                                <button type="button" onclick="event.stopPropagation(); removeReceipt();" class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center text-xs font-bold shadow-md hover:bg-red-700 transition-colors">
-                                                    ✕
+                                                <button type="button" onclick="event.stopPropagation(); removeReceipt();" class="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-600 text-white flex items-center justify-center text-xs font-bold shadow-md hover:bg-red-700 transition-colors" title="إزالة">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
                                                 </button>
                                             </div>
                                             <span class="text-xs font-black text-blue-700 flex items-center gap-1 mt-1">
@@ -743,11 +743,11 @@
     function copyText(text, btn) {
         navigator.clipboard.writeText(text).then(function() {
             const oldHtml = btn.innerHTML;
-            btn.innerHTML = '<span>تم النسخ! ✓</span>';
-            btn.classList.add('text-emerald-700', 'border-emerald-300');
+            btn.innerHTML = '<svg class="w-3.5 h-3.5 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg><span>تم النسخ!</span>';
+            btn.classList.add('text-blue-700', 'border-blue-300', 'bg-blue-50');
             setTimeout(function() {
                 btn.innerHTML = oldHtml;
-                btn.classList.remove('text-emerald-700', 'border-emerald-300');
+                btn.classList.remove('text-blue-700', 'border-blue-300', 'bg-blue-50');
             }, 2000);
         });
     }
