@@ -625,10 +625,18 @@
         </a>
         <ul class="sidebar-menu">
             <li class="menu-title">لوحة التحكم</li>
-            <li class="menu-item" data-tooltip="الرئيسية">
-                <a href="{{ route('admin.dashboard') }}" class="menu-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+            <li class="menu-item" data-tooltip="الرئيسية (تمورو)">
+                <a href="{{ route('admin.dashboard') }}" class="menu-link {{ request()->routeIs('admin.dashboard') && !request()->routeIs('admin.dashboard.template') ? 'active' : '' }}">
                     <i class="bi bi-grid-fill menu-icon"></i>
-                    <span class="menu-text">الرئيسية</span>
+                    <span class="menu-text">لوحة تحكم تمورو</span>
+                    <span class="badge bg-primary ms-auto fs-8 px-2 py-0.5 rounded-pill">الموقع</span>
+                </a>
+            </li>
+            <li class="menu-item" data-tooltip="الداشبورد الجاهزة">
+                <a href="{{ route('admin.dashboard.template') }}" class="menu-link {{ request()->routeIs('admin.dashboard.template') ? 'active' : '' }}">
+                    <i class="bi bi-speedometer2 menu-icon"></i>
+                    <span class="menu-text">الداشبورد الجاهزة</span>
+                    <span class="badge bg-secondary ms-auto fs-8 px-2 py-0.5 rounded-pill">قالب</span>
                 </a>
             </li>
             

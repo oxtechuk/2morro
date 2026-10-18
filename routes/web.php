@@ -84,6 +84,7 @@ use App\Http\Controllers\Admin\NotificationController as AdminNotificationContro
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/dashboard/template', [DashboardController::class, 'templateDashboard'])->name('dashboard.template');
     Route::match(['get', 'post'], '/dashboard/statistics', [DashboardController::class, 'orderStatistics'])->name('dashboard.statistics');
     Route::get('/dashboard/notifications', [AdminNotificationController::class, 'index'])->name('dashboard.notification');
 

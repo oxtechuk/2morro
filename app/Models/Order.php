@@ -62,6 +62,11 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function items(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
     public function productStockOuts(): ?HasMany
     {
         if (function_exists('module_exists') && module_exists('Purchase')) {
