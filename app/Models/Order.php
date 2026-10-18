@@ -38,16 +38,29 @@ class Order extends Model
 
     public function products(): BelongsToMany
     {
-        $pivotColumns = ['quantity', 'price', 'unit'];
+        $pivotTable = Schema::hasTable('order_products') ? 'order_products' : 'order_items';
+        $pivotColumns = ['quantity', 'price'];
 
-        if (Schema::hasColumn('order_products', 'sku')) {
+        if (Schema::hasColumn($pivotTable, 'unit')) {
+            $pivotColumns[] = 'unit';
+        }
+        if (Schema::hasColumn($pivotTable, 'sku')) {
             $pivotColumns[] = 'sku';
         }
-        return $this->belongsToMany(Product::class, 'order_products')
-            ->withPivot($pivotColumns)
-            ->join('orders', 'orders.id', '=', 'order_products.order_id')
-            ->addSelect('products.*', 'orders.currency_rate', 'orders.currency_symbol')
-            ->withoutGlobalScopes();
+        $rel = $this->belongsToMany(Product::class, $pivotTable)
+            ->withPivot($pivotColumns);
+
+        if (Schema::hasTable('orders') && Schema::hasColumn('orders', 'currency_rate') && Schema::hasColumn('orders', 'currency_symbol')) {
+            $rel->join('orders', 'orders.id', '=', $pivotTable . '.order_id')
+                ->addSelect('products.*', 'orders.currency_rate', 'orders.currency_symbol');
+        }
+
+        return $rel->withoutGlobalScopes();
+    }
+
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
     }
 
     public function productStockOuts(): ?HasMany

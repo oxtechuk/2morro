@@ -16,6 +16,13 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Cache;
 use Laravel\Sanctum\PersonalAccessToken;
 
+if (! class_exists(\Abedin\Maker\Repositories\Repository::class, false)) {
+    $makerFallback = __DIR__ . '/Maker/Repositories/Repository.php';
+    if (file_exists($makerFallback)) {
+        require_once $makerFallback;
+    }
+}
+
 if (! function_exists('getDistance')) {
     /**
      * Calculate the distance between two geographical coordinates.
