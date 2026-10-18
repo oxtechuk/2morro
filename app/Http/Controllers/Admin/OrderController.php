@@ -24,9 +24,12 @@ class OrderController extends Controller
     /**
      * Display a order list with filter status.
      */
-    public function index(Request $request)
+    public function index(Request $request, $status = null)
     {
-        $status = $request->status;
+        $status = $status ?? $request->status;
+        if ($status) {
+            $status = str_replace('_', ' ', $status);
+        }
         $paymentStatus = $request->payment_status;
         $search = $request->search;
 
@@ -186,5 +189,21 @@ class OrderController extends Controller
         NotificationRepository::storeByRequest($notify);
 
         return back()->with('success', __('Payment status updated successfully'));
+    }
+
+    /**
+     * Show order invoice.
+     */
+    public function invoice(Order $order)
+    {
+        if (view()->exists('admin.orders.invoice')) {
+            return view('admin.orders.invoice', compact('order'));
+        }
+
+        return view('admin.order.show', [
+            'order' => $order,
+            'orderStatus' => OrderStatus::cases(),
+            'riders' => collect([]),
+        ]);
     }
 }

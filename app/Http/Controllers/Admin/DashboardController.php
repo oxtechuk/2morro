@@ -105,7 +105,23 @@ class DashboardController extends Controller
             ? FlashSaleRepository::getIncoming()->first() 
             : null;
 
-        return view('admin.dashboard', compact(
+        $statusCounts = [];
+        $statusColumn = Schema::hasColumn('orders', 'order_status') ? 'order_status' : (Schema::hasColumn('orders', 'status') ? 'status' : null);
+
+        foreach ($orderStatuses as $status) {
+            $varName = \Illuminate\Support\Str::camel($status->value);
+            $count = 0;
+            if (Schema::hasTable('orders') && $statusColumn) {
+                $count = \Illuminate\Support\Facades\Cache::remember('admin_status_' . $varName, 60 * 24 * 7, function () use ($status, $statusColumn, $hasOrderShop, $shop) {
+                    return Order::when($hasOrderShop, fn($q) => $q->where('shop_id', $shop?->id))
+                        ->where($statusColumn, $status->value)
+                        ->count();
+                });
+            }
+            $statusCounts[$varName] = $count;
+        }
+
+        return view('admin.dashboard', array_merge(compact(
             'businessModel',
             'totalShop',
             'totalOrder',
@@ -125,7 +141,7 @@ class DashboardController extends Controller
             'totalCategories',
             'flashSale',
             'totalRider'
-        ));
+        ), $statusCounts));
     }
 
     public function orderStatistics()

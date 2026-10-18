@@ -69,6 +69,8 @@ use App\Http\Controllers\Admin\ProductImportExportController;
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/dashboard/statistics', [DashboardController::class, 'orderStatistics'])->name('dashboard.statistics');
     
     // Consultation Bookings & Branch Schedules Management (إدارة الحجوزات، الفروع، المواعيد والأسعار)
     Route::get('bookings/settings', [AdminBookingController::class, 'settings'])->name('bookings.settings');
@@ -124,16 +126,25 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/products/template', [ProductImportExportController::class, 'downloadTemplate'])->name('products.template');
     Route::post('/products/import', [ProductImportExportController::class, 'import'])->name('products.import');
 
-    // Products CRUD
+    // Products CRUD & Aliases
+    Route::get('/product', [ProductController::class, 'index'])->name('product.index');
+    Route::get('/product/approve/{product}', [ProductController::class, 'approve'])->name('product.approve');
+    Route::get('/product/{product}', [ProductController::class, 'show'])->name('product.show');
+    Route::delete('/product/{product}', [ProductController::class, 'destroy'])->name('product.destroy');
     Route::resource('products', ProductController::class);
     
     // Categories CRUD (Alias to Taxonomy categories)
+    Route::get('/category', [CategoryController::class, 'index'])->name('category.index');
     Route::resource('categories', CategoryController::class)->except(['show']);
 
-    // Orders Management
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-    Route::post('/orders/{order}/update-status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    // Orders Management & Aliases (supporting both singular admin.order.* and plural admin.orders.*)
+    Route::get('/orders/{status?}', [OrderController::class, 'index'])->name('order.index');
+    Route::get('/orders-list', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/order/show/{order}', [OrderController::class, 'show'])->name('order.show');
+    Route::get('/orders/view/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/order/status-change/{order}', [OrderController::class, 'statusChange'])->name('order.status.change');
+    Route::get('/order/payment-status-toggle/{order}', [OrderController::class, 'paymentStatusToggle'])->name('order.payment.status.toggle');
+    Route::post('/orders/{order}/update-status', [OrderController::class, 'statusChange'])->name('orders.updateStatus');
     Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
 
     // Reviews Management
