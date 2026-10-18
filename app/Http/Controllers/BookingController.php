@@ -44,6 +44,25 @@ class BookingController extends Controller
             'instructions' => Setting::get('booking_payment_instructions', 'يرجى تحويل قيمة الحجز عبر فودافون كاش أو إنستاباي، ثم إرفاق صورة إشعار التحويل (سكرين شوت) لتأكيد حجز الموعد مباشرة.'),
         ];
 
+        // Booking Types (Normal, Urgent, Online)
+        $bookingTypes = [
+            'normal' => [
+                'enabled' => Setting::get('booking_normal_enabled', '1') === '1',
+                'price' => (float) Setting::get('booking_normal_price', '300.00'),
+                'desc' => Setting::get('booking_normal_desc', 'حضور في الفرع'),
+            ],
+            'urgent' => [
+                'enabled' => Setting::get('booking_urgent_enabled', '1') === '1',
+                'fee' => (float) Setting::get('booking_urgent_fee', '150.00'),
+                'desc' => Setting::get('booking_urgent_desc', 'كشف عاجل خلال 24-48 ساعة'),
+            ],
+            'online' => [
+                'enabled' => Setting::get('booking_online_enabled', '1') === '1',
+                'price' => (float) Setting::get('booking_online_price', '350.00'),
+                'desc' => Setting::get('booking_online_desc', 'مكالمة فيديو مباشرة عبر Zoom'),
+            ],
+        ];
+
         return view('storefront.booking', compact(
             'services',
             'branches',
@@ -53,7 +72,8 @@ class BookingController extends Controller
             'bookingTitle',
             'bookingSubtitle',
             'bookingQuote',
-            'paymentSettings'
+            'paymentSettings',
+            'bookingTypes'
         ));
     }
 

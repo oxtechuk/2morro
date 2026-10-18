@@ -44,6 +44,17 @@ class Category extends Model
     }
 
 
+    protected static function booted()
+    {
+        static::saving(function ($category) {
+            if (isset($category->is_active) && !isset($category->status)) {
+                $category->status = $category->is_active ? 1 : 0;
+            } elseif (isset($category->status) && !isset($category->is_active)) {
+                $category->is_active = $category->status ? 1 : 0;
+            }
+        });
+    }
+
     /**
      * Scopes a query to only include active records.
      *
@@ -52,7 +63,13 @@ class Category extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('status', 1);
+        if (Schema::hasColumn('categories', 'status')) {
+            return $query->where('status', 1);
+        }
+        if (Schema::hasColumn('categories', 'is_active')) {
+            return $query->where('is_active', 1);
+        }
+        return $query;
     }
 
 

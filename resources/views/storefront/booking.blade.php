@@ -190,34 +190,40 @@
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
                                 
                                 <!-- Normal In-Center -->
+                                @if($bookingTypes['normal']['enabled'] ?? true)
                                 <label class="relative flex flex-col p-2.5 sm:p-3 rounded-xl border-2 cursor-pointer transition-all format-card bg-white border-blue-600 ring-2 ring-blue-100 shadow-xs" id="formatCard_in_center_normal">
                                     <div class="flex items-center justify-between mb-1">
                                         <input type="radio" name="session_format" value="in_center_normal" checked onchange="handleFormatSelection(this.value)" class="text-blue-600 focus:ring-blue-600 w-3.5 h-3.5">
                                         <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-blue-50 text-blue-700">مجدول</span>
                                     </div>
                                     <span class="font-black text-xs text-slate-900 block">في المركز (عادي)</span>
-                                    <span class="text-[10px] text-slate-500 block">حضور في الفرع</span>
+                                    <span class="text-[10px] text-slate-500 block">{{ $bookingTypes['normal']['desc'] ?? 'حضور في الفرع' }}</span>
                                 </label>
+                                @endif
 
                                 <!-- Urgent In-Center -->
+                                @if($bookingTypes['urgent']['enabled'] ?? true)
                                 <label class="relative flex flex-col p-2.5 sm:p-3 rounded-xl border-2 cursor-pointer transition-all format-card bg-white border-slate-200 hover:border-blue-300" id="formatCard_in_center_urgent">
                                     <div class="flex items-center justify-between mb-1">
                                         <input type="radio" name="session_format" value="in_center_urgent" onchange="handleFormatSelection(this.value)" class="text-blue-600 focus:ring-blue-600 w-3.5 h-3.5">
-                                        <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-blue-600 text-white">مستعجل</span>
+                                        <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-blue-600 text-white">مستعجل ⚡</span>
                                     </div>
-                                    <span class="font-black text-xs text-slate-900 block">في المركز (أولوية)</span>
-                                    <span class="text-[10px] text-slate-500 block">+150 ج.م كشف عاجل</span>
+                                    <span class="font-black text-xs text-slate-900 block">في المركز (مستعجل)</span>
+                                    <span class="text-[10px] text-slate-500 block">+{{ number_format($bookingTypes['urgent']['fee'] ?? 150) }} ج.م {{ $bookingTypes['urgent']['desc'] ?? 'كشف عاجل' }}</span>
                                 </label>
+                                @endif
 
                                 <!-- Online Remote -->
+                                @if($bookingTypes['online']['enabled'] ?? true)
                                 <label class="relative flex flex-col p-2.5 sm:p-3 rounded-xl border-2 cursor-pointer transition-all format-card bg-white border-slate-200 hover:border-blue-300" id="formatCard_online">
                                     <div class="flex items-center justify-between mb-1">
                                         <input type="radio" name="session_format" value="online" onchange="handleFormatSelection(this.value)" class="text-blue-600 focus:ring-blue-600 w-3.5 h-3.5">
-                                        <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">عن بُعد</span>
+                                        <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">عن بُعد 💻</span>
                                     </div>
                                     <span class="font-black text-xs text-slate-900 block">أونلاين (Zoom)</span>
-                                    <span class="text-[10px] text-slate-500 block">مكالمة فيديو مباشرة</span>
+                                    <span class="text-[10px] text-slate-500 block">{{ number_format($bookingTypes['online']['price'] ?? 350) }} ج.م - {{ $bookingTypes['online']['desc'] ?? 'مكالمة فيديو' }}</span>
                                 </label>
+                                @endif
 
                             </div>
                         </div>
@@ -394,7 +400,8 @@
 <script>
     let currentStep = 1;
     const branchesData = @json($branchesList);
-    const urgentFee = 150.00;
+    const urgentFee = {{ floatval($bookingTypes['urgent']['fee'] ?? 150) }};
+    const onlinePrice = {{ floatval($bookingTypes['online']['price'] ?? 350) }};
     const arabicDayNames = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
 
     function validateStep1() {
@@ -520,7 +527,7 @@
             if (onlineBranch) {
                 updateBranchScheduleAndPricing(onlineBranch, 0);
             } else {
-                updatePriceDisplay(250.00);
+                updatePriceDisplay(onlinePrice);
             }
         } else {
             if (branchContainer) branchContainer.classList.remove('hidden');

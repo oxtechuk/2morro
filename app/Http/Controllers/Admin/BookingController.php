@@ -276,6 +276,21 @@ class BookingController extends Controller
             'booking_page_title' => Setting::get('booking_page_title', 'حجز استشارة وتقييم مهارات الطفل'),
             'booking_page_subtitle' => Setting::get('booking_page_subtitle', 'مركز 2morro المتخصص في رعاية وتأهيل وتنمية قدرات الأطفال بإشراف أ. هبة الله أكرم.'),
             'booking_page_quote' => Setting::get('booking_page_quote', '« عندما تشعرين بأن طفلك بحاجة لدعم وتأهيل في مهاراته اللغوية أو السلوكية أو الحركية، فإن التدخل المبكر يصنع الفارق في مستقبله »'),
+            
+            // Booking types & urgency configuration
+            'normal_price' => Setting::get('booking_normal_price', '300.00'),
+            'normal_enabled' => Setting::get('booking_normal_enabled', '1') === '1',
+            'normal_desc' => Setting::get('booking_normal_desc', 'حضور في مقر المركز ومقابلة مباشرة وفق جدول الفترات المعتمدة'),
+
+            'urgent_fee' => Setting::get('booking_urgent_fee', '150.00'),
+            'urgent_enabled' => Setting::get('booking_urgent_enabled', '1') === '1',
+            'urgent_desc' => Setting::get('booking_urgent_desc', 'كشف ومقابلة ذات أولوية قصوى خلال 24 إلى 48 ساعة'),
+
+            'online_price' => Setting::get('booking_online_price', '350.00'),
+            'online_enabled' => Setting::get('booking_online_enabled', '1') === '1',
+            'online_desc' => Setting::get('booking_online_desc', 'جلسة تقييم واستشارة بالفيديو عن بُعد عبر Zoom / Google Meet'),
+
+            'session_duration' => Setting::get('booking_session_duration', '45 دقيقة'),
         ];
 
         return view('admin.bookings.settings', compact('branches', 'allDays', 'paymentSettings'));
@@ -294,6 +309,15 @@ class BookingController extends Controller
             'booking_page_subtitle' => 'nullable|string|max:500',
             'booking_page_quote' => 'nullable|string|max:500',
             'booking_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
+
+            // Booking types
+            'booking_normal_price' => 'nullable|numeric|min:0',
+            'booking_normal_desc' => 'nullable|string|max:255',
+            'booking_urgent_fee' => 'nullable|numeric|min:0',
+            'booking_urgent_desc' => 'nullable|string|max:255',
+            'booking_online_price' => 'nullable|numeric|min:0',
+            'booking_online_desc' => 'nullable|string|max:255',
+            'booking_session_duration' => 'nullable|string|max:100',
         ]);
 
         Setting::set('booking_vodafone_cash', $validated['booking_vodafone_cash'] ?? '');
@@ -305,12 +329,27 @@ class BookingController extends Controller
         Setting::set('booking_page_subtitle', $validated['booking_page_subtitle'] ?? '');
         Setting::set('booking_page_quote', $validated['booking_page_quote'] ?? '');
 
+        // Save booking types and urgency
+        Setting::set('booking_normal_price', $validated['booking_normal_price'] ?? '300.00');
+        Setting::set('booking_normal_enabled', $request->has('booking_normal_enabled') ? '1' : '0');
+        Setting::set('booking_normal_desc', $validated['booking_normal_desc'] ?? '');
+
+        Setting::set('booking_urgent_fee', $validated['booking_urgent_fee'] ?? '150.00');
+        Setting::set('booking_urgent_enabled', $request->has('booking_urgent_enabled') ? '1' : '0');
+        Setting::set('booking_urgent_desc', $validated['booking_urgent_desc'] ?? '');
+
+        Setting::set('booking_online_price', $validated['booking_online_price'] ?? '350.00');
+        Setting::set('booking_online_enabled', $request->has('booking_online_enabled') ? '1' : '0');
+        Setting::set('booking_online_desc', $validated['booking_online_desc'] ?? '');
+
+        Setting::set('booking_session_duration', $validated['booking_session_duration'] ?? '45 دقيقة');
+
         if ($request->hasFile('booking_image')) {
             $path = $request->file('booking_image')->store('bookings', 'public');
             Setting::set('booking_image', 'storage/' . $path);
         }
 
-        return redirect()->back()->with('success', 'تم حفظ إعدادات طرق الدفع وبيانات صفحة الحجز بنجاح!');
+        return redirect()->back()->with('success', 'تم حفظ إعدادات أنواع الحجوزات وطرق الدفع بنجاح!');
     }
 
     // Store New Branch
