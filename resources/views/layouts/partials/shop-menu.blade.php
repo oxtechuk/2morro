@@ -245,7 +245,7 @@
 @if (module_exists('purchase') )
     @include('purchase::layouts.supplierSidebar')
 @endif
-@if (!auth()->user()->hasRole('root'))
+@if (!auth()->user()?->hasRole('root'))
     @hasPermission('shop.withdraw.index')
         <li>
             <a class="menu {{ $request->routeIs('shop.withdraw.*') ? 'active' : '' }}"

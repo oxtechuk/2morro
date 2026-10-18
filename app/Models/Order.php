@@ -22,9 +22,8 @@ class Order extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'order_status' => OrderStatus::class,
-        'payment_method' => PaymentMethod::class,
-        'payment_status' => PaymentStatus::class,
+        'subtotal' => 'decimal:2',
+        'total' => 'decimal:2',
     ];
 
     /**
@@ -197,5 +196,61 @@ class Order extends Model
     public function scopeCancelled($query)
     {
         return $query->where('order_status','Cancelled');
+    }
+
+    public function getOrderCodeAttribute()
+    {
+        return $this->attributes['order_code'] ?? ($this->attributes['order_number'] ?? (string) $this->id);
+    }
+
+    public function getTotalAmountAttribute()
+    {
+        return $this->attributes['total_amount'] ?? ($this->attributes['subtotal'] ?? ($this->attributes['total'] ?? 0));
+    }
+
+    public function getPayableAmountAttribute()
+    {
+        return $this->attributes['payable_amount'] ?? ($this->attributes['total'] ?? 0);
+    }
+
+    public function getDeliveryChargeAttribute()
+    {
+        return $this->attributes['delivery_charge'] ?? ($this->attributes['shipping_fee'] ?? 0);
+    }
+
+    public function getOrderStatusAttribute($value)
+    {
+        if ($value instanceof \App\Enums\OrderStatus) {
+            return $value;
+        }
+        $val = $value ?: ($this->attributes['status'] ?? 'pending');
+        foreach (\App\Enums\OrderStatus::cases() as $case) {
+            if (strcasecmp($case->value, $val) === 0 || strcasecmp($case->name, $val) === 0) {
+                return $case;
+            }
+        }
+        return \App\Enums\OrderStatus::PENDING;
+    }
+
+    public function getPaymentStatusAttribute($value)
+    {
+        $val = $value ?: ($this->attributes['payment_status'] ?? 'pending');
+        foreach (\App\Enums\PaymentStatus::cases() as $case) {
+            if (strcasecmp($case->value, $val) === 0 || strcasecmp($case->name, $val) === 0) {
+                return $case->value;
+            }
+        }
+        return ucfirst($val);
+    }
+
+    public function getPaymentMethodAttribute($value)
+    {
+        $val = $value ?: ($this->attributes['payment_method'] ?? 'cod');
+        foreach (\App\Enums\PaymentMethod::cases() as $case) {
+            if (strcasecmp($case->value, $val) === 0 || strcasecmp($case->name, $val) === 0) {
+                return $case->value;
+            }
+        }
+        return ucfirst($val);
     }
 }

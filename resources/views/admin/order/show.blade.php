@@ -54,15 +54,18 @@
                             <div class="order-item">
                                 <label class="label">{{ __('Order Status') }}:</label>
                                 <label class="label">{{ __('Order Status') }}:</label>
-                                @php
-                                    $statusClasses = [
-                                        'Cancelled' => 'badge badge-danger',
-                                        'Delivered' => 'badge badge-success',
-                                    ];
+                                    @php
+                                        $statusClasses = [
+                                            'Cancelled' => 'badge badge-danger',
+                                            'Delivered' => 'badge badge-success',
+                                        ];
 
-                                    $class = $statusClasses[$order->order_status->value] ?? 'badge badge-warning';
-                                @endphp
-                                <span class="{{ $class }}">{{ $order->order_status }}</span>
+                                        $statusValue = is_object($order->order_status) && isset($order->order_status->value)
+                                            ? $order->order_status->value
+                                            : (is_string($order->order_status) ? $order->order_status : ($order->status ?? 'Pending'));
+                                        $class = $statusClasses[$statusValue] ?? 'badge badge-warning';
+                                    @endphp
+                                    <span class="{{ $class }}">{{ $statusValue }}</span>
                             </div>
                             <div class="order-item">
                                 <label class="label">{{ __('Order Date') }}:</label>
@@ -113,7 +116,7 @@
                                             <td>{{ $product->shop?->name }}</td>
                                         @endif
                                         <td>{{ $product->pivot->quantity }}</td>
-                                        <td>{{ $product->pivot->unit }}</td>
+                                        <td>{{ $product->pivot->unit ?? 'قطعة' }}</td>
                                         <td>
                                             @php
                                                 $price =
@@ -193,9 +196,9 @@
                     <div class="dropdown">
                         <a class="btn border text-start dropdown-toggle" href="#" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ $order->order_status->value }}
+                            {{ $order->order_status->value ?? $order->order_status }}
                         </a>
-                        @if ($order->order_status->value != 'Delivered' && $order->order_status->value != 'Cancelled')
+                        @if (($order->order_status->value ?? $order->order_status) != 'Delivered' && ($order->order_status->value ?? $order->order_status) != 'Cancelled')
                             @hasPermission(['admin.order.status.change'])
                                 <ul class="dropdown-menu order-status">
                                     @foreach ($orderStatus as $status)
@@ -215,11 +218,11 @@
                 <div class="border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2 p-3">
                     <div class="text-color">{{ __('Payment Status') }}</div>
                     <div class="d-flex align-items-center gap-1">
-                        <span>{{ $order->payment_status }}</span>
+                        <span>{{ $order->payment_status->value ?? $order->payment_status }}</span>
                         @hasPermission('admin.order.payment.status.toggle')
                             <label class="switch mb-0">
                                 <a href="{{ route('admin.order.payment.status.toggle', $order->id) }}">
-                                    <input type="checkbox" {{ $order->payment_status->value == 'Paid' ? 'checked' : '' }}>
+                                    <input type="checkbox" {{ ($order->payment_status->value ?? $order->payment_status) == 'Paid' ? 'checked' : '' }}>
                                     <span class="slider round"></span>
                                 </a>
                             </label>
@@ -228,7 +231,7 @@
                 </div>
 
                 @hasPermission('admin.rider.assign.order')
-                    @if ($order->order_status->value != 'Pending')
+                    @if (($order->order_status->value ?? $order->order_status) != 'Pending')
                         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 p-3">
                             <div class="fw-medium text-color">{{ __('Assign Rider') }}</div>
                             <div class="d-flex align-items-center gap-1">
