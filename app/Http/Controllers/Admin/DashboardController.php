@@ -40,6 +40,9 @@ class DashboardController extends Controller
 
         $shop = null;
 
+        $hasOrderShop = $shop && Schema::hasColumn('orders', 'shop_id');
+        $hasProductShop = $shop && Schema::hasColumn('products', 'shop_id');
+
         if (! $generaleSetting || $generaleSetting?->shop_type != 'single') {
             $totalShop = Schema::hasTable('shops') ? Shop::count() : 1;
             $totalOrder = Schema::hasTable('orders') ? Order::count() : 0;
@@ -47,9 +50,11 @@ class DashboardController extends Controller
             $totalCategories = Schema::hasTable('categories') ? Category::count() : 0;
         } else {
             $shop = function_exists('generaleSetting') ? generaleSetting('shop') : null;
+            $hasOrderShop = $shop && Schema::hasColumn('orders', 'shop_id');
+            $hasProductShop = $shop && Schema::hasColumn('products', 'shop_id');
             $totalShop = 0;
-            $totalOrder = Schema::hasTable('orders') ? Order::when($shop, fn($q) => $q->where('shop_id', $shop?->id))->count() : 0;
-            $totalProduct = Schema::hasTable('products') ? Product::when($shop, fn($q) => $q->where('shop_id', $shop?->id))->count() : 0;
+            $totalOrder = Schema::hasTable('orders') ? Order::when($hasOrderShop, fn($q) => $q->where('shop_id', $shop?->id))->count() : 0;
+            $totalProduct = Schema::hasTable('products') ? Product::when($hasProductShop, fn($q) => $q->where('shop_id', $shop?->id))->count() : 0;
             $totalCategories = Schema::hasTable('categories') ? Category::count() : 0;
         }
 
@@ -59,7 +64,7 @@ class DashboardController extends Controller
             ? Customer::withCount('orders')->orderBy('orders_count', 'desc')->limit(8)->get() 
             : collect([]);
 
-        $productObject = Schema::hasTable('products') ? Product::when($shop, function ($query) use ($shop) {
+        $productObject = Schema::hasTable('products') ? Product::when($hasProductShop, function ($query) use ($shop) {
             return $query->where('shop_id', $shop?->id);
         }) : null;
 
@@ -76,7 +81,7 @@ class DashboardController extends Controller
             ? Shop::withCount('orders')->orderBy('orders_count', 'desc')->limit(8)->get() 
             : (Schema::hasTable('shops') ? Shop::limit(8)->get() : collect([]));
 
-        $latestOrders = Schema::hasTable('orders') ? Order::when($shop, function ($query) use ($shop) {
+        $latestOrders = Schema::hasTable('orders') ? Order::when($hasOrderShop, function ($query) use ($shop) {
             return $query->where('shop_id', $shop?->id);
         })->latest('id')->limit(6)->get() : collect([]);
 
@@ -127,6 +132,7 @@ class DashboardController extends Controller
             $generaleSetting = Schema::hasTable('generate_settings') ? GeneraleSetting::first() : null;
         }
         $shop = $generaleSetting?->shop_type == 'single' ? (function_exists('generaleSetting') ? generaleSetting('shop') : null) : null;
+        $hasOrderShop = $shop && Schema::hasColumn('orders', 'shop_id');
 
         if (!Schema::hasTable('orders')) {
             return response()->json([
@@ -141,7 +147,7 @@ class DashboardController extends Controller
             $datesAndDays = [];
 
             if ($date) {
-                $count = Order::when($shop, function ($query) use ($shop) {
+                $count = Order::when($hasOrderShop, function ($query) use ($shop) {
                     return $query->where('shop_id', $shop?->id);
                 })->whereDate('created_at', $date)->count();
 
@@ -162,7 +168,7 @@ class DashboardController extends Controller
                 $datesAndDays[] = [
                     'date' => $date->toDateString(),
                     'label' => $date->format('l'),
-                    'value' => Order::when($shop, function ($query) use ($shop) {
+                    'value' => Order::when($hasOrderShop, function ($query) use ($shop) {
                         return $query->where('shop_id', $shop?->id);
                     })->whereDate('created_at', $date->toDateString())->count(),
                 ];
@@ -188,7 +194,7 @@ class DashboardController extends Controller
                 $datesAndMonths[] = [
                     'date' => $date->toDateString(),
                     'label' => $date->format('M'),
-                    'value' => Order::when($shop, function ($query) use ($shop) {
+                    'value' => Order::when($hasOrderShop, function ($query) use ($shop) {
                         return $query->where('shop_id', $shop?->id);
                     })->whereMonth('created_at', $date->month)
                         ->whereYear('created_at', $date->year)
@@ -214,7 +220,7 @@ class DashboardController extends Controller
                 $datesAndYears[] = [
                     'date' => $date->toDateString(),
                     'label' => $date->format('Y'),
-                    'value' => Order::when($shop, function ($query) use ($shop) {
+                    'value' => Order::when($hasOrderShop, function ($query) use ($shop) {
                         return $query->where('shop_id', $shop?->id);
                     })->whereYear('created_at', $date->year)->count(),
                 ];

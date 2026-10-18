@@ -5,6 +5,7 @@ namespace App\Models\Scopes;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Support\Facades\Schema;
 
 class PosOrderFalse implements Scope
 {
@@ -13,6 +14,8 @@ class PosOrderFalse implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        $builder->where('pos_order', false);
+        if (Schema::hasTable($model->getTable()) && Schema::hasColumn($model->getTable(), 'pos_order')) {
+            $builder->where('pos_order', false);
+        }
     }
 }
