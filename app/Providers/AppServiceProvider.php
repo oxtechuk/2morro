@@ -115,6 +115,9 @@ class AppServiceProvider extends ServiceProvider
             $view->with('businessModel', $businessModel);
             $view->with('seederRun', false);
             $view->with('storageLink', false);
+            if (!$view->offsetExists('errors')) {
+                $view->with('errors', session('errors', new \Illuminate\Support\ViewErrorBag));
+            }
         });
     }
 }

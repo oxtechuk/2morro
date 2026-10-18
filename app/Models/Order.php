@@ -93,6 +93,11 @@ class Order extends Model
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     /**
      * Get the shop for the Order.
      */

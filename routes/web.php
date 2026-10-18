@@ -158,14 +158,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/category', [CategoryController::class, 'index'])->name('category.index');
     Route::resource('categories', CategoryController::class)->except(['show']);
 
-    // Orders Management & Aliases (supporting both singular admin.order.* and plural admin.orders.*)
-    Route::get('/orders/{status?}', [OrderController::class, 'index'])->name('order.index');
-    Route::get('/orders-list', [OrderController::class, 'index'])->name('orders.index');
+    // Orders Management & Aliases (supporting both 2morro original dashboard and legacy links)
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders-list', [OrderController::class, 'index']);
+    Route::get('/orders/status/{status}', [OrderController::class, 'index'])->name('orders.status');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::get('/order/show/{order}', [OrderController::class, 'show'])->name('order.show');
-    Route::get('/orders/view/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders/view/{order}', [OrderController::class, 'show']);
+    Route::post('/orders/{order}/update-status', [OrderController::class, 'statusChange'])->name('orders.updateStatus');
     Route::get('/order/status-change/{order}', [OrderController::class, 'statusChange'])->name('order.status.change');
     Route::get('/order/payment-status-toggle/{order}', [OrderController::class, 'paymentStatusToggle'])->name('order.payment.status.toggle');
-    Route::post('/orders/{order}/update-status', [OrderController::class, 'statusChange'])->name('orders.updateStatus');
     Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
 
     // Reviews Management
