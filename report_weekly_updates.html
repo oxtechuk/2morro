@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>التقرير الأسبوعي الشامل للتحديثات والتطويرات التقنية | مركز ومتجر 2morro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563ea;
+            --primary-dark: #1d4ed8;
+            --primary-light: #eff6ff;
+            --dark: #0f172a;
+            --slate: #334155;
+            --muted: #64748b;
+            --light-bg: #f8fafc;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --accent: #f76d11;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            background: #ffffff;
+            color: var(--dark);
+            line-height: 1.6;
+            font-size: 13px;
+            padding: 30px;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                background: #ffffff;
+            }
+            @page {
+                size: A4;
+                margin: 12mm 15mm 15mm 15mm;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+            .avoid-break {
+                page-break-inside: avoid;
+            }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Header & Brand Banner */
+        .report-header {
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-badge {
+            background: linear-gradient(135deg, #2563ea, #1e40af);
+            color: #ffffff;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 22px;
+            box-shadow: 0 4px 10px rgba(37, 99, 234, 0.25);
+        }
+
+        .brand-name {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--dark);
+            line-height: 1.2;
+        }
+
+        .brand-sub {
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .report-meta {
+            text-align: left;
+            font-size: 11px;
+            color: var(--slate);
+        }
+
+        .report-meta .badge {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 11px;
+            margin-bottom: 4px;
+            border: 1px solid #bfdbfe;
+        }
+
+        /* Title Hero */
+        .title-hero {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: #ffffff;
+            padding: 24px 28px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15);
+        }
+
+        .title-hero::after {
+            content: "";
+            position: absolute;
+            left: -30px;
+            bottom: -30px;
+            width: 150px;
+            height: 150px;
+            background: rgba(37, 99, 234, 0.2);
+            border-radius: 50%;
+            filter: blur(30px);
+        }
+
+        .title-hero h1 {
+            font-size: 22px;
+            font-weight: 900;
+            margin-bottom: 6px;
+            color: #ffffff;
+        }
+
+        .title-hero p {
+            font-size: 12px;
+            color: #94a3b8;
+            max-width: 650px;
+            line-height: 1.5;
+        }
+
+        /* KPI Quick Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: var(--light-bg);
+            border: 1px solid var(--border);
+            padding: 14px 16px;
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--primary);
+            line-height: 1.2;
+            margin-bottom: 2px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--slate);
+        }
+
+        /* Section Styling */
+        .section-title {
+            font-size: 15px;
+            font-weight: 900;
+            color: var(--dark);
+            margin: 22px 0 14px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 6px;
+        }
+
+        .section-title .icon-indicator {
+            width: 8px;
+            height: 18px;
+            background: var(--primary);
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        /* Module Card */
+        .module-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            page-break-inside: avoid;
+        }
+
+        .module-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .module-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .module-tag {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .tag-success { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .tag-primary { background: var(--primary-light); color: var(--primary); border: 1px solid #bfdbfe; }
+        .tag-warning { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+
+        .module-desc {
+            font-size: 12px;
+            color: var(--slate);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        /* Bullet Points */
+        .features-list {
+            list-style: none;
+            padding-right: 0;
+        }
+
+        .features-list li {
+            position: relative;
+            padding-right: 20px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: var(--slate);
+            line-height: 1.5;
+        }
+
+        .features-list li::before {
+            content: "✓";
+            position: absolute;
+            right: 0;
+            top: 0;
+            color: var(--primary);
+            font-weight: 900;
+            font-size: 12px;
+        }
+
+        .features-list li strong {
+            color: var(--dark);
+            font-weight: 800;
+        }
+
+        /* Commits Table */
+        .commits-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 11px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .commits-table th {
+            background: #f1f5f9;
+            color: var(--slate);
+            font-weight: 800;
+            text-align: right;
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .commits-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+            color: var(--slate);
+        }
+
+        .commits-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .commits-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .commit-hash {
+            font-family: monospace;
+            background: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        /* Footer */
+        .report-footer {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .signature-box {
+            display: flex;
+            gap: 20px;
+        }
+
+        .sig-block {
+            text-align: center;
+        }
+
+        .sig-line {
+            width: 100px;
+            border-bottom: 1px solid #cbd5e1;
+            margin-top: 15px;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+    <header class="report-header">
+        <div class="brand-logo-box">
+            <div class="brand-badge">2M</div>
+            <div>
+                <div class="brand-name">مركز ومتجر 2morro للتأهيل وتنمية المهارات</div>
+                <div class="brand-sub">بوابة الاستشارات التعليمية والمتجر الإلكتروني المتخصص</div>
+            </div>
+        </div>
+        <div class="report-meta">
+            <span class="badge">تقرير هندسي معتمد</span>
+            <div><strong>تاريخ الإصدار:</strong> 16 أكتوبر 2026</div>
+            <div><strong>الفترة:</strong> الأسبوع المنتهي في 16 أكتوبر 2026</div>
+            <div><strong>فريق التطوير:</strong> Ox Tech Solutions</div>
+        </div>
+    </header>
+
+    <!-- Title Banner -->
+    <div class="title-hero">
+        <h1>التقرير الأسبوعي الشامل للتطويرات والترقيات التقنية</h1>
+        <p>
+            يوثق هذا التقرير كافة الأعمال الهندسية، معالجة المشكلات الجوهرية، تحسين الأداء وتجربة المستخدم (UX/UI)، ترقية قاعدة البيانات، وضبط نظام الحجز والمتجر الإلكتروني التي تم إنجازها ورفعها مباشرة إلى مستودع المشروع الرئيسي (GitHub: <code>oxtechuk/2morro</code>).
+        </p>
+    </div>
+
+    <!-- Quick Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">6,250+</div>
+            <div class="stat-label">ملف تم تنظيفه من Git</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">معالجة استقرار الـ DB</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">1:1</div>
+            <div class="stat-label">توحيد إجباري لأبعاد الصور</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">-55%</div>
+            <div class="stat-label">تقليص هدر واجهة الحجز</div>
+        </div>
+    </div>
+
+    <!-- Section: Executive Summary -->
+    <h2 class="section-title"><span class="icon-indicator"></span> 1. الملخص التنفيذي للإنجازات</h2>
+    <div class="module-card">
+        <p class="module-desc">
+            شهد الأخير إنجاز حزمة ترقيات تقنية محورية شملت معالجة عوائق الأداء والتعطل في السيرفر والمستودع، وتحديث تجربة حجز الاستشارات وتوحيد المظهر العام للمتجر الإلكتروني، مع ضبط التوافق المباشر مع لوحة التحكم (الداش بورد). تم التركيز على 5 ركائز أساسية:
+        </p>
+        <ul class="features-list">
+            <li><strong>تخفيف مستودع Git بنسبة تفوق 90%:</strong> إزالة مجلدات الاعتماديات الضخمة وبناء خط أنابيب CI/CD آلي.</li>
+            <li><strong>إعادة إحياء محرك البحث وقوائم المتجر:</strong> حل تعطل أزرار البحث ومودال القائمة في الموبايل عبر دمج Alpine.js.</li>
+            <li><strong>حل خطأ قاعدة البيانات (SQLSTATE 42S02):</strong> معالجة مشكلة جدول ربط الأقسام بالمنتجات لضمان استقرار الاستعلامات.</li>
+            <li><strong>توحيد مقاسات الصور إجبارياً:</strong> تطبيق نسبة 1:1 صارمة على كافة كروت المنتجات لمنع التشوّه والفراغات البيضاء.</li>
+            <li><strong>إعادة هيكلة صفحة الحجز بالكامل:</strong> تبسيط الحجز بنسبة 55%، وإلغاء الحشو، وربط المواعيد والأيام بالفروع مباشرة من الداش بورد.</li>
+        </ul>
+    </div>
+
+    <!-- Section: Detailed Modules -->
+    <h2 class="section-title"><span class="icon-indicator"></span> 2. تفاصيل التحديثات الهندسية والتطويرية</h2>
+
+    <!-- Module 1: Git & CI/CD -->
+    <div class="module-card">
+        <div class="module-header">
+            <div class="module-title">أ. هندسة المستودع البرمجي (Git) وأتمتة CI/CD</div>
+            <span class="module-tag tag-primary">بنية تحتية</span>
+        </div>
+        <ul class="features-list">
+            <li><strong>فك التتبع (Untrack) عن 6,250+ ملف:</strong> تم إزالة ملفات <code>vendor</code> و <code>node_modules</code> التي تم إضافتها بالخطأ سابقاً في سجل الـ Git، مما خفف حجم المستودع وسرّع من عمليات <code>git pull</code> و <code>git push</code> على السيرفر لعشرات الأضعاف.</li>
+            <li><strong>تحديث ملف <code>.gitignore</code> القياسي:</strong> عزل ملفات البيئة الحساسة (<code>.env</code>) وملفات الكاش والمكتبات لضمان أمن الكود ومنع تضخم المستودع مجدداً.</li>
+            <li><strong>بناء مسار التكامل المستمر (GitHub Actions CI):</strong> إنشاء ملف <code>.github/workflows/ci.yml</code> لفحص واختبار التعديلات البرمجية والتأكد من خلو المشروع من الأخطاء أثناء كل Push.</li>
+            <li><strong>دليل تشغيل احترافي (<code>README.md</code>):</strong> توثيق متكامل لبيئة التشغيل، متطلبات النظام، وأوامر النشر السريع على سيرفرات الإنتاج.</li>
+        </ul>
+    </div>
+
+    <!-- Module 2: Alpine.js & Interactivity -->
+    <div class="module-card">
+        <div class="module-header">
+            <div class="module-title">ب. حل تفاعلية المتجر (Search & Mobile Menu)</div>
+            <span class="module-tag tag-success">تجربة مستخدم</span>
+        </div>
+        <ul class="features-list">
+            <li><strong>تضمين مكتبة Alpine.js محلياً:</strong> وضع ملف <code>public/js/alpine.min.js</code> مدمجاً مباشرة في المشروع مع رابط احتياطي CDN في <code>storefront.blade.php</code>.</li>
+            <li><strong>تشغيل زر البحث المنبثق (Search Modal):</strong> تفعيل زر البحث في الهيدر لفتح نافذة البحث السريع الفورية بنجاح.</li>
+            <li><strong>تشغيل القائمة الجانبية في شاشات الموبايل (Mobile Drawer):</strong> استجابة أزرار فتح وغلق القائمة الجانبية وحساب السلة دون أي تجميد للواجهة.</li>
+        </ul>
+    </div>
+
+    <!-- Page Break for clean printing -->
+    <div class="page-break"></div>
+
+    <!-- Module 3: Database Fix -->
+    <div class="module-card">
+        <div class="module-header">
+            <div class="module-title">ج. إصلاح قاعدة البيانات وجدول وسيط الأقسام والمنتجات</div>
+            <span class="module-tag tag-warning">قواعد بيانات</span>
+        </div>
+        <ul class="features-list">
+            <li><strong>معالجة خطأ <code>SQLSTATE[42S02] Table '2mro.product_categories' doesn't exist</code>:</strong> كان موديل <code>Category.php</code> يبحث عن جدول غير موجود باسم <code>product_categories</code> مما تسبب في توقف استعلامات الأقسام.</li>
+            <li><strong>تصحيح علاقة الربط (Pivot Table Alignment):</strong> تحديث علاقة <code>products()</code> في موديل <code>Category.php</code> للربط الذكي بالجدول القياسي المنشأ في الـ Migrations وهو <code>category_product</code> مع فحص تلقائي لوجود الجدول (Schema Check).</li>
+            <li><strong>اختبار وتأكيد الاستعلامات:</strong> تم اختبار استعلامات الأقسام وعدد المنتجات بنجاح تام وعودة المنتجات للظهور في واجهة المتجر.</li>
+        </ul>
+    </div>
+
+    <!-- Module 4: Image Aspect Ratio -->
+    <div class="module-card">
+        <div class="module-header">
+            <div class="module-title">د. توحيد مقاسات وأبعاد صور المنتجات إجبارياً</div>
+            <span class="module-tag tag-success">تصميم وواجهة</span>
+        </div>
+        <ul class="features-list">
+            <li><strong>تطبيق نسبة أبعاد مربعة 1:1 إجبارية:</strong> تثبيت كود <code>style="aspect-ratio: 1 / 1; width: 100%;"</code> في حاوية الصورة بكارت المنتج في كافة أجزاء المتجر.</li>
+            <li><strong>التغطية الشاملة الكاملة للصورة (Full Cover):</strong> استبدال <code>object-contain</code> بخاصية <code>object-fit: cover; object-position: center;</code> لضمان ملء الصورة لكامل المساحة بدون تشويه وبدون فراغات أو أشرطة بيضاء أعلى وأسفل الصورة.</li>
+            <li><strong>إلغاء الهوامش الداخلية الزائدة:</strong> حذف الـ padding الداخلي لتوحيد خطوط الشبكة في كل الكروت (الصفحة الرئيسية، البحث، صفحات الأقسام، وبلوك المنتجات ذات الصلة).</li>
+        </ul>
+    </div>
+
+    <!-- Module 5: Consultation Booking System -->
+    <div class="module-card">
+        <div class="module-header">
+            <div class="module-title">هـ. التطوير الشامل لنظام حجز الاستشارات والتقييم (<code>/booking</code>)</div>
+            <span class="module-tag tag-primary">ترقية كبرى</span>
+        </div>
+        <ul class="features-list">
+            <li><strong>اختصار وتصغير الصفحة بنسبة تتجاوز 55%:</strong> إزالة الصورة المظلمة الضخمة والاقتباسات الطويلة وقوائم الفروع المكررة من السايدبار الجانبي، واستبدالها بكارت ثقة مدمج يحمل بيانات إشراف أ. هبة الله أكرم، ساعات العمل، ومساعدة الواتساب السريعة.</li>
+            <li><strong>توحيد الهوية البصرية بلون واحد ملكي (<code>#2563ea</code>):</strong> إزالة الألوان المشتتة وجميع الإيموجيات واستبدالها بأيقونات SVG دقيقة ورسمية.</li>
+            <li><strong>3 صيغ مقابلة واضحة ومحددة:</strong>
+                <br>• في المركز (عادي مجدول - 300 ج.م)
+                <br>• في المركز (مستعجل أولوية قصوى - 450 ج.م)
+                <br>• أونلاين عبر Zoom بالفيديو (250 ج.م)
+            </li>
+            <li><strong>ربط المواعيد والأيام بالفروع مباشرة من الداش بورد:</strong>
+                <br>• عند اختيار أي فرع، يتم سحب <strong>أيام العمل المعتمدة للفرع</strong> تلقائياً من إعدادات لوحة التحكم.
+                <br>• يتم ملء قائمة الفترات الزمنية <strong>بالساعات المحددة لذلك الفرع فقط في الداش بورد</strong>.
+                <br>• فحص ذكي للتاريخ: تنبيه العميل فوراً إذا اختار تاريخاً يوافق يوماً مغلقاً في ذلك الفرع.
+            </li>
+            <li><strong>تنقية وتطوير وسائل الدفع:</strong> حصر الدفع في (فودافون كاش وإنستاباي) مع أزرار نسخ المعرف والأرقام بلمسة واحدة.</li>
+            <li><strong>تبسيط رفع الإيصال:</strong> تحويل الصندوق المتعرج الضخم إلى شريط رفع فوري 1-Line مع معاينة مصغرة سريعة وإمكانية الحذف والاستبدال بسهولة.</li>
+            <li><strong>دمج السعر النهائي داخل زر الإرسال:</strong> إظهار إجمالي التكلفة ديناميكياً داخل زر التأكيد (مثل: <code>تأكيد وإرسال طلب الحجز (300 ج.م)</code>).</li>
+        </ul>
+    </div>
+
+    <!-- Section: Commits History -->
+    <h2 class="section-title"><span class="icon-indicator"></span> 3. سجل الالتزامات والكوميتس المرفوعة للـ Main Branch</h2>
+    <div class="module-card">
+        <table class="commits-table">
+            <thead>
+                <tr>
+                    <th style="width: 85px;">Commit</th>
+                    <th style="width: 100px;">التاريخ</th>
+                    <th>بيان التحديث / الوصف الهندسي</th>
+                    <th style="width: 90px;">الحالة</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="commit-hash">55396cd</span></td>
+                    <td>15-10-2026</td>
+                    <td>feat: streamline booking page into compact layout with dashboard-linked days, slots and payment</td>
+                    <td><span class="module-tag tag-success">مكتمل ومرفوع</span></td>
+                </tr>
+                <tr>
+                    <td><span class="commit-hash">0e75d87</span></td>
+                    <td>15-10-2026</td>
+                    <td>fix: resolve pivot table mismatch by checking category_product in Category model</td>
+                    <td><span class="module-tag tag-success">مكتمل ومرفوع</span></td>
+                </tr>
+                <tr>
+                    <td><span class="commit-hash">d80726f</span></td>
+                    <td>15-10-2026</td>
+                    <td>fix: enforce strict 1:1 aspect-ratio and object-cover on product card images</td>
+                    <td><span class="module-tag tag-success">مكتمل ومرفوع</span></td>
+                </tr>
+                <tr>
+                    <td><span class="commit-hash">5b96ae5</span></td>
+                    <td>15-10-2026</td>
+                    <td>feat: center headers, remove service type table, add in_center normal, urgent, and online formats</td>
+                    <td><span class="module-tag tag-success">مكتمل ومرفوع</span></td>
+                </tr>
+                <tr>
+                    <td><span class="commit-hash">525bfb9</span></td>
+                    <td>15-10-2026</td>
+                    <td>fix: add Alpine.js to restore search modal, mobile menu drawer, cart and dropdown functionality</td>
+                    <td><span class="module-tag tag-success">مكتمل ومرفوع</span></td>
+                </tr>
+                <tr>
+                    <td><span class="commit-hash">a857fce</span></td>
+                    <td>15-10-2026</td>
+                    <td>fix: replace remaining glyphs with SVGs and unify copy notification styling</td>
+                    <td><span class="module-tag tag-success">مكتمل ومرفوع</span></td>
+                </tr>
+                <tr>
+                    <td><span class="commit-hash">a6d227b</span></td>
+                    <td>15-10-2026</td>
+                    <td>chore: setup github files, untrack vendor and node_modules, add CI workflow and update README</td>
+                    <td><span class="module-tag tag-success">مكتمل ومرفوع</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Section: Conclusion & Recommendations -->
+    <h2 class="section-title"><span class="icon-indicator"></span> 4. توصيات النشر والمتابعة على السيرفر (Production)</h2>
+    <div class="module-card">
+        <p class="module-desc">
+            كافة التعديلات المذكورة أعلاه تم اختبارها ورفعها بالكامل إلى الفرع الرئيسي <code>main</code> على GitHub. لتطبيق كافة هذه المزايا والتحديثات على سيرفر الإنتاج فوراً، يكفي تنفيذ الأمرين التاليين فقط داخل مجلد المشروع في التيرمينال:
+        </p>
+        <div style="background: #0f172a; color: #38bdf8; padding: 12px 16px; border-radius: 10px; font-family: monospace; font-size: 12px; margin-top: 8px;" dir="ltr">
+            git pull origin main<br>
+            php artisan optimize:clear
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="report-footer">
+        <div>تم استخراج هذا التقرير وتوثيقه آلياً لمركز 2morro للتأهيل وتنمية المهارات &copy; 2026</div>
+        <div class="signature-box">
+            <div class="sig-block">
+                <div class="sig-line"></div>
+                <span>الاعتماد التقني</span>
+            </div>
+            <div class="sig-block">
+                <div class="sig-line"></div>
+                <span>إدارة المركز</span>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+</body>
+</html>

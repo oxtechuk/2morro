@@ -6,6 +6,7 @@ use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Customer;
+use App\Models\GeneraleSetting;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Shop;
@@ -23,6 +24,10 @@ class DashboardController extends Controller
     public function index()
     {
         $generaleSetting = function_exists('generaleSetting') ? generaleSetting('setting') : null;
+        if ($generaleSetting instanceof \__PHP_Incomplete_Class) {
+            \Illuminate\Support\Facades\Cache::forget('generale_setting');
+            $generaleSetting = Schema::hasTable('generate_settings') ? GeneraleSetting::first() : null;
+        }
         $businessModel = $generaleSetting?->shop_type ?? 'single';
 
         $totalCustomer = Schema::hasTable('customers') 
@@ -58,7 +63,8 @@ class DashboardController extends Controller
             return $query->where('shop_id', $shop?->id);
         }) : null;
 
-        $topSellingProducts = ($productObject && Schema::hasTable('orders')) 
+        $hasOrderItems = Schema::hasTable('order_products') || Schema::hasTable('order_items');
+        $topSellingProducts = ($productObject && Schema::hasTable('orders') && $hasOrderItems) 
             ? (clone $productObject)->withCount('orders')->orderBy('orders_count', 'desc')->limit(8)->get() 
             : ($productObject ? (clone $productObject)->latest('id')->limit(8)->get() : collect([]));
 
@@ -116,6 +122,10 @@ class DashboardController extends Controller
         $type = request('type');
         $date = request('date');
         $generaleSetting = function_exists('generaleSetting') ? generaleSetting('setting') : null;
+        if ($generaleSetting instanceof \__PHP_Incomplete_Class) {
+            \Illuminate\Support\Facades\Cache::forget('generale_setting');
+            $generaleSetting = Schema::hasTable('generate_settings') ? GeneraleSetting::first() : null;
+        }
         $shop = $generaleSetting?->shop_type == 'single' ? (function_exists('generaleSetting') ? generaleSetting('shop') : null) : null;
 
         if (!Schema::hasTable('orders')) {

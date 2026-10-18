@@ -330,7 +330,11 @@ class Product extends Model
      */
     public function orders(): BelongsToMany
     {
-        return $this->belongsToMany(Order::class, 'order_products')->withPivot('quantity', 'price');
+        $pivotTable = \Illuminate\Support\Facades\Schema::hasTable('order_products')
+            ? 'order_products'
+            : (\Illuminate\Support\Facades\Schema::hasTable('order_items') ? 'order_items' : 'order_products');
+
+        return $this->belongsToMany(Order::class, $pivotTable)->withPivot('quantity', 'price');
     }
 
     /**

@@ -22,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        ini_set('unserialize_callback_func', 'spl_autoload_call');
+
         if (file_exists(app_path('helpers.php'))) {
             require_once app_path('helpers.php');
         }

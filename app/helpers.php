@@ -10,6 +10,7 @@ use App\Models\DeliveryCharge;
 use Illuminate\Support\Number;
 use App\Models\CartAccessToken;
 use App\Models\GeneraleSetting;
+use App\Models\Shop;
 use Nwidart\Modules\Facades\Module;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Cache;
@@ -60,6 +61,9 @@ if (! function_exists('generaleSetting')) {
      */
     function generaleSetting($type = null, $authUser = null)
     {
+        // Ensure class definition is loaded before unserialize gets called on cached models
+        class_exists(GeneraleSetting::class);
+
         // Cache general setting data for 30 days
         $generaleSetting = Cache::remember('generale_setting', 60 * 24 * 30, function () {
             if (Schema::hasTable('generate_settings')) {
@@ -85,17 +89,31 @@ if (! function_exists('generaleSetting')) {
             ];
         });
 
+        // Guard against serialized incomplete objects from prior cache
+        if ($generaleSetting instanceof \__PHP_Incomplete_Class) {
+            Cache::forget('generale_setting');
+            $generaleSetting = Schema::hasTable('generate_settings') ? GeneraleSetting::first() : null;
+        }
+
         if ($type == 'setting' || $type == null) {
             return $generaleSetting;
         }
 
         if ($type == 'rootShop') {
-            return Cache::remember('admin_shop', 60 * 24 * 7, function () {
+            class_exists(Shop::class);
+            $rootShop = Cache::remember('admin_shop', 60 * 24 * 7, function () {
                 if (Schema::hasTable('shops')) {
                     return Shop::first();
                 }
                 return null;
             });
+
+            if ($rootShop instanceof \__PHP_Incomplete_Class) {
+                Cache::forget('admin_shop');
+                $rootShop = Schema::hasTable('shops') ? Shop::first() : null;
+            }
+
+            return $rootShop;
         }
 
         if ($type == 'shop') {
@@ -115,12 +133,18 @@ if (! function_exists('generaleSetting')) {
         }
 
         if ($type == 'defaultCurrency') {
+            class_exists(Currency::class);
             $defaultCurrency = Cache::remember('default_currency', 60 * 24 * 30, function () {
                 if (Schema::hasTable('currencies')) {
                     return Currency::where('is_default', 1)->first();
                 }
                 return (object) ['id' => 1, 'name' => 'EGP', 'symbol' => 'ج.م', 'rate' => 1];
             });
+
+            if ($defaultCurrency instanceof \__PHP_Incomplete_Class) {
+                Cache::forget('default_currency');
+                $defaultCurrency = Schema::hasTable('currencies') ? Currency::where('is_default', 1)->first() : null;
+            }
 
             return $defaultCurrency;
         }
