@@ -1,0 +1,9 @@
+
+/* Responsive Overrides */
+@media (max-width: 991.98px) {
+    .app-sidebar { position: fixed; left: -260px; top: 0; bottom: 0; z-index: 1050; transition: left 0.3s ease; }
+    [dir='rtl'] .app-sidebar { left: auto; right: -260px; transition: right 0.3s ease; }
+    .sidebar-mobile-open .app-sidebar { left: 0 !important; }
+    [dir='rtl'] .sidebar-mobile-open .app-sidebar { right: 0 !important; }
+    .app-main-outer { padding-top: 60px; }
+}
