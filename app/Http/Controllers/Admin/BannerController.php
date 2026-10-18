@@ -17,7 +17,13 @@ class BannerController extends Controller
     {
         $rootShop = generaleSetting('rootShop');
 
-        $banners = Banner::whereNull('shop_id')->orWhere('shop_id', $rootShop->id)->paginate(20);
+        $rootShopId = $rootShop?->id;
+        $banners = Banner::where(function ($query) use ($rootShopId) {
+            $query->whereNull('shop_id');
+            if ($rootShopId) {
+                $query->orWhere('shop_id', $rootShopId);
+            }
+        })->paginate(20);
 
         return view('admin.banner.index', compact('banners'));
     }

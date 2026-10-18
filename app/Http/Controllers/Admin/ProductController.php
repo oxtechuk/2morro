@@ -44,7 +44,9 @@ class ProductController extends Controller
             return $query->where('name', 'like', "%$search%");
         })->paginate(20);
 
-        $shops = ShopRepository::query()->isActive()->get();
+        $shops = \Illuminate\Support\Facades\Schema::hasTable('shops')
+            ? ShopRepository::query()->isActive()->get()
+            : collect();
 
         $brands = Brand::where('is_active', '1')->get();
         $categories = Category::active()->get();

@@ -34,9 +34,10 @@ class OrderController extends Controller
         $search = $request->search;
 
         $generaleSetting = GeneraleSetting::first();
+        $businessModel = $generaleSetting?->shop_type ?? 'single';
         $shop = $request->shop_id ?? null;
-        if ($generaleSetting?->shop_type == 'single') {
-            $shop = User::role(Roles::ROOT->value)->first()?->shop->id;
+        if ($businessModel == 'single') {
+            $shop = User::role(Roles::ROOT->value)->first()?->shop?->id;
         }
         $orders = OrderRepository::query()
             ->when($shop, fn($query) => $query->where('shop_id', $shop))
@@ -48,8 +49,8 @@ class OrderController extends Controller
 
         $orderStatuses = OrderStatus::cases();
         $paymentStatus = PaymentStatus::cases();
-        $shops = Shop::isActive()->get();
-        return view('admin.order.index', compact('orders', 'orderStatuses', 'paymentStatus', 'shops'));
+        $shops = \Illuminate\Support\Facades\Schema::hasTable('shops') ? Shop::isActive()->get() : collect();
+        return view('admin.order.index', compact('orders', 'orderStatuses', 'paymentStatus', 'shops', 'businessModel'));
     }
 
     /**
@@ -59,9 +60,9 @@ class OrderController extends Controller
     {
         $orderStatus = OrderStatus::cases();
 
-        $riders = Driver::whereHas('user', function ($query) {
+        $riders = \Illuminate\Support\Facades\Schema::hasTable('drivers') ? Driver::whereHas('user', function ($query) {
             return $query->where('is_active', true);
-        })->get();
+        })->get() : collect();
 
         return view('admin.order.show', compact('order', 'orderStatus', 'riders'));
     }

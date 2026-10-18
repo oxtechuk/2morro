@@ -1229,7 +1229,9 @@
     </script>
 
   <script>
-    {!! \File::get(base_path('vendor/unisharp/laravel-filemanager/public/js/stand-alone-button.js')) !!}
+    @if (\File::exists(base_path('vendor/unisharp/laravel-filemanager/public/js/stand-alone-button.js')))
+      {!! \File::get(base_path('vendor/unisharp/laravel-filemanager/public/js/stand-alone-button.js')) !!}
+    @endif
   </script>
 
 

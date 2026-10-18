@@ -26,8 +26,8 @@
 
                         <td>
                             <a class="text-decoration-none text-dark"
-                                href="{{ route('admin.shop.show', $product->shop_id) }}">
-                                {{ $product->shop->name }}
+                                href="{{ $product->shop_id ? route('admin.shop.show', $product->shop_id) : '#' }}">
+                                {{ $product->shop?->name ?? 'N/A' }}
                             </a>
                         </td>
                         <td>

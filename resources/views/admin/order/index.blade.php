@@ -31,7 +31,7 @@
                             @endforeach
                         </select>
                     </div>
-                    @if ($businessModel == 'multi')
+                    @if (($businessModel ?? '') == 'multi')
                         <div>
                             <select name="shop_id" id="" class="form-select">
                                 <option disabled selected>{{ __('Shop') }}</option>

@@ -34,13 +34,41 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if(request()->ip() != '127.0.0.1'){
-            Schema::defaultStringLength(191);
-            if (!file_exists(base_path('storage/installed')) && !request()->is('install') && !request()->is('install/*')) {
-                header("Location: install");
-                exit;
+        if (!app()->runningInConsole() && app()->bound('request')) {
+            if (request()->ip() != '127.0.0.1') {
+                Schema::defaultStringLength(191);
+                if (!file_exists(base_path('storage/installed')) && !request()->is('install') && !request()->is('install/*')) {
+                    header("Location: install");
+                    exit;
+                }
             }
         }
+
+        \Illuminate\Support\Facades\URL::resolveMissingNamedRoutesUsing(function ($name, $parameters = [], $absolute = true) {
+            $aliases = [
+                'admin.brand.index' => 'admin.brands.index',
+                'admin.brand.create' => 'admin.brands.create',
+                'admin.banner.index' => 'admin.banners.index',
+                'admin.banner.create' => 'admin.banners.create',
+                'admin.booking.index' => 'admin.bookings.index',
+                'admin.customer.index' => 'admin.crm.index',
+                'admin.customer.show' => 'admin.crm.show',
+                'admin.order.index' => 'admin.orders.index',
+                'admin.order.show' => 'admin.orders.show',
+                'shop.order.index' => 'admin.orders.index',
+                'shop.brand.index' => 'admin.brands.index',
+                'shop.banner.index' => 'admin.banners.index',
+                'shop.product.index' => 'admin.products.index',
+                'shop.product.create' => 'admin.products.create',
+            ];
+
+            if (isset($aliases[$name]) && \Illuminate\Support\Facades\Route::has($aliases[$name])) {
+                return route($aliases[$name], $parameters, $absolute);
+            }
+
+            // Fallback for unconfigured or missing routes so blade navigation does not crash
+            return '#';
+        });
 
         view()->composer('*', function ($view) {
             $languages = (class_exists(LanguageRepository::class) && Schema::hasTable('languages'))
@@ -50,8 +78,12 @@ class AppServiceProvider extends ServiceProvider
                     (object)['id' => 2, 'name' => 'en', 'title' => 'English'],
                 ]);
             $setting = function_exists('generaleSetting') ? generaleSetting('setting') : null;
+            $businessModel = $setting?->shop_type ?? 'single';
             $view->with('languages', $languages);
             $view->with('generaleSetting', $setting);
+            $view->with('businessModel', $businessModel);
+            $view->with('seederRun', false);
+            $view->with('storageLink', false);
         });
     }
 }

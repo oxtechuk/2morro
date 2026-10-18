@@ -16,8 +16,9 @@ class BrandController extends Controller
     {
         $shop = generaleSetting('rootShop');
 
-        // Get brands
-        $brands = $shop->brands()->paginate(20);
+        $brands = ($shop && method_exists($shop, 'brands'))
+            ? $shop->brands()->paginate(20)
+            : \App\Models\Brand::paginate(20);
 
         return view('admin.brand.index', compact('brands'));
     }
