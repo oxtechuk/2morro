@@ -12,16 +12,29 @@ class NotificationController extends Controller
     // fetch notifications for admin
     public function index()
     {
-        $shop = generaleSetting('shop');
+        try {
+            $shop = function_exists('generaleSetting') ? generaleSetting('shop') : null;
+            if (!$shop || !\Illuminate\Support\Facades\Schema::hasTable('notifications')) {
+                return $this->json('notifications', [
+                    'total' => 0,
+                    'notifications' => [],
+                ]);
+            }
 
-        $notifications = NotificationRepository::query()->where('shop_id', $shop->id)->orderBy('is_read', 'asc')->latest('id')->take(10)->get();
+            $notifications = NotificationRepository::query()->where('shop_id', $shop->id)->orderBy('is_read', 'asc')->latest('id')->take(10)->get();
 
-        $total = NotificationRepository::query()->where('shop_id', $shop->id)->whereIsRead(false)->count();
+            $total = NotificationRepository::query()->where('shop_id', $shop->id)->whereIsRead(false)->count();
 
-        return $this->json('notifications', [
-            'total' => $total >= 10 ? '9+' : $total,
-            'notifications' => WebNotificationResource::collection($notifications),
-        ]);
+            return $this->json('notifications', [
+                'total' => $total >= 10 ? '9+' : $total,
+                'notifications' => WebNotificationResource::collection($notifications),
+            ]);
+        } catch (\Throwable $e) {
+            return $this->json('notifications', [
+                'total' => 0,
+                'notifications' => [],
+            ]);
+        }
     }
 
     // mark as read

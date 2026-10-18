@@ -744,13 +744,8 @@
                     })
                 },
                 error: function(e) {
-                    $('#notifications').empty()
-                    if (e.status == 401 || e.status == 403) {
-                        $('#totalNotify').text(0)
-                        $("#notifications").html("emply");
-                    } else {
-                        $("#notifications").html(e.responseText);
-                    }
+                    $('#totalNotify').text(0);
+                    $('#notifications').html('<div class="p-3 text-center text-muted small">{{ __("No notifications found") }}</div>');
                 }
             });
         }
@@ -790,13 +785,8 @@
                     })
                 },
                 error: function(e) {
-                    $('#notifications').empty()
-                    if (e.status == 401 || e.status == 403) {
-                        $('#totalNotify').text(0)
-                        $("#notifications").html("empty");
-                    } else {
-                        $("#notifications").html(e.responseText);
-                    }
+                    $('#totalNotify').text(0);
+                    $('#notifications').html('<div class="p-3 text-center text-muted small">{{ __("No notifications found") }}</div>');
                 }
             });
         }

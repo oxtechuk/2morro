@@ -84,7 +84,8 @@ use App\Http\Controllers\Admin\NotificationController as AdminNotificationContro
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
-    Route::get('/dashboard/statistics', [DashboardController::class, 'orderStatistics'])->name('dashboard.statistics');
+    Route::match(['get', 'post'], '/dashboard/statistics', [DashboardController::class, 'orderStatistics'])->name('dashboard.statistics');
+    Route::get('/dashboard/notifications', [AdminNotificationController::class, 'index'])->name('dashboard.notification');
 
     // Profile & Settings aliases
     Route::get('/profile-setting', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.index');
@@ -181,8 +182,33 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
 // Shop Notifications
 Route::middleware(['auth'])->prefix('shop')->name('shop.')->group(function () {
+    Route::get('/dashboard/notifications', [\App\Http\Controllers\Shop\NotificationController::class, 'index'])->name('dashboard.notification');
     Route::get('/notifications', [\App\Http\Controllers\Shop\NotificationController::class, 'show'])->name('notification.show');
     Route::get('/notifications/read-all', [\App\Http\Controllers\Shop\NotificationController::class, 'markAllAsRead'])->name('notification.readAll');
+});
+
+// User activity & messaging status endpoints
+Route::post('/update/last/seen', function () {
+    session(['last_online' => now()->toIso8601String()]);
+    return response()->json(['status' => 'success']);
+})->name('update.last.seen');
+
+Route::get('/api/unread-messages', function () {
+    return response()->json([
+        'status' => 'success',
+        'data' => [
+            'unread_messages' => 0
+        ]
+    ]);
+});
+
+Route::get('/unread-messages', function () {
+    return response()->json([
+        'status' => 'success',
+        'data' => [
+            'unread_messages' => 0
+        ]
+    ]);
 });
 
 require __DIR__.'/auth.php';
