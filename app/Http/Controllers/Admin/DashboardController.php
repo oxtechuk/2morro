@@ -122,6 +122,7 @@ class DashboardController extends Controller
         }
 
         return view('admin.dashboard', array_merge(compact(
+            'generaleSetting',
             'businessModel',
             'totalShop',
             'totalOrder',
