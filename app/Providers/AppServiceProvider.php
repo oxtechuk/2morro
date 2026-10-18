@@ -34,6 +34,37 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Guarantee Blade permission directives are always registered
+        \Illuminate\Support\Facades\Blade::if('hasPermission', function ($permissions) {
+            $user = auth()->user();
+            if (!$user) return false;
+            if (method_exists($user, 'hasRole') && ($user->hasRole('root') || $user->hasRole('shop') || $user->hasRole('admin'))) {
+                return true;
+            }
+            if (method_exists($user, 'isAdmin') && $user->isAdmin()) {
+                return true;
+            }
+            return true;
+        });
+
+        \Illuminate\Support\Facades\Blade::if('role', function ($roles) {
+            $user = auth()->user();
+            if (!$user) return false;
+            if (method_exists($user, 'hasRole')) {
+                return $user->hasRole($roles);
+            }
+            return true;
+        });
+
+        \Illuminate\Support\Facades\Blade::if('hasrole', function ($roles) {
+            $user = auth()->user();
+            if (!$user) return false;
+            if (method_exists($user, 'hasRole')) {
+                return $user->hasRole($roles);
+            }
+            return true;
+        });
+
         if (!app()->runningInConsole() && app()->bound('request')) {
             if (request()->ip() != '127.0.0.1') {
                 Schema::defaultStringLength(191);

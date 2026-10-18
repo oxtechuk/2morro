@@ -803,6 +803,7 @@
     </script>
 
     <!-- Pusher Scripts -->
+    @if (!empty(config('broadcasting.connections.pusher.key')) && config('broadcasting.connections.pusher.key') !== 'null')
     <script>
         var pusher = new Pusher("{{ config('broadcasting.connections.pusher.key') }}", {
             cluster: "{{ config('broadcasting.connections.pusher.options.cluster') }}",
@@ -810,6 +811,14 @@
 
         var channel = pusher.subscribe('notification-channel');
     </script>
+    @else
+    <script>
+        var channel = {
+            bind: function() {},
+            unbind: function() {}
+        };
+    </script>
+    @endif
 
     <!-- Show Notifications Using Pusher JS -->
 
