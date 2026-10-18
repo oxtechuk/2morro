@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
 
 class User extends Authenticatable
 {
@@ -111,11 +112,32 @@ class User extends Authenticatable
 
     public function scopeRole($query, $role)
     {
-        return $query->where('role', $role);
+        if (Schema::hasColumn('users', 'role')) {
+            return $query->where('role', $role);
+        }
+
+        if (in_array(strtolower($role), ['root', 'admin'])) {
+            return $query->where(function ($q) {
+                $q->where('email', 'admin@2morro.com')
+                    ->orWhere('email', 'like', '%@2morro.com')
+                    ->orWhere('email', 'like', '%admin%')
+                    ->orWhere('id', 1);
+            });
+        }
+
+        if (strtolower($role) === 'customer') {
+            return $query->where('email', 'not like', '%@2morro.com')
+                ->where('email', '!=', 'admin@2morro.com');
+        }
+
+        return $query;
     }
 
     public function scopeIsActive($query)
     {
-        return $query->where('is_active', true);
+        if (Schema::hasColumn('users', 'is_active')) {
+            return $query->where('is_active', true);
+        }
+        return $query;
     }
 }
