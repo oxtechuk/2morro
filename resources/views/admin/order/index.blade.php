@@ -96,12 +96,12 @@
                                     {{ showCurrency($order->payable_amount) }}
                                     <br>
                                     <span
-                                        class="badge rounded-pill {{ $order->payment_status->value === 'Paid' ? 'text-bg-success' : 'text-bg-warning' }}">
-                                        {{ $order->payment_status }}
+                                        class="badge rounded-pill {{ ($order->payment_status->value ?? $order->payment_status) === 'Paid' ? 'text-bg-success' : 'text-bg-warning' }}">
+                                        {{ $order->payment_status->value ?? $order->payment_status }}
                                     </span>
                                 </td>
-                                <td class="w-min">{{ $order->order_status }}</td>
-                                <td class="w-min">{{ $order->payment_method }}</td>
+                                <td class="w-min">{{ $order->order_status->value ?? $order->order_status }}</td>
+                                <td class="w-min">{{ $order->payment_method->value ?? $order->payment_method }}</td>
                                 <td class="w-min">
                                     @hasPermission('admin.order.show')
                                         <a href="{{ route('admin.order.show', $order->id) }}" data-bs-toggle="tooltip"
