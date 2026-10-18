@@ -235,6 +235,17 @@ class CheckoutController extends Controller
                     'type' => $item['type'],
                 ]);
 
+                if (\Illuminate\Support\Facades\Schema::hasTable('order_products')) {
+                    \Illuminate\Support\Facades\DB::table('order_products')->insert([
+                        'order_id' => $order->id,
+                        'product_id' => $id,
+                        'quantity' => $item['quantity'],
+                        'price' => $item['price'],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+
                 // Decrease stock if physical product
                 if ($product && $product->type === 'physical') {
                     $product->decrement('stock', $item['quantity']);
