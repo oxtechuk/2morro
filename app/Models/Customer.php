@@ -19,7 +19,15 @@ class Customer extends Model
      */
     public function orders(): HasMany
     {
-        return $this->hasMany(Order::class);
+        if (\Illuminate\Support\Facades\Schema::hasColumn('orders', 'customer_id')) {
+            return $this->hasMany(Order::class, 'customer_id');
+        }
+
+        if (\Illuminate\Support\Facades\Schema::hasColumn('customers', 'user_id') && \Illuminate\Support\Facades\Schema::hasColumn('orders', 'user_id')) {
+            return $this->hasMany(Order::class, 'user_id', 'user_id');
+        }
+
+        return $this->hasMany(Order::class, 'user_id');
     }
 
     /**

@@ -60,9 +60,14 @@ class DashboardController extends Controller
 
         $orderStatuses = enum_exists(OrderStatus::class) ? OrderStatus::cases() : [];
 
-        $topCustomers = (Schema::hasTable('customers') && Schema::hasTable('orders')) 
+        $hasCustomerOrders = Schema::hasTable('customers') && Schema::hasTable('orders') && (
+            Schema::hasColumn('orders', 'customer_id') ||
+            (Schema::hasColumn('customers', 'user_id') && Schema::hasColumn('orders', 'user_id'))
+        );
+
+        $topCustomers = $hasCustomerOrders 
             ? Customer::withCount('orders')->orderBy('orders_count', 'desc')->limit(8)->get() 
-            : collect([]);
+            : (Schema::hasTable('customers') ? Customer::limit(8)->get() : collect([]));
 
         $productObject = Schema::hasTable('products') ? Product::when($hasProductShop, function ($query) use ($shop) {
             return $query->where('shop_id', $shop?->id);
@@ -77,7 +82,8 @@ class DashboardController extends Controller
             ? (clone $productObject)->withAvg('reviews as average_rating', 'rating')->orderBy('average_rating', 'desc')->limit(8)->get() 
             : ($productObject ? (clone $productObject)->latest('id')->limit(8)->get() : collect([]));
 
-        $topShops = (Schema::hasTable('shops') && Schema::hasTable('orders')) 
+        $hasShopOrders = Schema::hasTable('shops') && Schema::hasTable('orders') && Schema::hasColumn('orders', 'shop_id');
+        $topShops = $hasShopOrders 
             ? Shop::withCount('orders')->orderBy('orders_count', 'desc')->limit(8)->get() 
             : (Schema::hasTable('shops') ? Shop::limit(8)->get() : collect([]));
 
