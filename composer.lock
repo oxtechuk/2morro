@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9216375d9204caac7830f2df7462ee2b",
+    "content-hash": "afc81c458ffa92bc9f763e5451da7d40",
     "packages": [
         {
             "name": "brick/math",
@@ -1132,6 +1132,56 @@
                 }
             ],
             "time": "2026-07-17T13:53:03+00:00"
+        },
+        {
+            "name": "joynala/maker",
+            "version": "v1.3.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/joynal-a/maker.git",
+                "reference": "feab31317146bc947982d3ac2e854bbcca5b17a8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/joynal-a/maker/zipball/feab31317146bc947982d3ac2e854bbcca5b17a8",
+                "reference": "feab31317146bc947982d3ac2e854bbcca5b17a8",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Abedin\\Maker\\Providers\\MakerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Abedin\\Maker\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Joynal Abedin",
+                    "email": "abedin.dev@gmail.com"
+                }
+            ],
+            "description": "This is a laravel repository generator.",
+            "support": {
+                "issues": "https://github.com/joynal-a/maker/issues",
+                "source": "https://github.com/joynal-a/maker/tree/v1.3.0.3"
+            },
+            "time": "2025-11-02T06:57:25+00:00"
         },
         {
             "name": "laravel/framework",

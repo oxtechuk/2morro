@@ -47,6 +47,19 @@ Route::get('/admin', function () {
     return redirect()->route('admin.dashboard');
 });
 
+// Language switcher route
+Route::get('/change-language', function (\Illuminate\Http\Request $request) {
+    $lang = $request->get('language', 'ar');
+    session()->put('locale', $lang);
+    app()->setLocale($lang);
+    return back();
+})->name('change.language');
+
+// Shop Dashboard route
+Route::get('/shop/dashboard', [\App\Http\Controllers\Shop\DashboardController::class, 'index'])->name('shop.dashboard.index');
+Route::get('/shop/profile', [ProfileController::class, 'edit'])->name('shop.profile.index');
+Route::get('/shop/profile/password', [ProfileController::class, 'edit'])->name('shop.profile.change-password');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -66,11 +79,17 @@ use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\TaxonomyController;
 use App\Http\Controllers\Admin\ProductImportExportController;
+use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/dashboard/statistics', [DashboardController::class, 'orderStatistics'])->name('dashboard.statistics');
+
+    // Profile & Settings aliases
+    Route::get('/profile-setting', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.index');
+    Route::get('/profile-password', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.change-password');
+    Route::get('/generale-setting', [SettingController::class, 'index'])->name('generale-setting.index');
     
     // Consultation Bookings & Branch Schedules Management (إدارة الحجوزات، الفروع، المواعيد والأسعار)
     Route::get('bookings/settings', [AdminBookingController::class, 'settings'])->name('bookings.settings');
@@ -151,6 +170,19 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
     Route::post('/reviews/{review}/toggle-approve', [ReviewController::class, 'toggleApprove'])->name('reviews.toggleApprove');
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+
+    // Notifications
+    Route::get('/notifications', [AdminNotificationController::class, 'show'])->name('notification.show');
+    Route::get('/notifications/fetch', [AdminNotificationController::class, 'index'])->name('notification.index');
+    Route::get('/notifications/read-all', [AdminNotificationController::class, 'markAllAsRead'])->name('notification.readAll');
+    Route::get('/notifications/read/{notification}', [AdminNotificationController::class, 'markAsRead'])->name('notification.read');
+    Route::delete('/notifications/{notification}', [AdminNotificationController::class, 'destroy'])->name('notification.destroy');
+});
+
+// Shop Notifications
+Route::middleware(['auth'])->prefix('shop')->name('shop.')->group(function () {
+    Route::get('/notifications', [\App\Http\Controllers\Shop\NotificationController::class, 'show'])->name('notification.show');
+    Route::get('/notifications/read-all', [\App\Http\Controllers\Shop\NotificationController::class, 'markAllAsRead'])->name('notification.readAll');
 });
 
 require __DIR__.'/auth.php';

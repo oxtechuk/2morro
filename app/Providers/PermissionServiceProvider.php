@@ -81,6 +81,28 @@ class PermissionServiceProvider extends ServiceProvider
 
             return false;
         });
+
+        Blade::if('role', function ($roles) {
+            $user = auth()->user();
+            if (! $user) {
+                return false;
+            }
+            if (method_exists($user, 'hasRole')) {
+                return $user->hasRole($roles);
+            }
+            return false;
+        });
+
+        Blade::if('hasrole', function ($roles) {
+            $user = auth()->user();
+            if (! $user) {
+                return false;
+            }
+            if (method_exists($user, 'hasRole')) {
+                return $user->hasRole($roles);
+            }
+            return false;
+        });
     }
 
     /**

@@ -7,9 +7,11 @@
 
                 $shop = generaleSetting('shop');
                 $rootShop = generaleSetting('rootShop');
-                $isAdmin = $shop->id == $rootShop->id ? true : false;
+                $isAdmin = ($shop && $rootShop && $shop->id == $rootShop->id) || (auth()->check() && auth()->user()->isAdmin());
 
-                $url = $isAdmin ? route('admin.dashboard.index') : route('shop.dashboard.index');
+                $url = ($isAdmin || !\Illuminate\Support\Facades\Route::has('shop.dashboard.index')) 
+                    ? (\Illuminate\Support\Facades\Route::has('admin.dashboard.index') ? route('admin.dashboard.index') : url('/admin')) 
+                    : route('shop.dashboard.index');
             @endphp
             <a href="{{ $url }}">
                 <img src="{{ $generaleSetting?->logo ?? asset('assets/logo.png') }}" alt="logo" loading="lazy" />
@@ -32,23 +34,23 @@
                 <img src="{{ asset('assets/icons-admin/expand.svg') }}" alt="icon" loading="lazy" />
             </button>
             @if ($isAdmin)
-                <a href="{{ route('marketplace.index') }}" class="fullbtn hite-icon">
+                <a href="{{ \Illuminate\Support\Facades\Route::has('marketplace.index') ? route('marketplace.index') : '#' }}" class="fullbtn hite-icon">
                     <img src="{{ asset('assets/icons-admin/user-circle.svg') }}" alt="">
                 </a>
 
             @else
                 @hasPermission('shop.profile.index')
-                    <a href="{{ route('shop.profile.index') }}" class="fullbtn hite-icon">
+                    <a href="{{ \Illuminate\Support\Facades\Route::has('shop.profile.index') ? route('shop.profile.index') : '#' }}" class="fullbtn hite-icon">
                         <img src="{{ asset('assets/icons-admin/user-circle.svg') }}" alt="">
                     </a>
                 @endhasPermission
             @endif
 
             @role('root')
-            <a href="{{ route('marketplace.index') }}">
+            <a href="{{ \Illuminate\Support\Facades\Route::has('marketplace.index') ? route('marketplace.index') : '#' }}">
                 <img src="{{ asset('assets/icons-admin/shop.svg') }}" alt="icon" loading="lazy" />
             </a>
-            <a href="{{ route('marketplace.upgrade') }}" class="fullbtn hite-icon">
+            <a href="{{ \Illuminate\Support\Facades\Route::has('marketplace.upgrade') ? route('marketplace.upgrade') : '#' }}" class="fullbtn hite-icon">
                 <small style="font-size: 10px; color: #888;">
                     {{ config('app.version') }}
                 </small>

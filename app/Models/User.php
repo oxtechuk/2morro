@@ -88,6 +88,12 @@ class User extends Authenticatable
         return in_array($this->role ?? '', $roles);
     }
 
+    public function getRoleNames()
+    {
+        $role = $this->role ?? ($this->isAdmin() ? 'root' : 'customer');
+        return collect([$role]);
+    }
+
     public function thumbnail(): Attribute
     {
         $thumbnail = asset('default/profile.jpg');

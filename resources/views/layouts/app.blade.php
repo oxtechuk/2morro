@@ -286,6 +286,12 @@
                     <div class="user-profile-box dropdown mx-3">
                         <div class="nav-profile-box dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                             @php
+                                $languages = $languages ?? ((class_exists(\App\Repositories\LanguageRepository::class) && \Illuminate\Support\Facades\Schema::hasTable('languages')) 
+                                    ? \App\Repositories\LanguageRepository::getAll() 
+                                    : collect([
+                                        (object)['id' => 1, 'name' => 'ar', 'title' => 'العربية'],
+                                        (object)['id' => 2, 'name' => 'en', 'title' => 'English'],
+                                    ]));
                                 $selectedLang = null;
                                 foreach ($languages as $lang) {
                                     if ($lang->name == app()->getLocale()) {

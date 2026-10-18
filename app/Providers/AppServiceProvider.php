@@ -41,5 +41,17 @@ class AppServiceProvider extends ServiceProvider
                 exit;
             }
         }
+
+        view()->composer('*', function ($view) {
+            $languages = (class_exists(LanguageRepository::class) && Schema::hasTable('languages'))
+                ? LanguageRepository::getAll()
+                : collect([
+                    (object)['id' => 1, 'name' => 'ar', 'title' => 'العربية'],
+                    (object)['id' => 2, 'name' => 'en', 'title' => 'English'],
+                ]);
+            $setting = function_exists('generaleSetting') ? generaleSetting('setting') : null;
+            $view->with('languages', $languages);
+            $view->with('generaleSetting', $setting);
+        });
     }
 }
