@@ -265,6 +265,7 @@ class BookingController extends Controller
     {
         $branches = BookingBranch::orderBy('sort_order')->get();
         $allDays = BookingBranch::$allDays;
+        $scheduleConfig = Booking::getScheduleConfig();
 
         $paymentSettings = [
             'vodafone_cash' => Setting::get('booking_vodafone_cash', '01550504512'),
@@ -276,24 +277,10 @@ class BookingController extends Controller
             'booking_page_title' => Setting::get('booking_page_title', 'حجز استشارة وتقييم مهارات الطفل'),
             'booking_page_subtitle' => Setting::get('booking_page_subtitle', 'مركز 2morro المتخصص في رعاية وتأهيل وتنمية قدرات الأطفال بإشراف أ. هبة الله أكرم.'),
             'booking_page_quote' => Setting::get('booking_page_quote', '« عندما تشعرين بأن طفلك بحاجة لدعم وتأهيل في مهاراته اللغوية أو السلوكية أو الحركية، فإن التدخل المبكر يصنع الفارق في مستقبله »'),
-            
-            // Booking types & urgency configuration
-            'normal_price' => Setting::get('booking_normal_price', '300.00'),
-            'normal_enabled' => Setting::get('booking_normal_enabled', '1') === '1',
-            'normal_desc' => Setting::get('booking_normal_desc', 'حضور في مقر المركز ومقابلة مباشرة وفق جدول الفترات المعتمدة'),
-
-            'urgent_fee' => Setting::get('booking_urgent_fee', '150.00'),
-            'urgent_enabled' => Setting::get('booking_urgent_enabled', '1') === '1',
-            'urgent_desc' => Setting::get('booking_urgent_desc', 'كشف ومقابلة ذات أولوية قصوى خلال 24 إلى 48 ساعة'),
-
-            'online_price' => Setting::get('booking_online_price', '350.00'),
-            'online_enabled' => Setting::get('booking_online_enabled', '1') === '1',
-            'online_desc' => Setting::get('booking_online_desc', 'جلسة تقييم واستشارة بالفيديو عن بُعد عبر Zoom / Google Meet'),
-
             'session_duration' => Setting::get('booking_session_duration', '45 دقيقة'),
         ];
 
-        return view('admin.bookings.settings', compact('branches', 'allDays', 'paymentSettings'));
+        return view('admin.bookings.settings', compact('branches', 'allDays', 'paymentSettings', 'scheduleConfig'));
     }
 
     // Save Booking Payment and General Settings
@@ -309,16 +296,43 @@ class BookingController extends Controller
             'booking_page_subtitle' => 'nullable|string|max:500',
             'booking_page_quote' => 'nullable|string|max:500',
             'booking_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
+            'booking_session_duration' => 'nullable|string|max:100',
 
-            // Booking types
+            // Normal service
             'booking_normal_price' => 'nullable|numeric|min:0',
             'booking_normal_desc' => 'nullable|string|max:255',
-            'booking_urgent_fee' => 'nullable|numeric|min:0',
+            'booking_normal_days' => 'nullable|array',
+            'booking_normal_slots' => 'nullable|string',
+            'booking_normal_slot_capacity' => 'nullable|integer|min:1',
+            'booking_normal_specific_dates' => 'nullable|string',
+            'booking_normal_off_dates' => 'nullable|string',
+
+            // Urgent service
+            'booking_urgent_price' => 'nullable|numeric|min:0',
             'booking_urgent_desc' => 'nullable|string|max:255',
+            'booking_urgent_days' => 'nullable|array',
+            'booking_urgent_slots' => 'nullable|string',
+            'booking_urgent_slot_capacity' => 'nullable|integer|min:1',
+            'booking_urgent_max_days_ahead' => 'nullable|integer|min:1|max:7',
+            'booking_urgent_specific_dates' => 'nullable|string',
+            'booking_urgent_off_dates' => 'nullable|string',
+
+            // Online service
             'booking_online_price' => 'nullable|numeric|min:0',
             'booking_online_desc' => 'nullable|string|max:255',
-            'booking_session_duration' => 'nullable|string|max:100',
+            'booking_online_days' => 'nullable|array',
+            'booking_online_slots' => 'nullable|string',
+            'booking_online_slot_capacity' => 'nullable|integer|min:1',
+            'booking_online_platform' => 'nullable|string|max:100',
+            'booking_online_specific_dates' => 'nullable|string',
+            'booking_online_off_dates' => 'nullable|string',
         ]);
+
+        $formatList = function ($val) {
+            if (empty($val)) return json_encode([]);
+            $arr = array_values(array_filter(array_map('trim', preg_split('/[\r\n,]+/', $val))));
+            return json_encode($arr);
+        };
 
         Setting::set('booking_vodafone_cash', $validated['booking_vodafone_cash'] ?? '');
         Setting::set('booking_instapay', $validated['booking_instapay'] ?? '');
@@ -328,28 +342,46 @@ class BookingController extends Controller
         Setting::set('booking_page_title', $validated['booking_page_title'] ?? 'حجز استشارة وتقييم مهارات الطفل');
         Setting::set('booking_page_subtitle', $validated['booking_page_subtitle'] ?? '');
         Setting::set('booking_page_quote', $validated['booking_page_quote'] ?? '');
-
-        // Save booking types and urgency
-        Setting::set('booking_normal_price', $validated['booking_normal_price'] ?? '300.00');
-        Setting::set('booking_normal_enabled', $request->has('booking_normal_enabled') ? '1' : '0');
-        Setting::set('booking_normal_desc', $validated['booking_normal_desc'] ?? '');
-
-        Setting::set('booking_urgent_fee', $validated['booking_urgent_fee'] ?? '150.00');
-        Setting::set('booking_urgent_enabled', $request->has('booking_urgent_enabled') ? '1' : '0');
-        Setting::set('booking_urgent_desc', $validated['booking_urgent_desc'] ?? '');
-
-        Setting::set('booking_online_price', $validated['booking_online_price'] ?? '350.00');
-        Setting::set('booking_online_enabled', $request->has('booking_online_enabled') ? '1' : '0');
-        Setting::set('booking_online_desc', $validated['booking_online_desc'] ?? '');
-
         Setting::set('booking_session_duration', $validated['booking_session_duration'] ?? '45 دقيقة');
+
+        // Normal Service Settings
+        Setting::set('booking_normal_enabled', $request->has('booking_normal_enabled') ? '1' : '0');
+        Setting::set('booking_normal_price', $validated['booking_normal_price'] ?? '300.00');
+        Setting::set('booking_normal_desc', $validated['booking_normal_desc'] ?? '');
+        Setting::set('booking_normal_days', json_encode($request->input('booking_normal_days', ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'])));
+        Setting::set('booking_normal_slots', $formatList($request->input('booking_normal_slots')));
+        Setting::set('booking_normal_slot_capacity', (string) ($validated['booking_normal_slot_capacity'] ?? 1));
+        Setting::set('booking_normal_specific_dates', $formatList($request->input('booking_normal_specific_dates')));
+        Setting::set('booking_normal_off_dates', $formatList($request->input('booking_normal_off_dates')));
+
+        // Urgent Service Settings
+        Setting::set('booking_urgent_enabled', $request->has('booking_urgent_enabled') ? '1' : '0');
+        Setting::set('booking_urgent_price', $validated['booking_urgent_price'] ?? '450.00');
+        Setting::set('booking_urgent_desc', $validated['booking_urgent_desc'] ?? '');
+        Setting::set('booking_urgent_days', json_encode($request->input('booking_urgent_days', ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'])));
+        Setting::set('booking_urgent_slots', $formatList($request->input('booking_urgent_slots')));
+        Setting::set('booking_urgent_slot_capacity', (string) ($validated['booking_urgent_slot_capacity'] ?? 1));
+        Setting::set('booking_urgent_max_days_ahead', (string) ($validated['booking_urgent_max_days_ahead'] ?? 2));
+        Setting::set('booking_urgent_specific_dates', $formatList($request->input('booking_urgent_specific_dates')));
+        Setting::set('booking_urgent_off_dates', $formatList($request->input('booking_urgent_off_dates')));
+
+        // Online Service Settings
+        Setting::set('booking_online_enabled', $request->has('booking_online_enabled') ? '1' : '0');
+        Setting::set('booking_online_price', $validated['booking_online_price'] ?? '350.00');
+        Setting::set('booking_online_desc', $validated['booking_online_desc'] ?? '');
+        Setting::set('booking_online_days', json_encode($request->input('booking_online_days', ['Saturday', 'Sunday', 'Tuesday', 'Thursday', 'Friday'])));
+        Setting::set('booking_online_slots', $formatList($request->input('booking_online_slots')));
+        Setting::set('booking_online_slot_capacity', (string) ($validated['booking_online_slot_capacity'] ?? 1));
+        Setting::set('booking_online_platform', $validated['booking_online_platform'] ?? 'Zoom / Google Meet');
+        Setting::set('booking_online_specific_dates', $formatList($request->input('booking_online_specific_dates')));
+        Setting::set('booking_online_off_dates', $formatList($request->input('booking_online_off_dates')));
 
         if ($request->hasFile('booking_image')) {
             $path = $request->file('booking_image')->store('bookings', 'public');
             Setting::set('booking_image', 'storage/' . $path);
         }
 
-        return redirect()->back()->with('success', 'تم حفظ إعدادات أنواع الحجوزات وطرق الدفع بنجاح!');
+        return redirect()->back()->with('success', 'تم حفظ إعدادات أنواع الحجوزات والمواعيد والتقويم بنجاح!');
     }
 
     // Store New Branch
@@ -360,7 +392,11 @@ class BookingController extends Controller
             'address' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:50',
             'price' => 'required|numeric|min:0',
+            'urgent_price' => 'nullable|numeric|min:0',
             'available_days' => 'required|array|min:1',
+            'urgent_days' => 'nullable|array',
+            'specific_dates' => 'nullable|string',
+            'urgent_dates' => 'nullable|string',
             'time_slots' => 'required|string',
             'is_online' => 'nullable|boolean',
             'is_active' => 'nullable|boolean',
@@ -372,8 +408,9 @@ class BookingController extends Controller
             'time_slots.required' => 'يرجى إدخال المواعيد والفترات المتاحة للفرع.',
         ]);
 
-        // Parse time slots (split by comma or newline)
         $slotsArray = array_values(array_filter(array_map('trim', preg_split('/[\r\n,]+/', $validated['time_slots']))));
+        $specificDatesArray = !empty($validated['specific_dates']) ? array_values(array_filter(array_map('trim', preg_split('/[\r\n,]+/', $validated['specific_dates'])))) : null;
+        $urgentDatesArray = !empty($validated['urgent_dates']) ? array_values(array_filter(array_map('trim', preg_split('/[\r\n,]+/', $validated['urgent_dates'])))) : null;
 
         $slug = Str::slug($validated['name'], '-');
         if (empty($slug) || BookingBranch::where('slug', $slug)->exists()) {
@@ -386,7 +423,11 @@ class BookingController extends Controller
             'address' => $validated['address'] ?? null,
             'phone' => $validated['phone'] ?? null,
             'price' => $validated['price'],
+            'urgent_price' => !empty($validated['urgent_price']) ? $validated['urgent_price'] : null,
             'available_days' => $validated['available_days'],
+            'urgent_days' => !empty($validated['urgent_days']) ? $validated['urgent_days'] : $validated['available_days'],
+            'specific_dates' => $specificDatesArray,
+            'urgent_dates' => $urgentDatesArray,
             'time_slots' => $slotsArray,
             'is_online' => $request->has('is_online'),
             'is_active' => $request->has('is_active'),
@@ -404,7 +445,11 @@ class BookingController extends Controller
             'address' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:50',
             'price' => 'required|numeric|min:0',
+            'urgent_price' => 'nullable|numeric|min:0',
             'available_days' => 'required|array|min:1',
+            'urgent_days' => 'nullable|array',
+            'specific_dates' => 'nullable|string',
+            'urgent_dates' => 'nullable|string',
             'time_slots' => 'required|string',
             'is_online' => 'nullable|boolean',
             'is_active' => 'nullable|boolean',
@@ -412,13 +457,19 @@ class BookingController extends Controller
         ]);
 
         $slotsArray = array_values(array_filter(array_map('trim', preg_split('/[\r\n,]+/', $validated['time_slots']))));
+        $specificDatesArray = !empty($validated['specific_dates']) ? array_values(array_filter(array_map('trim', preg_split('/[\r\n,]+/', $validated['specific_dates'])))) : null;
+        $urgentDatesArray = !empty($validated['urgent_dates']) ? array_values(array_filter(array_map('trim', preg_split('/[\r\n,]+/', $validated['urgent_dates'])))) : null;
 
         $branch->update([
             'name' => $validated['name'],
             'address' => $validated['address'] ?? null,
             'phone' => $validated['phone'] ?? null,
             'price' => $validated['price'],
+            'urgent_price' => !empty($validated['urgent_price']) ? $validated['urgent_price'] : null,
             'available_days' => $validated['available_days'],
+            'urgent_days' => !empty($validated['urgent_days']) ? $validated['urgent_days'] : $validated['available_days'],
+            'specific_dates' => $specificDatesArray,
+            'urgent_dates' => $urgentDatesArray,
             'time_slots' => $slotsArray,
             'is_online' => $request->has('is_online'),
             'is_active' => $request->has('is_active'),

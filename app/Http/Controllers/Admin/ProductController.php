@@ -133,6 +133,7 @@ class ProductController extends Controller
             'suitable_for' => 'nullable|string',
             'benefits' => 'nullable|string',
             'how_to_use' => 'nullable|string',
+            'image' => 'nullable|image|max:5120',
             'main_image' => 'nullable|image|max:5120',
             'gallery_images.*' => 'nullable|image|max:5120',
             'digital_file' => 'nullable|file|max:51200',
@@ -158,8 +159,9 @@ class ProductController extends Controller
         $validated['stock'] = $validated['stock'] ?? 0;
 
         $images = [];
-        if ($request->hasFile('main_image')) {
-            $path = $request->file('main_image')->store('products', 'public');
+        $mainFile = $request->file('image') ?: $request->file('main_image');
+        if ($mainFile) {
+            $path = $mainFile->store('products', 'public');
             $images[] = $path;
         }
         if ($request->hasFile('gallery_images')) {
@@ -201,7 +203,22 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         $product->load(['categories', 'ageGroups', 'skills', 'needs']);
-        return view('admin.products.show', compact('product'));
+
+        $orderItems = \App\Models\OrderItem::where('product_id', $product->id)->get();
+        $totalSalesCount = $orderItems->sum('quantity');
+        $totalRevenue = $orderItems->sum(function ($item) {
+            return ($item->price ?? 0) * ($item->quantity ?? 1);
+        });
+
+        $orderIds = $orderItems->pluck('order_id')->unique();
+        $recentOrders = \App\Models\Order::whereIn('id', $orderIds)->latest()->take(10)->get();
+
+        $downloadLicenses = \App\Models\Download::with(['user', 'order'])
+            ->where('product_id', $product->id)
+            ->latest()
+            ->get();
+
+        return view('admin.products.show', compact('product', 'totalSalesCount', 'totalRevenue', 'recentOrders', 'downloadLicenses'));
     }
 
     /**
@@ -244,8 +261,10 @@ class ProductController extends Controller
             'suitable_for' => 'nullable|string',
             'benefits' => 'nullable|string',
             'how_to_use' => 'nullable|string',
+            'image' => 'nullable|image|max:5120',
             'main_image' => 'nullable|image|max:5120',
             'gallery_images.*' => 'nullable|image|max:5120',
+            'delete_image' => 'nullable|boolean',
             'digital_file' => 'nullable|file|max:51200',
             'categories' => 'nullable|array',
             'age_groups' => 'nullable|array',
@@ -269,8 +288,26 @@ class ProductController extends Controller
         $validated['stock'] = $validated['stock'] ?? 0;
 
         $images = is_array($product->images) ? $product->images : [];
-        if ($request->hasFile('main_image')) {
-            $path = $request->file('main_image')->store('products', 'public');
+
+        // Handle deleting current image
+        if ($request->boolean('delete_image')) {
+            if (!empty($images)) {
+                foreach ($images as $oldImg) {
+                    if (Storage::disk('public')->exists($oldImg)) {
+                        Storage::disk('public')->delete($oldImg);
+                    }
+                }
+                $images = [];
+            }
+        }
+
+        // Handle uploading/replacing main image
+        $mainFile = $request->file('image') ?: $request->file('main_image');
+        if ($mainFile) {
+            if (!empty($images) && isset($images[0]) && Storage::disk('public')->exists($images[0])) {
+                Storage::disk('public')->delete($images[0]);
+            }
+            $path = $mainFile->store('products', 'public');
             if (!empty($images)) {
                 $images[0] = $path;
             } else {
@@ -283,7 +320,7 @@ class ProductController extends Controller
                 $images[] = $path;
             }
         }
-        $validated['images'] = $images;
+        $validated['images'] = array_values($images);
 
         if ($request->hasFile('digital_file')) {
             $path = $request->file('digital_file')->store('digital_products', 'public');
@@ -331,6 +368,18 @@ class ProductController extends Controller
         $product->skills()->detach();
         $product->needs()->detach();
         $product->ageGroups()->detach();
+
+        if (is_array($product->images)) {
+            foreach ($product->images as $img) {
+                if (Storage::disk('public')->exists($img)) {
+                    Storage::disk('public')->delete($img);
+                }
+            }
+        }
+        if ($product->digital_file_path && Storage::disk('public')->exists($product->digital_file_path)) {
+            Storage::disk('public')->delete($product->digital_file_path);
+        }
+
         $product->delete();
 
         return redirect()->route('admin.products.index')->with('success', 'تم حذف المنتج بنجاح.');

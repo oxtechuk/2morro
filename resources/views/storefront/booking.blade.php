@@ -263,23 +263,91 @@
                             <span class="font-medium">جلسة أونلاين عبر Zoom مباشرة. سيصلكم الرابط وتفاصيل الجلسة عبر الواتساب فور التأكيد.</span>
                         </div>
 
-                        <!-- 3. تاريخ المقابلة والفترة الزمنية (مرتبطة بمواعيد وأيام الفرع) -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                            <div>
-                                <label class="block text-xs font-black text-slate-700 mb-1">تاريخ المقابلة المفضل <span class="text-red-500">*</span></label>
-                                <input type="date" name="booking_date" id="booking_date" min="{{ date('Y-m-d') }}" value="{{ old('booking_date', date('Y-m-d', strtotime('+1 day'))) }}" onchange="validateBookingDate()" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-xs sm:text-sm font-bold text-slate-800 outline-none transition-all bg-white">
-                                <span id="dateDayAlert" class="text-[10px] text-amber-700 font-bold hidden mt-1 block bg-amber-50 p-1.5 rounded-md border border-amber-200"></span>
+                        <!-- 3. التقويم التفاعلي واختيار الموعد والساعة -->
+                        <div class="space-y-4 pt-1">
+                            
+                            <!-- Calendar Container Card -->
+                            <div class="p-3 sm:p-4 rounded-2xl bg-slate-50/80 border border-slate-200">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                        </div>
+                                        <div>
+                                            <label class="text-xs font-black text-slate-800 block">اختر اليوم من التقويم المعتمد <span class="text-red-500">*</span></label>
+                                            <span class="text-[10px] text-slate-500 font-medium" id="calendarServiceLabel">الأيام المتاحة مضاءة باللون الأزرق</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Month / Year Navigation Controls -->
+                                    <div class="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-slate-200 shadow-2xs">
+                                        <button type="button" onclick="changeCalendarMonth(-1)" id="prevMonthBtn" class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer" title="الشهر السابق">
+                                            <svg class="w-3.5 h-3.5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                                        </button>
+                                        <span id="calendarMonthTitle" class="text-xs font-black text-slate-800 px-2 min-w-[100px] text-center select-none">
+                                            أكتوبر 2026
+                                        </span>
+                                        <button type="button" onclick="changeCalendarMonth(1)" id="nextMonthBtn" class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer" title="الشهر القادم">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Weekday Headers (Sat..Fri) -->
+                                <div class="grid grid-cols-7 gap-1 text-center mb-1 text-[11px] font-black text-slate-500 pb-1 border-b border-slate-200">
+                                    <span>السبت</span>
+                                    <span>الأحد</span>
+                                    <span>الاثنين</span>
+                                    <span>الثلاثاء</span>
+                                    <span>الأربعاء</span>
+                                    <span>الخميس</span>
+                                    <span>الجمعة</span>
+                                </div>
+
+                                <!-- Days Grid (populated via JS) -->
+                                <div id="calendarDaysGrid" class="grid grid-cols-7 gap-1 sm:gap-1.5 text-center pt-1 min-h-[180px]">
+                                    <!-- Dynamic Day Cells -->
+                                </div>
+
+                                <!-- Hidden Real Input for Form Submission -->
+                                <input type="hidden" name="booking_date" id="booking_date" value="{{ old('booking_date') }}" required>
+
+                                <!-- Picked Date Confirmation Bar -->
+                                <div id="selectedDateBanner" class="mt-2.5 p-2 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-xs flex items-center justify-between font-bold hidden">
+                                    <div class="flex items-center gap-1.5">
+                                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                        <span>اليوم المختار:</span>
+                                        <span id="selectedDateText" class="font-black text-blue-700"></span>
+                                    </div>
+                                    <span class="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-md">مؤكد</span>
+                                </div>
+                                <span id="booking_date_error" class="text-red-500 text-[10px] font-bold hidden mt-1 block">يرجى اختيار يوم متاح من التقويم أعلاه.</span>
                             </div>
 
-                            <div>
-                                <label class="block text-xs font-black text-slate-700 mb-1">الفترة الزمنية المفضلة <span class="text-red-500">*</span></label>
-                                <select name="booking_time" id="booking_time" required class="w-full px-3.5 py-2 rounded-xl border border-slate-200 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 text-xs sm:text-sm font-bold text-slate-800 outline-none transition-all bg-white">
-                                    <option value="12:00 PM - 02:00 PM">12:00 ظ - 02:00 ظ</option>
-                                    <option value="02:00 PM - 04:00 PM">02:00 م - 04:00 م</option>
-                                    <option value="04:00 PM - 06:30 PM">04:00 م - 06:30 م</option>
-                                    <option value="06:30 PM - 09:00 PM">06:30 م - 09:00 م</option>
-                                </select>
+                            <!-- Time Slots Selection Section -->
+                            <div id="timeSlotsContainer" class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <label class="block text-xs font-black text-slate-700">الفترة الزمنية المفضلة <span class="text-red-500">*</span></label>
+                                    <span id="slotsLoadingSpinner" class="text-[10px] text-blue-600 font-bold hidden items-center gap-1">
+                                        <svg class="animate-spin w-3 h-3 text-blue-600" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                                        جاري فحص المواعيد الشاغرة...
+                                    </span>
+                                </div>
+
+                                <!-- Hidden Real Input for Time -->
+                                <input type="hidden" name="booking_time" id="booking_time" value="{{ old('booking_time') }}" required>
+
+                                <!-- Slots Buttons Grid -->
+                                <div id="slotsChipsGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                    <!-- Rendered dynamically -->
+                                </div>
+
+                                <div id="noSlotsMessage" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs text-center font-bold">
+                                    يرجى اختيار يوم متاح من التقويم أولاً لعرض الفترات الزمنية المتاحة.
+                                </div>
+                                <span id="booking_time_error" class="text-red-500 text-[10px] font-bold hidden mt-0.5 block">يرجى اختيار فترة زمنية للمقابلة.</span>
                             </div>
+
                         </div>
 
                         <!-- 4. طرق الدفع المعتمدة وتأكيد الحجز (فودافون كاش وإنستاباي) -->
@@ -397,12 +465,21 @@
 </div>
 
 <!-- Dynamic Branch & Dashboard Scheduling Script -->
+<!-- Dynamic Branch & Dashboard Scheduling Script -->
 <script>
     let currentStep = 1;
     const branchesData = @json($branchesList);
-    const urgentFee = {{ floatval($bookingTypes['urgent']['fee'] ?? 150) }};
-    const onlinePrice = {{ floatval($bookingTypes['online']['price'] ?? 350) }};
+    const scheduleConfig = @json($scheduleConfig);
+    const arabicMonths = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+    const englishDayKeys = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const arabicDayNames = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+
+    // Interactive Calendar State
+    let calCurrentDate = new Date();
+    let calDisplayYear = calCurrentDate.getFullYear();
+    let calDisplayMonth = calCurrentDate.getMonth(); // 0-11
+    let selectedDateStr = document.getElementById('booking_date')?.value || '';
+    let selectedTimeSlot = document.getElementById('booking_time')?.value || '';
 
     function validateStep1() {
         let valid = true;
@@ -498,6 +575,45 @@
             stepLabel2.className = "text-[11px] font-black text-slate-800 mt-1";
 
             progressFill.style.width = "100%";
+
+            // Re-render calendar when entering step 2
+            renderCalendar();
+        }
+    }
+
+    function getSelectedFormatKey() {
+        const val = document.querySelector('input[name="session_format"]:checked')?.value || 'in_center_normal';
+        if (val === 'in_center_urgent' || val === 'urgent') return 'urgent';
+        if (val === 'online') return 'online';
+        return 'normal';
+    }
+
+    function autoFocusCalendarToFirstAvailableDate() {
+        const formatKey = getSelectedFormatKey();
+        const branchSelect = document.getElementById('branch_id');
+        const branchId = branchSelect?.value;
+        const branch = branchesData.find(b => b.id == branchId);
+
+        let targetDateStr = null;
+
+        if (formatKey === 'urgent') {
+            const uDates = (branch && branch.urgent_dates_list && branch.urgent_dates_list.length > 0) ? branch.urgent_dates_list : [];
+            if (uDates.length > 0) {
+                targetDateStr = uDates[0];
+            }
+        } else if (formatKey === 'normal') {
+            const nDates = (branch && branch.specific_dates_list && branch.specific_dates_list.length > 0) ? branch.specific_dates_list : [];
+            if (nDates.length > 0) {
+                targetDateStr = nDates[0];
+            }
+        }
+
+        if (targetDateStr) {
+            const parts = targetDateStr.split('-');
+            if (parts.length === 3) {
+                calDisplayYear = parseInt(parts[0]);
+                calDisplayMonth = parseInt(parts[1]) - 1;
+            }
         }
     }
 
@@ -517,75 +633,90 @@
         const branchContainer = document.getElementById('branchSelectionContainer');
         const branchSelect = document.getElementById('branch_id');
         const onlineWidget = document.getElementById('onlineInfoWidget');
+        const formatKey = getSelectedFormatKey();
+        const conf = scheduleConfig[formatKey] || scheduleConfig['normal'];
 
         if (format === 'online') {
             if (branchContainer) branchContainer.classList.add('hidden');
             if (branchSelect) branchSelect.removeAttribute('required');
             if (onlineWidget) onlineWidget.classList.remove('hidden');
-
-            const onlineBranch = branchesData.find(b => b.is_online);
-            if (onlineBranch) {
-                updateBranchScheduleAndPricing(onlineBranch, 0);
-            } else {
-                updatePriceDisplay(onlinePrice);
-            }
+            updatePriceDisplay(conf.price);
         } else {
             if (branchContainer) branchContainer.classList.remove('hidden');
             if (branchSelect) branchSelect.setAttribute('required', 'required');
             if (onlineWidget) onlineWidget.classList.add('hidden');
-
             handleBranchChange();
         }
+
+        // Update calendar service label
+        const calLabel = document.getElementById('calendarServiceLabel');
+        if (calLabel) {
+            if (formatKey === 'urgent') {
+                calLabel.innerText = 'أيام الحجز المستعجل بالفرع (متاح للأيام القريبة أو تواريخ الطوارئ ⚡)';
+            } else if (formatKey === 'online') {
+                calLabel.innerText = 'أيام جلسات الأونلاين المعتمدة بالفيديو 💻';
+            } else {
+                calLabel.innerText = 'أيام الحضور المجدولة بالفرع المحدد';
+            }
+        }
+
+        autoFocusCalendarToFirstAvailableDate();
+        renderCalendar();
+
+        if (selectedDateStr) {
+            loadTimeSlots(selectedDateStr, formatKey);
+        }
     }
 
-    // Handle Branch Change & Load exact days/slots from Dashboard
+    // Handle Branch Change
     function handleBranchChange() {
         const branchSelect = document.getElementById('branch_id');
-        if (!branchSelect) return;
-
-        const branchId = branchSelect.value;
+        const formatKey = getSelectedFormatKey();
+        const conf = scheduleConfig[formatKey] || scheduleConfig['normal'];
+        const branchId = branchSelect?.value;
         const branch = branchesData.find(b => b.id == branchId);
-        
-        const selectedFormat = document.querySelector('input[name="session_format"]:checked')?.value || 'in_center_normal';
-        const fee = (selectedFormat === 'in_center_urgent') ? urgentFee : 0;
+
+        let basePrice = conf.price;
 
         if (branch) {
-            updateBranchScheduleAndPricing(branch, fee);
-        }
-    }
+            if (formatKey === 'urgent') {
+                if (branch.urgent_price && parseFloat(branch.urgent_price) > 0) {
+                    basePrice = parseFloat(branch.urgent_price);
+                } else {
+                    basePrice = conf.price;
+                }
+            } else if (formatKey === 'normal') {
+                if (branch.price && parseFloat(branch.price) > 0) {
+                    basePrice = parseFloat(branch.price);
+                }
+            }
 
-    function updateBranchScheduleAndPricing(branch, extraFee = 0) {
-        const totalPrice = parseFloat(branch.price || 300) + parseFloat(extraFee);
-        updatePriceDisplay(totalPrice);
-
-        // Update Days badge from dashboard
-        const days = branch.days_list || (Array.isArray(branch.available_days) ? branch.available_days : ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس']);
-        const daysBadge = document.getElementById('branchDaysBadge');
-        if (daysBadge) {
-            daysBadge.innerText = days.join(' • ');
-        }
-
-        // Update Time Slots dropdown from dashboard
-        const slotsSelect = document.getElementById('booking_time');
-        if (slotsSelect) {
-            const slots = branch.slots_list || (Array.isArray(branch.time_slots) ? branch.time_slots : [
-                '12:00 PM - 02:00 PM',
-                '02:00 PM - 04:00 PM',
-                '04:00 PM - 06:30 PM',
-                '06:30 PM - 09:00 PM'
-            ]);
-
-            slotsSelect.innerHTML = '';
-            slots.forEach(slot => {
-                const opt = document.createElement('option');
-                opt.value = slot;
-                opt.innerText = slot;
-                slotsSelect.appendChild(opt);
-            });
+            const daysBadge = document.getElementById('branchDaysBadge');
+            if (daysBadge) {
+                if (formatKey === 'urgent') {
+                    const uDays = (branch.urgent_days_list && branch.urgent_days_list.length > 0) ? branch.urgent_days_list : branch.days_list;
+                    let badgeText = (uDays || []).join(' • ');
+                    if (branch.urgent_dates_list && branch.urgent_dates_list.length > 0) {
+                        badgeText += ' [تواريخ طوارئ: ' + branch.urgent_dates_list.join(', ') + ']';
+                    }
+                    daysBadge.innerText = badgeText;
+                } else {
+                    let badgeText = (branch.days_list || []).join(' • ');
+                    if (branch.specific_dates_list && branch.specific_dates_list.length > 0) {
+                        badgeText += ' [تواريخ بالشهر: ' + branch.specific_dates_list.join(', ') + ']';
+                    }
+                    daysBadge.innerText = badgeText;
+                }
+            }
         }
 
-        // Validate date based on branch days
-        validateBookingDate();
+        updatePriceDisplay(basePrice);
+        autoFocusCalendarToFirstAvailableDate();
+        renderCalendar();
+
+        if (selectedDateStr) {
+            loadTimeSlots(selectedDateStr, formatKey);
+        }
     }
 
     function updatePriceDisplay(price) {
@@ -599,36 +730,322 @@
         }
     }
 
-    // Validate if the selected date matches the branch's available days
-    function validateBookingDate() {
-        const dateInput = document.getElementById('booking_date');
-        const alertBox = document.getElementById('dateDayAlert');
-        if (!dateInput || !dateInput.value) return;
+    // ========================================================
+    // INTERACTIVE CALENDAR ENGINE
+    // ========================================================
 
-        const branchSelect = document.getElementById('branch_id');
-        const selectedFormat = document.querySelector('input[name="session_format"]:checked')?.value || 'in_center_normal';
-        
-        let currentBranch = null;
-        if (selectedFormat === 'online') {
-            currentBranch = branchesData.find(b => b.is_online);
-        } else if (branchSelect) {
-            currentBranch = branchesData.find(b => b.id == branchSelect.value);
+    function changeCalendarMonth(delta) {
+        calDisplayMonth += delta;
+        if (calDisplayMonth > 11) {
+            calDisplayMonth = 0;
+            calDisplayYear++;
+        } else if (calDisplayMonth < 0) {
+            calDisplayMonth = 11;
+            calDisplayYear--;
+        }
+        renderCalendar();
+    }
+
+    function renderCalendar() {
+        const grid = document.getElementById('calendarDaysGrid');
+        const monthTitle = document.getElementById('calendarMonthTitle');
+        const prevBtn = document.getElementById('prevMonthBtn');
+        if (!grid || !monthTitle) return;
+
+        monthTitle.innerText = arabicMonths[calDisplayMonth] + ' ' + calDisplayYear;
+
+        // Prevent navigating before current month
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+        const displayedMonthStart = new Date(calDisplayYear, calDisplayMonth, 1);
+
+        if (prevBtn) {
+            if (displayedMonthStart <= thisMonthStart) {
+                prevBtn.disabled = true;
+                prevBtn.classList.add('opacity-30', 'cursor-not-allowed');
+            } else {
+                prevBtn.disabled = false;
+                prevBtn.classList.remove('opacity-30', 'cursor-not-allowed');
+            }
         }
 
-        if (!currentBranch) return;
+        const firstDayIndex = (displayedMonthStart.getDay() + 1) % 7;
+        const daysInMonth = new Date(calDisplayYear, calDisplayMonth + 1, 0).getDate();
 
-        const availableDays = currentBranch.days_list || ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس'];
-        const parts = dateInput.value.split('-');
-        if (parts.length === 3) {
-            const pickedDate = new Date(parts[0], parts[1] - 1, parts[2]);
-            const dayName = arabicDayNames[pickedDate.getDay()];
+        const formatKey = getSelectedFormatKey();
+        const conf = scheduleConfig[formatKey] || scheduleConfig['normal'];
+        const offDates = conf.off_dates || [];
 
-            if (!availableDays.includes(dayName)) {
-                alertBox.innerText = 'تنبيه: يوم (' + dayName + ') غير مدرج ضمن أيام عمل هذا الفرع. أيام العمل: ' + availableDays.join('، ');
-                alertBox.classList.remove('hidden');
-            } else {
-                alertBox.classList.add('hidden');
+        const branchSelect = document.getElementById('branch_id');
+        const branchId = branchSelect?.value;
+        const branch = branchesData.find(b => b.id == branchId);
+
+        grid.innerHTML = '';
+
+        // Empty padding cells before first day
+        for (let i = 0; i < firstDayIndex; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.className = "p-1";
+            grid.appendChild(emptyCell);
+        }
+
+        // Render each day of the month
+        for (let day = 1; day <= daysInMonth; day++) {
+            const cellDate = new Date(calDisplayYear, calDisplayMonth, day);
+            cellDate.setHours(0, 0, 0, 0);
+
+            const yyyy = calDisplayYear;
+            const mm = String(calDisplayMonth + 1).padStart(2, '0');
+            const dd = String(day).padStart(2, '0');
+            const dateStr = `${yyyy}-${mm}-${dd}`;
+
+            const dayKey = englishDayKeys[cellDate.getDay()];
+            const dayDiff = Math.ceil((cellDate - today) / (1000 * 60 * 60 * 24));
+
+            let isAllowed = true;
+            let unallowedReason = '';
+
+            // 1. Past dates
+            if (cellDate < today) {
+                isAllowed = false;
+                unallowedReason = 'تاريخ ماضٍ';
             }
+            // 2. Off dates / Holidays
+            else if (offDates.includes(dateStr)) {
+                isAllowed = false;
+                unallowedReason = 'عطلة رسمية بالمركز';
+            }
+            // 3. Online Service
+            else if (formatKey === 'online') {
+                const onlineDays = conf.days || ['Saturday', 'Sunday', 'Tuesday', 'Thursday', 'Friday'];
+                const onlineSpecificDates = conf.specific_dates || [];
+
+                if (onlineSpecificDates.length > 0) {
+                    if (!onlineSpecificDates.includes(dateStr)) {
+                        isAllowed = false;
+                        unallowedReason = 'جلسات الأونلاين محددة في تواريخ معينة';
+                    }
+                } else if (!onlineDays.includes(dayKey)) {
+                    isAllowed = false;
+                    unallowedReason = 'غير متاح لجلسات الأونلاين';
+                }
+            }
+            // 4. In-Center Services (Normal or Urgent)
+            else if (branch) {
+                if (formatKey === 'urgent') {
+                    // Urgent: Check branch urgent specific dates first
+                    const urgentDates = (branch.urgent_dates_list && branch.urgent_dates_list.length > 0) 
+                        ? branch.urgent_dates_list 
+                        : (conf.specific_dates || []);
+
+                    if (urgentDates.length > 0) {
+                        if (!urgentDates.includes(dateStr)) {
+                            isAllowed = false;
+                            unallowedReason = 'موعد الحجز المستعجل بالفرع محدد في تواريخ الطوارئ المعتمدة';
+                        }
+                    } else {
+                        // Check branch urgent days
+                        const urgentDays = (branch.urgent_days_english_list && branch.urgent_days_english_list.length > 0)
+                            ? branch.urgent_days_english_list
+                            : (branch.days_english_list || ['Sunday']);
+
+                        if (!urgentDays.includes(dayKey)) {
+                            isAllowed = false;
+                            unallowedReason = 'فرع ' + branch.name + ' غير متاح في هذا اليوم للحالات المستعجلة';
+                        } else {
+                            const maxDaysAhead = Math.max(conf.max_days_ahead || 2, 7);
+                            if (dayDiff > maxDaysAhead) {
+                                isAllowed = false;
+                                unallowedReason = 'الحجز المستعجل متاح لأقرب موعد طوارئ قادم بالفرع';
+                            }
+                        }
+                    }
+                } else {
+                    // Normal: Check branch normal specific dates first
+                    const normalDates = (branch.specific_dates_list && branch.specific_dates_list.length > 0)
+                        ? branch.specific_dates_list
+                        : (conf.specific_dates || []);
+
+                    if (normalDates.length > 0) {
+                        if (!normalDates.includes(dateStr)) {
+                            isAllowed = false;
+                            unallowedReason = 'المواعيد المعتمدة لهذا الفرع محددة في تواريخ معينة بالشهر';
+                        }
+                    } else {
+                        // Check branch normal days of week
+                        const normalDays = (branch.days_english_list && branch.days_english_list.length > 0)
+                            ? branch.days_english_list
+                            : (conf.days || ['Sunday']);
+
+                        if (!normalDays.includes(dayKey)) {
+                            isAllowed = false;
+                            unallowedReason = 'فرع ' + branch.name + ' غير متاح للمواعيد العادية في هذا اليوم';
+                        }
+                    }
+                }
+            }
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+
+            const isSelected = (selectedDateStr === dateStr);
+
+            if (isAllowed) {
+                if (isSelected) {
+                    btn.className = "w-full py-2 sm:py-2.5 rounded-xl font-black text-xs sm:text-sm bg-blue-600 text-white shadow-sm ring-2 ring-blue-300 scale-105 transition-all cursor-pointer flex flex-col items-center justify-center";
+                } else {
+                    btn.className = "w-full py-2 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-white hover:bg-blue-50 text-slate-800 border border-slate-200 hover:border-blue-400 shadow-2xs transition-all cursor-pointer flex flex-col items-center justify-center";
+                }
+                btn.innerHTML = `<span>${day}</span>`;
+                btn.title = `متاح: ${dateStr}`;
+                btn.onclick = () => selectCalendarDate(dateStr, cellDate);
+            } else {
+                btn.disabled = true;
+                btn.className = "w-full py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm bg-slate-100/60 text-slate-300 border border-transparent cursor-not-allowed select-none flex flex-col items-center justify-center";
+                btn.innerHTML = `<span>${day}</span>`;
+                btn.title = unallowedReason;
+            }
+
+            grid.appendChild(btn);
+        }
+
+        // If today matches or a date was selected, update banner
+        if (selectedDateStr) {
+            updateSelectedDateBanner(selectedDateStr);
+        }
+    }
+
+    function selectCalendarDate(dateStr, dateObj) {
+        selectedDateStr = dateStr;
+        document.getElementById('booking_date').value = dateStr;
+        const err = document.getElementById('booking_date_error');
+        if (err) err.classList.add('hidden');
+
+        updateSelectedDateBanner(dateStr, dateObj);
+        renderCalendar();
+
+        const formatKey = getSelectedFormatKey();
+        loadTimeSlots(dateStr, formatKey);
+    }
+
+    function updateSelectedDateBanner(dateStr, dateObj) {
+        const banner = document.getElementById('selectedDateBanner');
+        const text = document.getElementById('selectedDateText');
+        if (!banner || !text) return;
+
+        if (!dateObj) {
+            const parts = dateStr.split('-');
+            if (parts.length === 3) {
+                dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+            }
+        }
+
+        if (dateObj) {
+            const dayName = arabicDayNames[dateObj.getDay()];
+            const monthName = arabicMonths[dateObj.getMonth()];
+            text.innerText = `${dayName}، ${dateObj.getDate()} ${monthName} ${dateObj.getFullYear()}`;
+            banner.classList.remove('hidden');
+        }
+    }
+
+    // ========================================================
+    // DYNAMIC TIME SLOTS & AVAILABILITY FETCHING
+    // ========================================================
+
+    function loadTimeSlots(dateStr, formatKey) {
+        const chipsGrid = document.getElementById('slotsChipsGrid');
+        const spinner = document.getElementById('slotsLoadingSpinner');
+        const noSlots = document.getElementById('noSlotsMessage');
+        const conf = scheduleConfig[formatKey] || scheduleConfig['normal'];
+
+        if (!chipsGrid) return;
+
+        if (!dateStr) {
+            chipsGrid.innerHTML = '';
+            if (noSlots) noSlots.classList.remove('hidden');
+            return;
+        }
+
+        if (noSlots) noSlots.classList.add('hidden');
+        if (spinner) spinner.classList.remove('hidden');
+
+        const branchSelect = document.getElementById('branch_id');
+        const branchId = (formatKey !== 'online' && branchSelect) ? branchSelect.value : '';
+
+        // Fetch slots with real-time booked counts from endpoint
+        fetch(`{{ route('booking.slotsAvailability') }}?date=${dateStr}&format=${formatKey}&branch_id=${branchId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (spinner) spinner.classList.add('hidden');
+                chipsGrid.innerHTML = '';
+
+                const slots = (data.slots && data.slots.length > 0) ? data.slots : conf.slots.map(s => ({ time: s, is_full: false }));
+
+                if (slots.length === 0) {
+                    chipsGrid.innerHTML = `
+                        <div class="col-span-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 text-xs text-center font-bold">
+                            لا توجد فترات مسجلة لهذا اليوم.
+                        </div>
+                    `;
+                    return;
+                }
+
+                slots.forEach(slot => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    const isSelected = (selectedTimeSlot === slot.time);
+
+                    if (slot.is_full) {
+                        btn.disabled = true;
+                        btn.className = "p-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-400 text-xs font-bold cursor-not-allowed opacity-60 flex flex-col items-center justify-center select-none";
+                        btn.innerHTML = `
+                            <span>${slot.time}</span>
+                            <span class="text-[9px] text-red-500 font-black mt-0.5">محجوز بالكامل ✕</span>
+                        `;
+                    } else {
+                        btn.className = `slot-chip p-2.5 rounded-xl border-2 text-xs font-black transition-all cursor-pointer flex flex-col items-center justify-center ${isSelected ? 'border-blue-600 bg-blue-50 text-blue-700 ring-2 ring-blue-100' : 'border-slate-200 bg-white hover:border-blue-300 text-slate-800'}`;
+                        btn.innerHTML = `
+                            <span>${slot.time}</span>
+                            <span class="text-[9px] text-emerald-600 font-bold mt-0.5">متاح للحجز ✓</span>
+                        `;
+                        btn.onclick = () => selectTimeSlot(slot.time, btn);
+                    }
+
+                    chipsGrid.appendChild(btn);
+                });
+            })
+            .catch(err => {
+                if (spinner) spinner.classList.add('hidden');
+                // Fallback to static configured slots if offline/error
+                chipsGrid.innerHTML = '';
+                conf.slots.forEach(slotTime => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    const isSelected = (selectedTimeSlot === slotTime);
+                    btn.className = `slot-chip p-2.5 rounded-xl border-2 text-xs font-black transition-all cursor-pointer flex flex-col items-center justify-center ${isSelected ? 'border-blue-600 bg-blue-50 text-blue-700 ring-2 ring-blue-100' : 'border-slate-200 bg-white hover:border-blue-300 text-slate-800'}`;
+                    btn.innerHTML = `<span>${slotTime}</span>`;
+                    btn.onclick = () => selectTimeSlot(slotTime, btn);
+                    chipsGrid.appendChild(btn);
+                });
+            });
+    }
+
+    function selectTimeSlot(slotTime, btnElement) {
+        selectedTimeSlot = slotTime;
+        document.getElementById('booking_time').value = slotTime;
+
+        const err = document.getElementById('booking_time_error');
+        if (err) err.classList.add('hidden');
+
+        document.querySelectorAll('.slot-chip').forEach(b => {
+            b.classList.remove('border-blue-600', 'bg-blue-50', 'text-blue-700', 'ring-2', 'ring-blue-100');
+            b.classList.add('border-slate-200', 'bg-white', 'text-slate-800');
+        });
+
+        if (btnElement) {
+            btnElement.classList.add('border-blue-600', 'bg-blue-50', 'text-blue-700', 'ring-2', 'ring-blue-100');
+            btnElement.classList.remove('border-slate-200', 'bg-white', 'text-slate-800');
         }
     }
 
@@ -696,13 +1113,38 @@
 
     // Form Submission Validation
     document.getElementById('bookingForm')?.addEventListener('submit', function(e) {
+        let valid = true;
+
+        const dateInput = document.getElementById('booking_date');
+        const dateError = document.getElementById('booking_date_error');
+        if (!dateInput || !dateInput.value) {
+            valid = false;
+            if (dateError) dateError.classList.remove('hidden');
+            dateError?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            if (dateError) dateError.classList.add('hidden');
+        }
+
+        const timeInput = document.getElementById('booking_time');
+        const timeError = document.getElementById('booking_time_error');
+        if (!timeInput || !timeInput.value) {
+            valid = false;
+            if (timeError) timeError.classList.remove('hidden');
+            if (valid) timeError?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            if (timeError) timeError.classList.add('hidden');
+        }
+
         const receiptInput = document.getElementById('payment_receipt');
         const errorMsg = document.getElementById('receipt_error');
-
         if (!receiptInput.files || receiptInput.files.length === 0) {
-            e.preventDefault();
+            valid = false;
             if (errorMsg) errorMsg.classList.remove('hidden');
-            receiptInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (valid) receiptInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        if (!valid) {
+            e.preventDefault();
             return false;
         }
 
@@ -716,7 +1158,8 @@
 
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
-        handleBranchChange();
+        const initialFormat = getSelectedFormatKey();
+        handleFormatSelection(initialFormat === 'urgent' ? 'in_center_urgent' : (initialFormat === 'online' ? 'online' : 'in_center_normal'));
     });
 </script>
 @endsection

@@ -31,6 +31,9 @@ class BookingController extends Controller
             $branches[$b->slug] = $b->name . ($b->address ? ' (' . $b->address . ')' : '');
         }
 
+        // Complete Schedule Configuration for Normal, Urgent, and Online
+        $scheduleConfig = Booking::getScheduleConfig();
+
         // Settings
         $bookingImage = Setting::get('booking_image', 'images/hero-child.jpg');
         $bookingTitle = Setting::get('booking_page_title', 'حجز استشارة وتقييم مهارات الطفل');
@@ -46,21 +49,9 @@ class BookingController extends Controller
 
         // Booking Types (Normal, Urgent, Online)
         $bookingTypes = [
-            'normal' => [
-                'enabled' => Setting::get('booking_normal_enabled', '1') === '1',
-                'price' => (float) Setting::get('booking_normal_price', '300.00'),
-                'desc' => Setting::get('booking_normal_desc', 'حضور في الفرع'),
-            ],
-            'urgent' => [
-                'enabled' => Setting::get('booking_urgent_enabled', '1') === '1',
-                'fee' => (float) Setting::get('booking_urgent_fee', '150.00'),
-                'desc' => Setting::get('booking_urgent_desc', 'كشف عاجل خلال 24-48 ساعة'),
-            ],
-            'online' => [
-                'enabled' => Setting::get('booking_online_enabled', '1') === '1',
-                'price' => (float) Setting::get('booking_online_price', '350.00'),
-                'desc' => Setting::get('booking_online_desc', 'مكالمة فيديو مباشرة عبر Zoom'),
-            ],
+            'normal' => $scheduleConfig['normal'],
+            'urgent' => $scheduleConfig['urgent'],
+            'online' => $scheduleConfig['online'],
         ];
 
         return view('storefront.booking', compact(
@@ -73,8 +64,62 @@ class BookingController extends Controller
             'bookingSubtitle',
             'bookingQuote',
             'paymentSettings',
-            'bookingTypes'
+            'bookingTypes',
+            'scheduleConfig'
         ));
+    }
+
+    /**
+     * Check available time slots for a given date and service format
+     */
+    public function slotsAvailability(Request $request)
+    {
+        $date = $request->query('date');
+        $format = $request->query('format', 'normal');
+        $branchId = $request->query('branch_id');
+
+        $formatKey = match ($format) {
+            'in_center_urgent', 'urgent' => 'urgent',
+            'online' => 'online',
+            default => 'normal',
+        };
+
+        $scheduleConfig = Booking::getScheduleConfig();
+        $config = $scheduleConfig[$formatKey] ?? $scheduleConfig['normal'];
+
+        $slots = $config['slots'] ?? [];
+        $capacity = (int) ($config['slot_capacity'] ?? 1);
+
+        // If a branch is selected (and not online), prefer branch custom slots if available
+        if ($branchId && $formatKey !== 'online') {
+            $branch = BookingBranch::find($branchId);
+            if ($branch && !empty($branch->slots_list)) {
+                $slots = $branch->slots_list;
+            }
+        }
+
+        $bookedCounts = Booking::getBookedSlotsCount($date, $format, $branchId ? (int)$branchId : null);
+
+        $slotsData = [];
+        foreach ($slots as $slot) {
+            $booked = $bookedCounts[$slot] ?? 0;
+            $isFull = $booked >= $capacity;
+            $slotsData[] = [
+                'time' => $slot,
+                'booked' => $booked,
+                'capacity' => $capacity,
+                'is_full' => $isFull,
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'date' => $date,
+            'format' => $formatKey,
+            'branch_id' => $branchId,
+            'capacity' => $capacity,
+            'slots' => $slotsData,
+        ]);
     }
 
     // Handle Booking Submission
@@ -115,7 +160,16 @@ class BookingController extends Controller
             $validated['service_type'] = 'general_evaluation';
         }
 
-        // 1. Identify Branch & Price
+        // 1. Identify Branch & Price from Schedule Configuration
+        $scheduleConfig = Booking::getScheduleConfig();
+        $formatKey = match ($validated['session_format']) {
+            'in_center_urgent', 'urgent' => 'urgent',
+            'online' => 'online',
+            default => 'normal',
+        };
+        $serviceConfig = $scheduleConfig[$formatKey] ?? $scheduleConfig['normal'];
+        $price = (float) $serviceConfig['price'];
+
         $branchModel = null;
         if ($validated['session_format'] === 'online') {
             $branchModel = BookingBranch::where('is_online', true)->first();
@@ -125,16 +179,40 @@ class BookingController extends Controller
                 : BookingBranch::where('slug', $validated['branch_id'])->first();
         }
 
-        if (!$branchModel) {
+        if (!$branchModel && $validated['session_format'] !== 'online') {
             $branchModel = BookingBranch::first();
         }
 
-        $price = $branchModel ? (float) $branchModel->price : 300.00;
+        // If normal in-center and branch has a price set, use it
+        if ($formatKey === 'normal' && $branchModel && $branchModel->price > 0) {
+            $price = (float) $branchModel->price;
+        } elseif ($formatKey === 'urgent' && $branchModel && $branchModel->urgent_price > 0) {
+            $price = (float) $branchModel->urgent_price;
+        }
 
-        // Apply urgent consultation fee (+150 EGP) if urgent in-center session chosen
-        if ($validated['session_format'] === 'in_center_urgent') {
-            $urgentFee = (float) Setting::get('booking_urgent_fee', '150.00');
-            $price += $urgentFee;
+        // 2. Prevent Double Booking / Check Slot Capacity
+        $alreadyBookedQuery = Booking::whereDate('booking_date', $validated['booking_date'])
+            ->where('booking_time', $validated['booking_time'])
+            ->where(function ($q) use ($validated) {
+                if ($validated['session_format'] === 'online') {
+                    $q->where('session_format', 'online');
+                } else {
+                    $q->whereIn('session_format', ['in_center', 'in_center_normal', 'in_center_urgent', 'normal', 'urgent']);
+                }
+            })
+            ->whereIn('status', ['pending', 'confirmed']);
+
+        if ($validated['session_format'] !== 'online' && $branchModel) {
+            $alreadyBookedQuery->where('booking_branch_id', $branchModel->id);
+        }
+
+        $alreadyBooked = $alreadyBookedQuery->count();
+
+        $maxCapacity = (int) ($serviceConfig['slot_capacity'] ?? 1);
+        if ($alreadyBooked >= $maxCapacity) {
+            return back()->withInput()->withErrors([
+                'booking_time' => 'عذراً، هذه الفترة الزمنية محجوزة بالكامل في هذا اليوم. يرجى اختيار فترة زمنية أخرى.',
+            ]);
         }
 
         $branchSlug = $branchModel ? $branchModel->slug : ($validated['session_format'] === 'online' ? 'online' : 'ibrahimiya');

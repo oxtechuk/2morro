@@ -367,18 +367,36 @@
                         <div class="row g-3">
                             <div class="col-md-8 col-sm-12">
                                 <label class="form-label fw-bold">الصورة الرئيسية للمنتج</label>
-                                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
-                                <small class="text-muted">الصورة الأساسية التي تظهر في بطاقة المنتج بالمتجر (توصى بصورة مربعة ذات خلفية بيضاء وحجم أقل من 2 ميجا).</small>
+                                <input type="file" name="image" id="productImageInput" accept="image/*" class="form-control @error('image') is-invalid @enderror @error('main_image') is-invalid @enderror">
+                                <small class="text-muted">الصورة الأساسية التي تظهر في بطاقة المنتج بالمتجر (توصى بصورة مربعة ذات خلفية بيضاء وحجم أقل من 5 ميجا).</small>
                                 @error('image')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
+                                @error('main_image')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+
+                                <!-- Image Preview Container (Hidden initially until file chosen) -->
+                                <div id="newImagePreviewWrapper" class="mt-3 p-2 border rounded bg-white d-none" style="max-width: 200px;">
+                                    <label class="d-block text-success fs-8 mb-1 fw-bold"><i class="bi bi-check-circle"></i> معاينة الصورة الجديدة:</label>
+                                    <img id="newImagePreview" src="#" class="object-fit-cover rounded border" style="width: 140px; height: 140px;" alt="معاينة">
+                                </div>
                             </div>
                             
                             <div class="col-md-4 col-sm-12 text-center text-md-start">
                                 @if(is_array($product->images) && !empty($product->images))
-                                    <div class="p-2 border rounded d-inline-block bg-light">
+                                    <div class="p-2 border rounded d-inline-block bg-light" id="currentImageWrapper">
                                         <label class="d-block text-muted fs-8 mb-1 text-center">الصورة الحالية:</label>
-                                        <img src="{{ asset('storage/' . $product->images[0]) }}" class="object-fit-cover rounded" style="width: 140px; height: 140px;" alt="{{ $product->name }}">
+                                        <img src="{{ asset('storage/' . $product->images[0]) }}" id="currentProductImage" class="object-fit-cover rounded border" style="width: 140px; height: 140px; transition: all 0.2s;" alt="{{ $product->name }}">
+                                        
+                                        <div class="mt-2 text-center">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input border-danger" type="checkbox" name="delete_image" value="1" id="delete_image_checkbox">
+                                                <label class="form-check-label text-danger fs-8 fw-bold" for="delete_image_checkbox">
+                                                    <i class="bi bi-trash"></i> حذف هذه الصورة
+                                                </label>
+                                            </div>
+                                        </div>
                                     </div>
                                 @else
                                     <div class="p-4 border border-dashed rounded text-center text-muted d-flex flex-column align-items-center justify-content-center bg-light" style="width: 140px; height: 140px;">
@@ -672,5 +690,49 @@
     setupQuickForm('quickAgeGroupForm', 'quickAddAgeGroupModal', 'ageGroupsListContainer', 'age_groups', 'age', 'الفئة العمرية');
     setupQuickForm('quickSkillForm', 'quickAddSkillModal', 'skillsListContainer', 'skills', 'skill', 'المهارة');
     setupQuickForm('quickNeedForm', 'quickAddNeedModal', 'needsListContainer', 'needs', 'need', 'الاحتياج');
+
+    // Image preview and delete interaction
+    const imageInput = document.getElementById('productImageInput');
+    const previewWrapper = document.getElementById('newImagePreviewWrapper');
+    const previewImg = document.getElementById('newImagePreview');
+    const deleteCheckbox = document.getElementById('delete_image_checkbox');
+    const currentImg = document.getElementById('currentProductImage');
+
+    if (imageInput && previewWrapper && previewImg) {
+        imageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    previewWrapper.classList.remove('d-none');
+                };
+                reader.readAsDataURL(file);
+
+                // If user selected a new file, uncheck delete image if checked
+                if (deleteCheckbox && deleteCheckbox.checked) {
+                    deleteCheckbox.checked = false;
+                    if (currentImg) {
+                        currentImg.style.opacity = '1';
+                        currentImg.style.filter = 'none';
+                    }
+                }
+            } else {
+                previewWrapper.classList.add('d-none');
+            }
+        });
+    }
+
+    if (deleteCheckbox && currentImg) {
+        deleteCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                currentImg.style.opacity = '0.3';
+                currentImg.style.filter = 'grayscale(100%)';
+            } else {
+                currentImg.style.opacity = '1';
+                currentImg.style.filter = 'none';
+            }
+        });
+    }
 </script>
 @endsection

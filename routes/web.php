@@ -31,6 +31,7 @@ Route::get('/download/{token}', [DownloadController::class, 'download'])->name('
 // Consultation & Assessment Booking Routes
 use App\Http\Controllers\BookingController;
 Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
+Route::get('/booking/slots-availability', [BookingController::class, 'slotsAvailability'])->name('booking.slotsAvailability');
 Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
 Route::get('/booking/success/{bookingNumber}', [BookingController::class, 'success'])->name('booking.success');
 

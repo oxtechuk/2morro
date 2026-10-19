@@ -87,13 +87,13 @@
             <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-success">
                 <div class="d-flex align-items-center justify-content-between mb-2">
                     <span class="text-muted small fw-bold">الحجز العادي (حضوري)</span>
-                    <span class="badge {{ $paymentSettings['normal_enabled'] ? 'bg-success' : 'bg-secondary' }} bg-opacity-10 {{ $paymentSettings['normal_enabled'] ? 'text-success' : 'text-secondary' }} rounded-pill px-2.5 py-1">
-                        {{ $paymentSettings['normal_enabled'] ? 'مفعل' : 'معطل' }}
+                    <span class="badge {{ $scheduleConfig['normal']['enabled'] ? 'bg-success' : 'bg-secondary' }} bg-opacity-10 {{ $scheduleConfig['normal']['enabled'] ? 'text-success' : 'text-secondary' }} rounded-pill px-2.5 py-1">
+                        {{ $scheduleConfig['normal']['enabled'] ? 'مفعل' : 'معطل' }}
                     </span>
                 </div>
                 <div class="d-flex align-items-baseline gap-1">
-                    <h4 class="fw-bold mb-0 text-success">{{ number_format((float)$paymentSettings['normal_price']) }}</h4>
-                    <span class="text-muted small">ج.م (سعر أساسي)</span>
+                    <h4 class="fw-bold mb-0 text-success">{{ number_format((float)$scheduleConfig['normal']['price']) }}</h4>
+                    <span class="text-muted small">ج.م (سعر الجلسة)</span>
                 </div>
             </div>
         </div>
@@ -101,14 +101,14 @@
         <div class="col-6 col-md-3">
             <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-danger">
                 <div class="d-flex align-items-center justify-content-between mb-2">
-                    <span class="text-muted small fw-bold">الحجز المستعجل (أولوية)</span>
-                    <span class="badge {{ $paymentSettings['urgent_enabled'] ? 'bg-danger' : 'bg-secondary' }} bg-opacity-10 {{ $paymentSettings['urgent_enabled'] ? 'text-danger' : 'text-secondary' }} rounded-pill px-2.5 py-1">
-                        {{ $paymentSettings['urgent_enabled'] ? 'مفعل' : 'معطل' }}
+                    <span class="text-muted small fw-bold">الحجز المستعجل (طوارئ)</span>
+                    <span class="badge {{ $scheduleConfig['urgent']['enabled'] ? 'bg-danger' : 'bg-secondary' }} bg-opacity-10 {{ $scheduleConfig['urgent']['enabled'] ? 'text-danger' : 'text-secondary' }} rounded-pill px-2.5 py-1">
+                        {{ $scheduleConfig['urgent']['enabled'] ? 'مفعل' : 'معطل' }}
                     </span>
                 </div>
                 <div class="d-flex align-items-baseline gap-1">
-                    <h4 class="fw-bold mb-0 text-danger">+{{ number_format((float)$paymentSettings['urgent_fee']) }}</h4>
-                    <span class="text-muted small">ج.م (رسوم استعجال)</span>
+                    <h4 class="fw-bold mb-0 text-danger">{{ number_format((float)$scheduleConfig['urgent']['price']) }}</h4>
+                    <span class="text-muted small">ج.م (سعر الجلسة)</span>
                 </div>
             </div>
         </div>
@@ -117,12 +117,12 @@
             <div class="card border-0 shadow-sm rounded-4 bg-white p-3 h-100 border-start border-4 border-info">
                 <div class="d-flex align-items-center justify-content-between mb-2">
                     <span class="text-muted small fw-bold">حجز أونلاين (Zoom)</span>
-                    <span class="badge {{ $paymentSettings['online_enabled'] ? 'bg-info' : 'bg-secondary' }} bg-opacity-10 {{ $paymentSettings['online_enabled'] ? 'text-info' : 'text-secondary' }} rounded-pill px-2.5 py-1">
-                        {{ $paymentSettings['online_enabled'] ? 'مفعل ' : 'معطل' }}
+                    <span class="badge {{ $scheduleConfig['online']['enabled'] ? 'bg-info' : 'bg-secondary' }} bg-opacity-10 {{ $scheduleConfig['online']['enabled'] ? 'text-info' : 'text-secondary' }} rounded-pill px-2.5 py-1">
+                        {{ $scheduleConfig['online']['enabled'] ? 'مفعل' : 'معطل' }}
                     </span>
                 </div>
                 <div class="d-flex align-items-baseline gap-1">
-                    <h4 class="fw-bold mb-0 text-info">{{ number_format((float)$paymentSettings['online_price']) }}</h4>
+                    <h4 class="fw-bold mb-0 text-info">{{ number_format((float)$scheduleConfig['online']['price']) }}</h4>
                     <span class="text-muted small">ج.م (للجلسة)</span>
                 </div>
             </div>
@@ -156,8 +156,8 @@
                 <div class="row g-4">
                     
                     <!-- 1. Normal Booking Card (حجز عادي حضوري) -->
-                    <div class="col-lg-4 col-md-6 col-12">
-                        <div class="card h-100 rounded-4 border-2 {{ $paymentSettings['normal_enabled'] ? 'border-success' : 'border-light-subtle' }} shadow-xs bg-body-tertiary p-3">
+                    <div class="col-lg-4 col-md-12 col-12">
+                        <div class="card h-100 rounded-4 border-2 {{ $scheduleConfig['normal']['enabled'] ? 'border-success' : 'border-light-subtle' }} shadow-xs bg-body-tertiary p-3">
                             <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
                                 <div class="d-flex align-items-center gap-2">
                                     <div class="w-9 h-9 rounded-3 bg-success bg-opacity-10 text-success d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
@@ -165,76 +165,135 @@
                                     </div>
                                     <div>
                                         <h6 class="fw-bold mb-0 text-dark">1. حجز عادي (حضوري)</h6>
-                                        <span class="text-muted small">حضور بالفرع المجدول</span>
+                                        <span class="text-muted small">تقويم وجدول المقابلات العادية بالمركز</span>
                                     </div>
                                 </div>
                                 <div class="form-check form-switch m-0">
-                                    <input class="form-check-input fs-5" type="checkbox" name="booking_normal_enabled" id="normalEnabled" value="1" {{ $paymentSettings['normal_enabled'] ? 'checked' : '' }}>
+                                    <input class="form-check-input fs-5" type="checkbox" name="booking_normal_enabled" id="normalEnabled" value="1" {{ $scheduleConfig['normal']['enabled'] ? 'checked' : '' }}>
                                 </div>
                             </div>
 
                             <div class="space-y-3">
                                 <div>
-                                    <label class="form-label small fw-bold text-dark">السعر الأساسي المعتمد للكشف (ج.م)</label>
+                                    <label class="form-label small fw-bold text-dark">السعر المعتمد للكشف (ج.م) <span class="text-danger">*</span></label>
                                     <div class="input-group">
-                                        <input type="number" step="0.01" name="booking_normal_price" value="{{ old('booking_normal_price', $paymentSettings['normal_price']) }}" class="form-control fw-bold" placeholder="300.00">
+                                        <input type="number" step="0.01" name="booking_normal_price" value="{{ old('booking_normal_price', $scheduleConfig['normal']['price']) }}" class="form-control fw-bold" placeholder="300.00" required>
                                         <span class="input-group-text bg-light fw-bold">ج.م</span>
                                     </div>
-                                    <span class="text-muted small d-block mt-1">سعر الكشف الافتراضي إذا لم يحدد سعر خاص للفرع.</span>
                                 </div>
 
                                 <div>
-                                    <label class="form-label small fw-bold text-dark">الوصف المختصر للعميل</label>
-                                    <input type="text" name="booking_normal_desc" value="{{ old('booking_normal_desc', $paymentSettings['normal_desc']) }}" class="form-control small" placeholder="حضور في مقر المركز ومقابلة مباشرة وفق جدول الفترات المعتمدة">
-                                    <span class="text-muted small d-block mt-1">يظهر كشرح أسفل كارت "في المركز (عادي)" بصفحة الحجز.</span>
+                                    <label class="form-label small fw-bold text-dark">الوصف المختصر بصفحة الحجز</label>
+                                    <input type="text" name="booking_normal_desc" value="{{ old('booking_normal_desc', $scheduleConfig['normal']['desc']) }}" class="form-control small" placeholder="حضور في مقر المركز ومقابلة مباشرة وفق جدول الفترات المعتمدة">
                                 </div>
 
-                                <div class="p-2.5 rounded-3 bg-white border small text-muted">
-                                    <i class="bi bi-info-circle text-success me-1"></i>
-                                    <span>يتيح لولي الأمر اختيار الفرع والتاريخ والفترة من جدول الفروع أدناه.</span>
+                                <!-- Days of Week in Calendar -->
+                                <div>
+                                    <label class="form-label small fw-bold text-dark d-block">أيام الأسبوع المتاحة في التقويم:</label>
+                                    <div class="d-flex flex-wrap gap-1.5 p-2 bg-white rounded-3 border">
+                                        @foreach($allDays as $dayKey => $dayLabel)
+                                            <label class="btn btn-xs btn-outline-success border-opacity-50 d-inline-flex align-items-center gap-1 rounded-pill px-2.5 py-1">
+                                                <input type="checkbox" name="booking_normal_days[]" value="{{ $dayKey }}" class="form-check-input mt-0" {{ in_array($dayKey, $scheduleConfig['normal']['days']) ? 'checked' : '' }}>
+                                                <span>{{ $dayLabel }}</span>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                    <span class="text-muted small d-block mt-1">الأيام المحددة فقط هي التي تضاء وتفتح في تقويم الحجز العادي.</span>
+                                </div>
+
+                                <!-- Time Slots for Normal -->
+                                <div>
+                                    <label class="form-label small fw-bold text-dark d-block">الساعات والفترات المتاحة (سطر لكل فترة):</label>
+                                    <textarea name="booking_normal_slots" rows="4" class="form-control font-monospace small" placeholder="12:00 PM - 02:00 PM&#10;02:00 PM - 04:00 PM&#10;04:00 PM - 06:30 PM&#10;06:30 PM - 09:00 PM">{{ implode("\n", $scheduleConfig['normal']['slots']) }}</textarea>
+                                    <span class="text-muted small d-block mt-1">تظهر هذه الساعات للعميل فور اختياره اليوم من التقويم.</span>
+                                </div>
+
+                                <!-- Slot Capacity -->
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <label class="form-label small fw-bold text-dark">أقصى عدد حجوزات في الساعة الواحدة (السعة):</label>
+                                        <input type="number" min="1" max="20" name="booking_normal_slot_capacity" value="{{ old('booking_normal_slot_capacity', $scheduleConfig['normal']['slot_capacity']) }}" class="form-control text-center fw-bold" placeholder="1">
+                                        <span class="text-muted small d-block mt-0.5">عند اكتمال العدد يتم حجب الفترة تلقائياً في التقويم.</span>
+                                    </div>
+                                </div>
+
+                                <!-- Off Dates in Month (Exceptions) -->
+                                <div>
+                                    <label class="form-label small fw-bold text-dark">أيام مستثناة / إجازات في الشهر (YYYY-MM-DD):</label>
+                                    <input type="text" name="booking_normal_off_dates" value="{{ implode(', ', $scheduleConfig['normal']['off_dates']) }}" class="form-control small font-monospace" placeholder="مثال: 2026-11-01, 2026-11-15">
+                                    <span class="text-muted small d-block mt-0.5">تُعطّل هذه التواريخ في التقويم حتى لو كانت ضمن أيام العمل.</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 2. Urgent Booking Card (حجز مستعجل أولوية) -->
-                    <div class="col-lg-4 col-md-6 col-12">
-                        <div class="card h-100 rounded-4 border-2 {{ $paymentSettings['urgent_enabled'] ? 'border-danger' : 'border-light-subtle' }} shadow-xs bg-body-tertiary p-3">
+                    <div class="col-lg-4 col-md-12 col-12">
+                        <div class="card h-100 rounded-4 border-2 {{ $scheduleConfig['urgent']['enabled'] ? 'border-danger' : 'border-light-subtle' }} shadow-xs bg-body-tertiary p-3">
                             <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
                                 <div class="d-flex align-items-center gap-2">
                                     <div class="w-9 h-9 rounded-3 bg-danger bg-opacity-10 text-danger d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
                                         <i class="bi bi-lightning-charge-fill fs-5"></i>
                                     </div>
                                     <div>
-                                        <h6 class="fw-bold mb-0 text-dark">2. حجز مستعجل (عاجل)</h6>
-                                        <span class="text-danger small fw-bold">أولوية خلال 24-48 ساعة ⚡</span>
+                                        <h6 class="fw-bold mb-0 text-dark">2. حجز مستعجل (طوارئ)</h6>
+                                        <span class="text-danger small fw-bold">تقويم ومواعيد الأولوية السريعة ⚡</span>
                                     </div>
                                 </div>
                                 <div class="form-check form-switch m-0">
-                                    <input class="form-check-input fs-5" type="checkbox" name="booking_urgent_enabled" id="urgentEnabled" value="1" {{ $paymentSettings['urgent_enabled'] ? 'checked' : '' }}>
+                                    <input class="form-check-input fs-5" type="checkbox" name="booking_urgent_enabled" id="urgentEnabled" value="1" {{ $scheduleConfig['urgent']['enabled'] ? 'checked' : '' }}>
                                 </div>
                             </div>
 
                             <div class="space-y-3">
                                 <div>
-                                    <label class="form-label small fw-bold text-dark">رسوم الاستعجال الإضافية (+ج.م)</label>
+                                    <label class="form-label small fw-bold text-dark">السعر الإجمالي للكشف المستعجل (ج.م) <span class="text-danger">*</span></label>
                                     <div class="input-group">
-                                        <span class="input-group-text bg-danger bg-opacity-10 text-danger fw-bold">+</span>
-                                        <input type="number" step="0.01" name="booking_urgent_fee" value="{{ old('booking_urgent_fee', $paymentSettings['urgent_fee']) }}" class="form-control fw-bold text-danger" placeholder="150.00">
+                                        <input type="number" step="0.01" name="booking_urgent_price" value="{{ old('booking_urgent_price', $scheduleConfig['urgent']['price']) }}" class="form-control fw-bold text-danger" placeholder="450.00" required>
                                         <span class="input-group-text bg-light fw-bold">ج.م</span>
                                     </div>
-                                    <span class="text-muted small d-block mt-1">تضاف هذه القيمة تلقائياً إلى سعر الفرع عند اختيار حجز مستعجل.</span>
                                 </div>
 
                                 <div>
                                     <label class="form-label small fw-bold text-dark">الوصف المختصر للعميل</label>
-                                    <input type="text" name="booking_urgent_desc" value="{{ old('booking_urgent_desc', $paymentSettings['urgent_desc']) }}" class="form-control small" placeholder="كشف ومقابلة ذات أولوية قصوى خلال 24 إلى 48 ساعة">
-                                    <span class="text-muted small d-block mt-1">يظهر كشرح أسفل كارت "في المركز (مستعجل)" بصفحة الحجز.</span>
+                                    <input type="text" name="booking_urgent_desc" value="{{ old('booking_urgent_desc', $scheduleConfig['urgent']['desc']) }}" class="form-control small" placeholder="كشف ومقابلة ذات أولوية قصوى خلال 24 إلى 48 ساعة">
                                 </div>
 
-                                <div class="p-2.5 rounded-3 bg-white border small text-muted">
-                                    <i class="bi bi-info-circle text-danger me-1"></i>
-                                    <span>يمنح الحجز أولوية تقديم الموعد حتى في حال اكتمال الحجوزات العادية.</span>
+                                <!-- Urgent Window Setting -->
+                                <div>
+                                    <label class="form-label small fw-bold text-dark">أقصى نافذة زمنية للتقويم المستعجل:</label>
+                                    <div class="input-group">
+                                        <input type="number" min="1" max="7" name="booking_urgent_max_days_ahead" value="{{ old('booking_urgent_max_days_ahead', $scheduleConfig['urgent']['max_days_ahead'] ?? 2) }}" class="form-control text-center fw-bold">
+                                        <span class="input-group-text bg-light small">أيام من تاريخ اليوم</span>
+                                    </div>
+                                    <span class="text-muted small d-block mt-0.5">التقويم يفتح للعميل فقط خلال الـ 24 إلى 48 ساعة القادمة للحفاظ على الأولوية.</span>
+                                </div>
+
+                                <!-- Days of Week for Urgent -->
+                                <div>
+                                    <label class="form-label small fw-bold text-dark d-block">أيام استقبال الحالات المستعجلة:</label>
+                                    <div class="d-flex flex-wrap gap-1.5 p-2 bg-white rounded-3 border">
+                                        @foreach($allDays as $dayKey => $dayLabel)
+                                            <label class="btn btn-xs btn-outline-danger border-opacity-50 d-inline-flex align-items-center gap-1 rounded-pill px-2.5 py-1">
+                                                <input type="checkbox" name="booking_urgent_days[]" value="{{ $dayKey }}" class="form-check-input mt-0" {{ in_array($dayKey, $scheduleConfig['urgent']['days']) ? 'checked' : '' }}>
+                                                <span>{{ $dayLabel }}</span>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                                <!-- Time Slots for Urgent -->
+                                <div>
+                                    <label class="form-label small fw-bold text-dark d-block">الساعات والفترات المخصصة للمستعجل:</label>
+                                    <textarea name="booking_urgent_slots" rows="3" class="form-control font-monospace small" placeholder="10:00 AM - 11:30 AM&#10;01:00 PM - 02:30 PM&#10;08:00 PM - 09:30 PM">{{ implode("\n", $scheduleConfig['urgent']['slots']) }}</textarea>
+                                </div>
+
+                                <!-- Capacity -->
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <label class="form-label small fw-bold text-dark">سعة الفترة المستعجلة:</label>
+                                        <input type="number" min="1" max="10" name="booking_urgent_slot_capacity" value="{{ old('booking_urgent_slot_capacity', $scheduleConfig['urgent']['slot_capacity']) }}" class="form-control text-center fw-bold" placeholder="1">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -242,7 +301,7 @@
 
                     <!-- 3. Online Booking Card (حجز أونلاين Zoom) -->
                     <div class="col-lg-4 col-md-12 col-12">
-                        <div class="card h-100 rounded-4 border-2 {{ $paymentSettings['online_enabled'] ? 'border-info' : 'border-light-subtle' }} shadow-xs bg-body-tertiary p-3">
+                        <div class="card h-100 rounded-4 border-2 {{ $scheduleConfig['online']['enabled'] ? 'border-info' : 'border-light-subtle' }} shadow-xs bg-body-tertiary p-3">
                             <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom">
                                 <div class="d-flex align-items-center gap-2">
                                     <div class="w-9 h-9 rounded-3 bg-info bg-opacity-10 text-info d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
@@ -250,33 +309,59 @@
                                     </div>
                                     <div>
                                         <h6 class="fw-bold mb-0 text-dark">3. حجز أونلاين (عن بُعد)</h6>
-                                        <span class="text-info small fw-bold">مكالمة فيديو Zoom / Meet 💻</span>
+                                        <span class="text-info small fw-bold">تقويم وساعات الاستشارات بالفيديو 💻</span>
                                     </div>
                                 </div>
                                 <div class="form-check form-switch m-0">
-                                    <input class="form-check-input fs-5" type="checkbox" name="booking_online_enabled" id="onlineEnabled" value="1" {{ $paymentSettings['online_enabled'] ? 'checked' : '' }}>
+                                    <input class="form-check-input fs-5" type="checkbox" name="booking_online_enabled" id="onlineEnabled" value="1" {{ $scheduleConfig['online']['enabled'] ? 'checked' : '' }}>
                                 </div>
                             </div>
 
                             <div class="space-y-3">
                                 <div>
-                                    <label class="form-label small fw-bold text-dark">سعر جلسة الاستشارة الأونلاين (ج.م)</label>
+                                    <label class="form-label small fw-bold text-dark">سعر جلسة الاستشارة الأونلاين (ج.م) <span class="text-danger">*</span></label>
                                     <div class="input-group">
-                                        <input type="number" step="0.01" name="booking_online_price" value="{{ old('booking_online_price', $paymentSettings['online_price']) }}" class="form-control fw-bold text-info" placeholder="350.00">
+                                        <input type="number" step="0.01" name="booking_online_price" value="{{ old('booking_online_price', $scheduleConfig['online']['price']) }}" class="form-control fw-bold text-info" placeholder="350.00" required>
                                         <span class="input-group-text bg-light fw-bold">ج.م</span>
                                     </div>
-                                    <span class="text-muted small d-block mt-1">السعر المطبق مباشرة عند اختيار الحجز الأونلاين.</span>
                                 </div>
 
                                 <div>
                                     <label class="form-label small fw-bold text-dark">الوصف المختصر للعميل</label>
-                                    <input type="text" name="booking_online_desc" value="{{ old('booking_online_desc', $paymentSettings['online_desc']) }}" class="form-control small" placeholder="جلسة تقييم واستشارة بالفيديو عن بُعد عبر Zoom / Google Meet">
-                                    <span class="text-muted small d-block mt-1">يظهر كشرح أسفل كارت "أونلاين (Zoom)" بصفحة الحجز.</span>
+                                    <input type="text" name="booking_online_desc" value="{{ old('booking_online_desc', $scheduleConfig['online']['desc']) }}" class="form-control small" placeholder="جلسة تقييم واستشارة بالفيديو عن بُعد عبر Zoom / Google Meet">
                                 </div>
 
-                                <div class="p-2.5 rounded-3 bg-white border small text-muted">
-                                    <i class="bi bi-info-circle text-info me-1"></i>
-                                    <span>يخفي قائمة اختيار الفروع ويحدد الموعد لجلسة استشارة بالفيديو مباشرة.</span>
+                                <div>
+                                    <label class="form-label small fw-bold text-dark">المنصة الافتراضية للجلسة:</label>
+                                    <input type="text" name="booking_online_platform" value="{{ old('booking_online_platform', $scheduleConfig['online']['platform'] ?? 'Zoom / Google Meet') }}" class="form-control small" placeholder="Zoom / Google Meet">
+                                </div>
+
+                                <!-- Days of Week for Online -->
+                                <div>
+                                    <label class="form-label small fw-bold text-dark d-block">أيام تقديم الجلسات الأونلاين:</label>
+                                    <div class="d-flex flex-wrap gap-1.5 p-2 bg-white rounded-3 border">
+                                        @foreach($allDays as $dayKey => $dayLabel)
+                                            <label class="btn btn-xs btn-outline-info border-opacity-50 d-inline-flex align-items-center gap-1 rounded-pill px-2.5 py-1">
+                                                <input type="checkbox" name="booking_online_days[]" value="{{ $dayKey }}" class="form-check-input mt-0" {{ in_array($dayKey, $scheduleConfig['online']['days']) ? 'checked' : '' }}>
+                                                <span>{{ $dayLabel }}</span>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                    <span class="text-muted small d-block mt-1">تتيح لك تحديد أيام مخصصة للأونلاين مستقلة عن أيام الحضور بالمركز.</span>
+                                </div>
+
+                                <!-- Time Slots for Online -->
+                                <div>
+                                    <label class="form-label small fw-bold text-dark d-block">الساعات والفترات المتاحة للأونلاين:</label>
+                                    <textarea name="booking_online_slots" rows="3" class="form-control font-monospace small" placeholder="05:00 PM - 06:00 PM&#10;06:00 PM - 07:00 PM&#10;07:00 PM - 08:00 PM">{{ implode("\n", $scheduleConfig['online']['slots']) }}</textarea>
+                                </div>
+
+                                <!-- Capacity -->
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <label class="form-label small fw-bold text-dark">أقصى عدد حجوزات في الساعة (السعة):</label>
+                                        <input type="number" min="1" max="10" name="booking_online_slot_capacity" value="{{ old('booking_online_slot_capacity', $scheduleConfig['online']['slot_capacity']) }}" class="form-control text-center fw-bold" placeholder="1">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -499,14 +584,35 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="fw-bold text-success fs-6">{{ number_format($branch->price, 2) }}</span>
-                                    <span class="text-muted small">ج.م</span>
+                                    <div>
+                                        <span class="fw-bold text-success fs-6">{{ number_format($branch->price, 2) }}</span>
+                                        <span class="text-muted small">ج.م (عادي)</span>
+                                    </div>
+                                    @if($branch->urgent_price)
+                                        <div class="small mt-0.5">
+                                            <span class="fw-bold text-danger">{{ number_format($branch->urgent_price, 2) }}</span>
+                                            <span class="text-muted" style="font-size: 11px;">ج.م (مستعجل ⚡)</span>
+                                        </div>
+                                    @endif
                                 </td>
                                 <td>
-                                    <div class="d-flex flex-wrap gap-1" style="max-width: 220px;">
-                                        @foreach($branch->days_list as $day)
-                                            <span class="badge bg-light text-dark border small px-2 py-1">{{ $day }}</span>
-                                        @endforeach
+                                    <div class="d-flex flex-column gap-1" style="max-width: 260px;">
+                                        <div class="d-flex flex-wrap gap-1 align-items-center">
+                                            <span class="text-muted small fw-bold me-1" style="font-size: 11px;">عادي:</span>
+                                            @foreach($branch->days_list as $day)
+                                                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 small px-1.5 py-0.5">{{ $day }}</span>
+                                            @endforeach
+                                        </div>
+                                        @if(!empty($branch->specific_dates_list))
+                                            <div class="text-primary small" style="font-size: 11px;">
+                                                <i class="bi bi-calendar-check text-primary me-1"></i>شهر: {{ implode(', ', $branch->specific_dates_list) }}
+                                            </div>
+                                        @endif
+                                        @if(!empty($branch->urgent_dates_list))
+                                            <div class="text-danger small" style="font-size: 11px;">
+                                                <i class="bi bi-lightning-charge text-danger me-1"></i>طوارئ: {{ implode(', ', $branch->urgent_dates_list) }}
+                                            </div>
+                                        @endif
                                     </div>
                                 </td>
                                 <td>
@@ -603,11 +709,20 @@
                         </div>
 
                         <div class="col-md-6 col-12">
-                            <label class="form-label small fw-bold">سعر الكشف / الاستشارة (ج.م) <span class="text-danger">*</span></label>
+                            <label class="form-label small fw-bold">سعر الحجز العادي بالفرع (ج.م) <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input type="number" step="0.01" name="price" required value="300.00" class="form-control fw-bold">
                                 <span class="input-group-text bg-light fw-bold">ج.م</span>
                             </div>
+                        </div>
+
+                        <div class="col-md-6 col-12">
+                            <label class="form-label small fw-bold">سعر الحجز المستعجل بالفرع (ج.م)</label>
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="urgent_price" placeholder="450.00" class="form-control fw-bold text-danger">
+                                <span class="input-group-text bg-light fw-bold">ج.م</span>
+                            </div>
+                            <span class="text-muted small" style="font-size: 11px;">اتركه فارغاً لاستخدام السعر العام للخدمة المستعجلة.</span>
                         </div>
 
                         <div class="col-md-8 col-12">
@@ -620,17 +735,40 @@
                             <input type="text" name="phone" placeholder="01550504512" class="form-control" dir="ltr">
                         </div>
 
-                        <!-- Available Days Checkboxes -->
-                        <div class="col-12">
-                            <label class="form-label small fw-bold text-dark d-block mb-2">أيام العمل المتاحة في هذا الفرع <span class="text-danger">*</span></label>
-                            <div class="d-flex flex-wrap gap-2 p-3 bg-light rounded-3 border">
+                        <!-- 1. Normal Schedule Section -->
+                        <div class="col-12 p-3 bg-light rounded-3 border">
+                            <h6 class="fw-bold text-primary mb-2"><i class="bi bi-calendar3 me-1"></i> 1. جدول الحجز العادي (في المركز)</h6>
+                            <label class="form-label small fw-bold text-dark d-block mb-1">أيام العمل الأسبوعية المعتمدة <span class="text-danger">*</span>:</label>
+                            <div class="d-flex flex-wrap gap-2 mb-2.5">
                                 @foreach($allDays as $enDay => $arDay)
-                                    <div class="form-check form-check-inline me-3">
+                                    <div class="form-check form-check-inline me-2">
                                         <input class="form-check-input" type="checkbox" name="available_days[]" value="{{ $arDay }}" id="newDay_{{ $enDay }}" {{ $arDay !== 'الجمعة' ? 'checked' : '' }}>
                                         <label class="form-check-label small fw-bold" for="newDay_{{ $enDay }}">{{ $arDay }}</label>
                                     </div>
                                 @endforeach
                             </div>
+
+                            <label class="form-label small fw-bold text-dark d-block mb-1">تواريخ محددة في الشهر للحجز العادي (اختياري):</label>
+                            <textarea name="specific_dates" rows="2" class="form-control font-monospace small" placeholder="مثال: 2026-11-01&#10;2026-11-08"></textarea>
+                            <span class="text-muted small" style="font-size: 11px;">إذا وضعت تواريخ محددة هنا، سيفتح التقويم هذه الأيام فقط في الشهر للعملاء (مثل: 1/11).</span>
+                        </div>
+
+                        <!-- 2. Urgent Schedule Section -->
+                        <div class="col-12 p-3 bg-danger bg-opacity-10 rounded-3 border border-danger border-opacity-25">
+                            <h6 class="fw-bold text-danger mb-2"><i class="bi bi-lightning-charge-fill me-1"></i> 2. جدول الحجز المستعجل (طوارئ ⚡)</h6>
+                            <label class="form-label small fw-bold text-dark d-block mb-1">أيام العمل المتاحة للحالات المستعجلة:</label>
+                            <div class="d-flex flex-wrap gap-2 mb-2.5">
+                                @foreach($allDays as $enDay => $arDay)
+                                    <div class="form-check form-check-inline me-2">
+                                        <input class="form-check-input" type="checkbox" name="urgent_days[]" value="{{ $arDay }}" id="newUrgentDay_{{ $enDay }}" checked>
+                                        <label class="form-check-label small fw-bold" for="newUrgentDay_{{ $enDay }}">{{ $arDay }}</label>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <label class="form-label small fw-bold text-dark d-block mb-1">تواريخ محددة في الشهر للحالات المستعجلة (اختياري):</label>
+                            <textarea name="urgent_dates" rows="2" class="form-control font-monospace small" placeholder="مثال: 2026-10-25&#10;2026-10-22"></textarea>
+                            <span class="text-muted small" style="font-size: 11px;">تفتح هذه التواريخ العاجلة مباشرة عند اختيار الحجز المستعجل لهذا الفرع (مثل: 25/10).</span>
                         </div>
 
                         <!-- Time Slots Textarea -->
@@ -702,11 +840,20 @@
                         </div>
 
                         <div class="col-md-6 col-12">
-                            <label class="form-label small fw-bold">سعر الكشف / الاستشارة (ج.م) <span class="text-danger">*</span></label>
+                            <label class="form-label small fw-bold">سعر الحجز العادي بالفرع (ج.م) <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input type="number" step="0.01" name="price" required value="{{ old('price', $branch->price) }}" class="form-control fw-bold">
                                 <span class="input-group-text bg-light fw-bold">ج.م</span>
                             </div>
+                        </div>
+
+                        <div class="col-md-6 col-12">
+                            <label class="form-label small fw-bold">سعر الحجز المستعجل بالفرع (ج.م)</label>
+                            <div class="input-group">
+                                <input type="number" step="0.01" name="urgent_price" value="{{ old('urgent_price', $branch->urgent_price) }}" placeholder="450.00" class="form-control fw-bold text-danger">
+                                <span class="input-group-text bg-light fw-bold">ج.م</span>
+                            </div>
+                            <span class="text-muted small" style="font-size: 11px;">اتركه فارغاً لاستخدام السعر العام للخدمة المستعجلة.</span>
                         </div>
 
                         <div class="col-md-8 col-12">
@@ -719,20 +866,46 @@
                             <input type="text" name="phone" value="{{ old('phone', $branch->phone) }}" class="form-control" dir="ltr">
                         </div>
 
-                        <!-- Available Days Checkboxes -->
-                        <div class="col-12">
-                            <label class="form-label small fw-bold text-dark d-block mb-2">أيام العمل المتاحة في هذا الفرع <span class="text-danger">*</span></label>
-                            <div class="d-flex flex-wrap gap-2 p-3 bg-light rounded-3 border">
+                        <!-- 1. Normal Schedule Section -->
+                        <div class="col-12 p-3 bg-light rounded-3 border">
+                            <h6 class="fw-bold text-primary mb-2"><i class="bi bi-calendar3 me-1"></i> 1. جدول الحجز العادي (في المركز)</h6>
+                            <label class="form-label small fw-bold text-dark d-block mb-1">أيام العمل الأسبوعية المعتمدة <span class="text-danger">*</span>:</label>
+                            <div class="d-flex flex-wrap gap-2 mb-2.5">
                                 @php
                                     $branchDays = $branch->days_list;
                                 @endphp
                                 @foreach($allDays as $enDay => $arDay)
-                                    <div class="form-check form-check-inline me-3">
+                                    <div class="form-check form-check-inline me-2">
                                         <input class="form-check-input" type="checkbox" name="available_days[]" value="{{ $arDay }}" id="editDay_{{ $branch->id }}_{{ $enDay }}" {{ in_array($arDay, $branchDays) ? 'checked' : '' }}>
                                         <label class="form-check-label small fw-bold" for="editDay_{{ $branch->id }}_{{ $enDay }}">{{ $arDay }}</label>
                                     </div>
                                 @endforeach
                             </div>
+
+                            <label class="form-label small fw-bold text-dark d-block mb-1">تواريخ محددة في الشهر للحجز العادي (اختياري):</label>
+                            <textarea name="specific_dates" rows="2" class="form-control font-monospace small" placeholder="مثال: 2026-11-01&#10;2026-11-08">{{ implode("\n", $branch->specific_dates_list) }}</textarea>
+                            <span class="text-muted small" style="font-size: 11px;">إذا وضعت تواريخ محددة هنا، سيفتح التقويم هذه الأيام فقط في الشهر للعملاء (مثل: 1/11).</span>
+                        </div>
+
+                        <!-- 2. Urgent Schedule Section -->
+                        <div class="col-12 p-3 bg-danger bg-opacity-10 rounded-3 border border-danger border-opacity-25">
+                            <h6 class="fw-bold text-danger mb-2"><i class="bi bi-lightning-charge-fill me-1"></i> 2. جدول الحجز المستعجل (طوارئ ⚡)</h6>
+                            <label class="form-label small fw-bold text-dark d-block mb-1">أيام العمل المتاحة للحالات المستعجلة:</label>
+                            <div class="d-flex flex-wrap gap-2 mb-2.5">
+                                @php
+                                    $branchUrgentDays = $branch->urgent_days_list;
+                                @endphp
+                                @foreach($allDays as $enDay => $arDay)
+                                    <div class="form-check form-check-inline me-2">
+                                        <input class="form-check-input" type="checkbox" name="urgent_days[]" value="{{ $arDay }}" id="editUrgentDay_{{ $branch->id }}_{{ $enDay }}" {{ in_array($arDay, $branchUrgentDays) ? 'checked' : '' }}>
+                                        <label class="form-check-label small fw-bold" for="editUrgentDay_{{ $branch->id }}_{{ $enDay }}">{{ $arDay }}</label>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <label class="form-label small fw-bold text-dark d-block mb-1">تواريخ محددة في الشهر للحالات المستعجلة (اختياري):</label>
+                            <textarea name="urgent_dates" rows="2" class="form-control font-monospace small" placeholder="مثال: 2026-10-25&#10;2026-10-22">{{ implode("\n", $branch->urgent_dates_list) }}</textarea>
+                            <span class="text-muted small" style="font-size: 11px;">تفتح هذه التواريخ العاجلة مباشرة عند اختيار الحجز المستعجل لهذا الفرع (مثل: 25/10).</span>
                         </div>
 
                         <!-- Time Slots Textarea -->

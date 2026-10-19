@@ -104,7 +104,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <span class="text-muted d-block fs-8 fw-semibold mb-1">الكميات المبيعة</span>
-                            <h3 class="fw-bold mb-0">{{ $totalSalesCount }} وحدة</h3>
+                            <h3 class="fw-bold mb-0">{{ $totalSalesCount ?? 0 }} وحدة</h3>
                         </div>
                         <span class="fs-2 text-primary opacity-50"><i class="bi bi-cart-check-fill"></i></span>
                     </div>
@@ -119,7 +119,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <span class="text-muted d-block fs-8 fw-semibold mb-1">إجمالي الإيرادات</span>
-                            <h3 class="fw-bold mb-0 text-success">{{ number_format($totalRevenue, 2) }} ج.م</h3>
+                            <h3 class="fw-bold mb-0 text-success">{{ number_format($totalRevenue ?? 0, 2) }} ج.م</h3>
                         </div>
                         <span class="fs-2 text-success opacity-50"><i class="bi bi-cash-stack"></i></span>
                     </div>
@@ -388,7 +388,7 @@
             <div class="card">
                 <div class="card-header"><h5 class="mb-0 fw-bold"><i class="bi bi-cart3 text-success me-2"></i>طلبات الشراء التي شملت هذا المنتج</h5></div>
                 <div class="card-body p-0">
-                    @if($recentOrders->isNotEmpty())
+                    @if(isset($recentOrders) && $recentOrders->isNotEmpty())
                         <div class="table-responsive">
                             <table class="table table-striped table-hover align-middle mb-0 fs-7">
                                 <thead class="table-light">
