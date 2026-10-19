@@ -748,9 +748,15 @@
                                 @endforeach
                             </div>
 
-                            <label class="form-label small fw-bold text-dark d-block mb-1">تواريخ محددة في الشهر للحجز العادي (اختياري):</label>
-                            <textarea name="specific_dates" rows="2" class="form-control font-monospace small" placeholder="مثال: 2026-11-01&#10;2026-11-08"></textarea>
-                            <span class="text-muted small" style="font-size: 11px;">إذا وضعت تواريخ محددة هنا، سيفتح التقويم هذه الأيام فقط في الشهر للعملاء (مثل: 1/11).</span>
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <label class="form-label small fw-bold text-dark mb-0">تواريخ محددة في الشهر للحجز العادي (اختياري):</label>
+                                <button type="button" class="btn btn-xs btn-outline-primary py-0.5 px-2 rounded-pill font-bold" onclick="toggleAdminCalendar('new_branch_normal')">
+                                    <i class="bi bi-calendar3 me-1"></i>تقويم الاختيار بالضغط 📅
+                                </button>
+                            </div>
+                            <textarea name="specific_dates" id="dates_new_branch_normal" rows="2" class="form-control font-monospace small" placeholder="مثال: 2026-11-01&#10;2026-11-08"></textarea>
+                            <div id="cal_new_branch_normal" class="mt-2 p-2 bg-white rounded-3 border d-none shadow-xs"></div>
+                            <span class="text-muted small" style="font-size: 11px;">اضغط على "تقويم الاختيار بالضغط" لاختيار أو إلغاء الأيام مباشرة من الكالندر.</span>
                         </div>
 
                         <!-- 2. Urgent Schedule Section -->
@@ -766,8 +772,14 @@
                                 @endforeach
                             </div>
 
-                            <label class="form-label small fw-bold text-dark d-block mb-1">تواريخ محددة في الشهر للحالات المستعجلة (اختياري):</label>
-                            <textarea name="urgent_dates" rows="2" class="form-control font-monospace small" placeholder="مثال: 2026-10-25&#10;2026-10-22"></textarea>
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <label class="form-label small fw-bold text-dark mb-0">تواريخ محددة في الشهر للحالات المستعجلة (اختياري):</label>
+                                <button type="button" class="btn btn-xs btn-outline-danger py-0.5 px-2 rounded-pill font-bold" onclick="toggleAdminCalendar('new_branch_urgent')">
+                                    <i class="bi bi-calendar3 me-1"></i>تقويم الاختيار بالضغط 📅
+                                </button>
+                            </div>
+                            <textarea name="urgent_dates" id="dates_new_branch_urgent" rows="2" class="form-control font-monospace small" placeholder="مثال: 2026-10-25&#10;2026-10-22"></textarea>
+                            <div id="cal_new_branch_urgent" class="mt-2 p-2 bg-white rounded-3 border d-none shadow-xs"></div>
                             <span class="text-muted small" style="font-size: 11px;">تفتح هذه التواريخ العاجلة مباشرة عند اختيار الحجز المستعجل لهذا الفرع (مثل: 25/10).</span>
                         </div>
 
@@ -882,8 +894,14 @@
                                 @endforeach
                             </div>
 
-                            <label class="form-label small fw-bold text-dark d-block mb-1">تواريخ محددة في الشهر للحجز العادي (اختياري):</label>
-                            <textarea name="specific_dates" rows="2" class="form-control font-monospace small" placeholder="مثال: 2026-11-01&#10;2026-11-08">{{ implode("\n", $branch->specific_dates_list) }}</textarea>
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <label class="form-label small fw-bold text-dark mb-0">تواريخ محددة في الشهر للحجز العادي (اختياري):</label>
+                                <button type="button" class="btn btn-xs btn-outline-primary py-0.5 px-2 rounded-pill font-bold" onclick="toggleAdminCalendar('edit_{{ $branch->id }}_normal')">
+                                    <i class="bi bi-calendar3 me-1"></i>تقويم الاختيار بالضغط 📅
+                                </button>
+                            </div>
+                            <textarea name="specific_dates" id="dates_edit_{{ $branch->id }}_normal" rows="2" class="form-control font-monospace small" placeholder="مثال: 2026-11-01&#10;2026-11-08">{{ implode("\n", $branch->specific_dates_list) }}</textarea>
+                            <div id="cal_edit_{{ $branch->id }}_normal" class="mt-2 p-2 bg-white rounded-3 border d-none shadow-xs"></div>
                             <span class="text-muted small" style="font-size: 11px;">إذا وضعت تواريخ محددة هنا، سيفتح التقويم هذه الأيام فقط في الشهر للعملاء (مثل: 1/11).</span>
                         </div>
 
@@ -903,8 +921,14 @@
                                 @endforeach
                             </div>
 
-                            <label class="form-label small fw-bold text-dark d-block mb-1">تواريخ محددة في الشهر للحالات المستعجلة (اختياري):</label>
-                            <textarea name="urgent_dates" rows="2" class="form-control font-monospace small" placeholder="مثال: 2026-10-25&#10;2026-10-22">{{ implode("\n", $branch->urgent_dates_list) }}</textarea>
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <label class="form-label small fw-bold text-dark mb-0">تواريخ محددة في الشهر للحالات المستعجلة (اختياري):</label>
+                                <button type="button" class="btn btn-xs btn-outline-danger py-0.5 px-2 rounded-pill font-bold" onclick="toggleAdminCalendar('edit_{{ $branch->id }}_urgent')">
+                                    <i class="bi bi-calendar3 me-1"></i>تقويم الاختيار بالضغط 📅
+                                </button>
+                            </div>
+                            <textarea name="urgent_dates" id="dates_edit_{{ $branch->id }}_urgent" rows="2" class="form-control font-monospace small" placeholder="مثال: 2026-10-25&#10;2026-10-22">{{ implode("\n", $branch->urgent_dates_list) }}</textarea>
+                            <div id="cal_edit_{{ $branch->id }}_urgent" class="mt-2 p-2 bg-white rounded-3 border d-none shadow-xs"></div>
                             <span class="text-muted small" style="font-size: 11px;">تفتح هذه التواريخ العاجلة مباشرة عند اختيار الحجز المستعجل لهذا الفرع (مثل: 25/10).</span>
                         </div>
 
@@ -948,4 +972,115 @@
 </div>
 @endforeach
 
+@endsection
+
+@section('scripts')
+<script>
+    const adminCalendars = {};
+
+    function toggleAdminCalendar(id) {
+        const calContainer = document.getElementById('cal_' + id);
+        if (!calContainer) return;
+
+        if (calContainer.classList.contains('d-none')) {
+            calContainer.classList.remove('d-none');
+            if (!adminCalendars[id]) {
+                adminCalendars[id] = {
+                    year: 2026,
+                    month: id.includes('urgent') ? 9 : 10 // Oct (9) for urgent, Nov (10) for normal
+                };
+            }
+            renderAdminCalWidget(id);
+        } else {
+            calContainer.classList.add('d-none');
+        }
+    }
+
+    function renderAdminCalWidget(id) {
+        const calContainer = document.getElementById('cal_' + id);
+        const textarea = document.getElementById('dates_' + id);
+        if (!calContainer || !textarea) return;
+
+        const state = adminCalendars[id];
+        const rawVal = textarea.value;
+        const selectedDates = rawVal.split(/[\r\n,]+/).map(s => s.trim()).filter(Boolean);
+
+        const arabicMonths = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+        const monthName = arabicMonths[state.month] + ' ' + state.year;
+
+        const firstDayIndex = (new Date(state.year, state.month, 1).getDay() + 1) % 7;
+        const daysInMonth = new Date(state.year, state.month + 1, 0).getDate();
+
+        let html = `
+            <div class="d-flex align-items-center justify-content-between mb-2 pb-1 border-bottom">
+                <button type="button" class="btn btn-sm btn-light py-0 px-2" onclick="changeAdminCalMonth('${id}', -1)"><i class="bi bi-chevron-right"></i></button>
+                <span class="fw-bold small text-dark">${monthName}</span>
+                <button type="button" class="btn btn-sm btn-light py-0 px-2" onclick="changeAdminCalMonth('${id}', 1)"><i class="bi bi-chevron-left"></i></button>
+            </div>
+            <div class="d-grid" style="grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 11px;">
+                <span class="text-muted fw-bold">سبت</span>
+                <span class="text-muted fw-bold">أحد</span>
+                <span class="text-muted fw-bold">إثنين</span>
+                <span class="text-muted fw-bold">ثلاثاء</span>
+                <span class="text-muted fw-bold">أربعاء</span>
+                <span class="text-muted fw-bold">خميس</span>
+                <span class="text-muted fw-bold">جمعة</span>
+        `;
+
+        for (let i = 0; i < firstDayIndex; i++) {
+            html += `<div></div>`;
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const mm = String(state.month + 1).padStart(2, '0');
+            const dd = String(day).padStart(2, '0');
+            const dateStr = `${state.year}-${mm}-${dd}`;
+            const isSelected = selectedDates.includes(dateStr);
+
+            const btnClass = isSelected 
+                ? (id.includes('urgent') ? 'btn-danger text-white fw-bold shadow-xs' : 'btn-primary text-white fw-bold shadow-xs') 
+                : 'btn-outline-secondary border-opacity-25 text-dark';
+
+            html += `
+                <button type="button" class="btn btn-sm p-1 rounded-2 ${btnClass}" style="font-size: 11px;" onclick="toggleDateInAdminTextarea('${id}', '${dateStr}')">
+                    ${day}
+                </button>
+            `;
+        }
+
+        html += `</div>`;
+        calContainer.innerHTML = html;
+    }
+
+    function changeAdminCalMonth(id, delta) {
+        const state = adminCalendars[id];
+        state.month += delta;
+        if (state.month > 11) {
+            state.month = 0;
+            state.year++;
+        } else if (state.month < 0) {
+            state.month = 11;
+            state.year--;
+        }
+        renderAdminCalWidget(id);
+    }
+
+    function toggleDateInAdminTextarea(id, dateStr) {
+        const textarea = document.getElementById('dates_' + id);
+        if (!textarea) return;
+
+        let selectedDates = textarea.value.split(/[\r\n,]+/).map(s => s.trim()).filter(Boolean);
+        const index = selectedDates.indexOf(dateStr);
+
+        if (index > -1) {
+            selectedDates.splice(index, 1);
+        } else {
+            selectedDates.push(dateStr);
+        }
+
+        selectedDates.sort();
+        textarea.value = selectedDates.join("\n");
+        renderAdminCalWidget(id);
+    }
+</script>
 @endsection

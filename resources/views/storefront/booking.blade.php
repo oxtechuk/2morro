@@ -263,90 +263,135 @@
                             <span class="font-medium">جلسة أونلاين عبر Zoom مباشرة. سيصلكم الرابط وتفاصيل الجلسة عبر الواتساب فور التأكيد.</span>
                         </div>
 
-                        <!-- 3. التقويم التفاعلي واختيار الموعد والساعة -->
-                        <div class="space-y-4 pt-1">
+                        <!-- 3. تقويم حجز المواعيد والساعات التفاعلي (Calendly Style) -->
+                        <div class="space-y-3 pt-1">
                             
-                            <!-- Calendar Container Card -->
-                            <div class="p-3 sm:p-4 rounded-2xl bg-slate-50/80 border border-slate-200">
-                                <div class="flex items-center justify-between mb-3">
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <!-- Unified Calendar & Slot Scheduling Container -->
+                            <div class="rounded-2xl border border-slate-200/90 bg-white overflow-hidden shadow-xs">
+                                
+                                <!-- Top Header Bar -->
+                                <div class="px-3.5 py-3 bg-slate-50/90 border-b border-slate-200/80 flex items-center justify-between flex-wrap gap-2">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold shadow-xs flex-shrink-0">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                         </div>
                                         <div>
-                                            <label class="text-xs font-black text-slate-800 block">اختر اليوم من التقويم المعتمد <span class="text-red-500">*</span></label>
-                                            <span class="text-[10px] text-slate-500 font-medium" id="calendarServiceLabel">الأيام المتاحة مضاءة باللون الأزرق</span>
+                                            <h3 class="text-xs sm:text-sm font-black text-slate-900 leading-tight">تقويم المواعيد والساعات المعتمدة</h3>
+                                            <span class="text-[11px] text-slate-500 font-medium" id="calendarServiceLabel">حدد التاريخ المناسب ثم اختر الساعة من العمود المقابل</span>
                                         </div>
                                     </div>
 
-                                    <!-- Month / Year Navigation Controls -->
-                                    <div class="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-slate-200 shadow-2xs">
-                                        <button type="button" onclick="changeCalendarMonth(-1)" id="prevMonthBtn" class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer" title="الشهر السابق">
-                                            <svg class="w-3.5 h-3.5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
-                                        </button>
-                                        <span id="calendarMonthTitle" class="text-xs font-black text-slate-800 px-2 min-w-[100px] text-center select-none">
-                                            أكتوبر 2026
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-[10px] font-bold text-slate-600 bg-white px-2.5 py-1 rounded-lg border border-slate-200 inline-flex items-center gap-1.5 shadow-2xs">
+                                            <span class="w-2 h-2 rounded-full bg-blue-600 inline-block animate-pulse"></span>
+                                            أيام متاحة للحجز
                                         </span>
-                                        <button type="button" onclick="changeCalendarMonth(1)" id="nextMonthBtn" class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer" title="الشهر القادم">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
-                                        </button>
                                     </div>
                                 </div>
 
-                                <!-- Weekday Headers (Sat..Fri) -->
-                                <div class="grid grid-cols-7 gap-1 text-center mb-1 text-[11px] font-black text-slate-500 pb-1 border-b border-slate-200">
-                                    <span>السبت</span>
-                                    <span>الأحد</span>
-                                    <span>الاثنين</span>
-                                    <span>الثلاثاء</span>
-                                    <span>الأربعاء</span>
-                                    <span>الخميس</span>
-                                    <span>الجمعة</span>
-                                </div>
+                                <!-- Main Two-Column Body: Calendar (Right) + Hours (Left) in RTL -->
+                                <div class="grid grid-cols-1 md:grid-cols-12 min-h-[340px]">
+                                    
+                                    <!-- Calendar Column (7 cols) -->
+                                    <div class="md:col-span-7 p-3 sm:p-4 border-b md:border-b-0 md:border-l md:border-slate-100 flex flex-col justify-between">
+                                        <div>
+                                            <!-- Month & Year Selector -->
+                                            <div class="flex items-center justify-between mb-3">
+                                                <div class="flex items-center gap-1.5 bg-slate-50 p-1 rounded-xl border border-slate-200">
+                                                    <button type="button" onclick="changeCalendarMonth(-1)" id="prevMonthBtn" class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-white text-slate-700 hover:text-blue-600 transition-all cursor-pointer shadow-2xs" title="الشهر السابق">
+                                                        <svg class="w-3.5 h-3.5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                                                    </button>
+                                                    <span id="calendarMonthTitle" class="text-xs sm:text-sm font-black text-slate-900 px-2 min-w-[110px] text-center select-none">
+                                                        أكتوبر 2026
+                                                    </span>
+                                                    <button type="button" onclick="changeCalendarMonth(1)" id="nextMonthBtn" class="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-white text-slate-700 hover:text-blue-600 transition-all cursor-pointer shadow-2xs" title="الشهر القادم">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                                                    </button>
+                                                </div>
 
-                                <!-- Days Grid (populated via JS) -->
-                                <div id="calendarDaysGrid" class="grid grid-cols-7 gap-1 sm:gap-1.5 text-center pt-1 min-h-[180px]">
-                                    <!-- Dynamic Day Cells -->
-                                </div>
+                                                <button type="button" onclick="goToTodayMonth()" class="text-[11px] font-black text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-xl border border-blue-200/60 transition-colors">
+                                                    الشهر الحالي
+                                                </button>
+                                            </div>
 
-                                <!-- Hidden Real Input for Form Submission -->
-                                <input type="hidden" name="booking_date" id="booking_date" value="{{ old('booking_date') }}" required>
+                                            <!-- Weekday Headers -->
+                                            <div class="grid grid-cols-7 gap-1 text-center mb-1 text-[11px] font-black text-slate-400 pb-1.5 border-b border-slate-100">
+                                                <span>سبت</span>
+                                                <span>أحد</span>
+                                                <span>اثنين</span>
+                                                <span>ثلاثاء</span>
+                                                <span>أربعاء</span>
+                                                <span>خميس</span>
+                                                <span>جمعة</span>
+                                            </div>
 
-                                <!-- Picked Date Confirmation Bar -->
-                                <div id="selectedDateBanner" class="mt-2.5 p-2 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-xs flex items-center justify-between font-bold hidden">
-                                    <div class="flex items-center gap-1.5">
-                                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                        <span>اليوم المختار:</span>
-                                        <span id="selectedDateText" class="font-black text-blue-700"></span>
+                                            <!-- Days Grid -->
+                                            <div id="calendarDaysGrid" class="grid grid-cols-7 gap-1 sm:gap-1.5 text-center pt-2">
+                                                <!-- Dynamic Day Cells -->
+                                            </div>
+                                        </div>
+
+                                        <!-- Error message if date not selected -->
+                                        <span id="booking_date_error" class="text-red-500 text-[10px] font-bold hidden mt-2 block">يرجى اختيار يوم متاح من التقويم.</span>
                                     </div>
-                                    <span class="text-[10px] bg-blue-600 text-white px-2 py-0.5 rounded-md">مؤكد</span>
+
+                                    <!-- Hours / Time Slots Column (5 cols) -->
+                                    <div id="timeSlotsColumn" class="md:col-span-5 p-3 sm:p-4 bg-slate-50/60 flex flex-col justify-between">
+                                        
+                                        <div>
+                                            <!-- Date Title & Status -->
+                                            <div class="pb-2.5 mb-2.5 border-b border-slate-200/80 flex items-center justify-between">
+                                                <div>
+                                                    <span class="text-[10px] text-slate-400 font-bold block">المواعيد الشاغرة ليوم:</span>
+                                                    <h4 id="selectedDateTitle" class="text-xs sm:text-sm font-black text-blue-700">اختر يوماً من التقويم</h4>
+                                                </div>
+                                                <span id="slotsLoadingSpinner" class="text-[10px] text-blue-600 font-bold hidden items-center gap-1">
+                                                    <svg class="animate-spin w-3.5 h-3.5 text-blue-600" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+                                                    فحص...
+                                                </span>
+                                            </div>
+
+                                            <!-- Empty State (No date selected) -->
+                                            <div id="noDateSelectedPrompt" class="py-10 text-center text-slate-400">
+                                                <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 mx-auto flex items-center justify-center mb-2.5 border border-blue-100">
+                                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                </div>
+                                                <p class="text-xs font-bold text-slate-700 mb-0.5">يرجى تحديد يوم من التقويم</p>
+                                                <p class="text-[11px] text-slate-400 font-medium max-w-[190px] mx-auto">اضغط على أي تاريخ متاح بالأزرق لعرض الساعات المعتمدة.</p>
+                                            </div>
+
+                                            <!-- Slots List Container -->
+                                            <div id="slotsChipsGrid" class="space-y-2 overflow-y-auto max-h-[280px] pe-0.5 hidden">
+                                                <!-- Rendered dynamically -->
+                                            </div>
+
+                                            <!-- No slots on this day -->
+                                            <div id="noSlotsMessage" class="hidden py-8 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs text-center font-bold">
+                                                لا توجد فترات زمنية شاغرة في هذا اليوم.
+                                            </div>
+                                        </div>
+
+                                        <!-- Selected Slot Confirmation Banner -->
+                                        <div id="selectedSlotBanner" class="mt-3 pt-2.5 border-t border-slate-200/80 hidden">
+                                            <div class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs flex items-center justify-between font-bold">
+                                                <span class="flex items-center gap-1.5">
+                                                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                                                    <span id="selectedSlotText">12:00 PM - 02:00 PM</span>
+                                                </span>
+                                                <span class="text-[10px] text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded font-black">مؤكد ✓</span>
+                                            </div>
+                                        </div>
+
+                                        <span id="booking_time_error" class="text-red-500 text-[10px] font-bold hidden mt-1 block">يرجى اختيار فترة زمنية للمقابلة.</span>
+                                    </div>
+
                                 </div>
-                                <span id="booking_date_error" class="text-red-500 text-[10px] font-bold hidden mt-1 block">يرجى اختيار يوم متاح من التقويم أعلاه.</span>
+
                             </div>
 
-                            <!-- Time Slots Selection Section -->
-                            <div id="timeSlotsContainer" class="space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <label class="block text-xs font-black text-slate-700">الفترة الزمنية المفضلة <span class="text-red-500">*</span></label>
-                                    <span id="slotsLoadingSpinner" class="text-[10px] text-blue-600 font-bold hidden items-center gap-1">
-                                        <svg class="animate-spin w-3 h-3 text-blue-600" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
-                                        جاري فحص المواعيد الشاغرة...
-                                    </span>
-                                </div>
-
-                                <!-- Hidden Real Input for Time -->
-                                <input type="hidden" name="booking_time" id="booking_time" value="{{ old('booking_time') }}" required>
-
-                                <!-- Slots Buttons Grid -->
-                                <div id="slotsChipsGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                    <!-- Rendered dynamically -->
-                                </div>
-
-                                <div id="noSlotsMessage" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs text-center font-bold">
-                                    يرجى اختيار يوم متاح من التقويم أولاً لعرض الفترات الزمنية المتاحة.
-                                </div>
-                                <span id="booking_time_error" class="text-red-500 text-[10px] font-bold hidden mt-0.5 block">يرجى اختيار فترة زمنية للمقابلة.</span>
-                            </div>
+                            <!-- Hidden Real Inputs for Form Submission -->
+                            <input type="hidden" name="booking_date" id="booking_date" value="{{ old('booking_date') }}" required>
+                            <input type="hidden" name="booking_time" id="booking_time" value="{{ old('booking_time') }}" required>
 
                         </div>
 
@@ -893,16 +938,17 @@
 
             if (isAllowed) {
                 if (isSelected) {
-                    btn.className = "w-full py-2 sm:py-2.5 rounded-xl font-black text-xs sm:text-sm bg-blue-600 text-white shadow-sm ring-2 ring-blue-300 scale-105 transition-all cursor-pointer flex flex-col items-center justify-center";
+                    btn.className = "w-9 h-9 sm:w-10 sm:h-10 mx-auto rounded-xl font-black text-xs sm:text-sm bg-blue-600 text-white shadow-md ring-2 ring-blue-300 ring-offset-1 scale-105 transition-all cursor-pointer flex flex-col items-center justify-center relative";
+                    btn.innerHTML = `<span>${day}</span><span class="w-1.5 h-1.5 rounded-full bg-white absolute bottom-1"></span>`;
                 } else {
-                    btn.className = "w-full py-2 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm bg-white hover:bg-blue-50 text-slate-800 border border-slate-200 hover:border-blue-400 shadow-2xs transition-all cursor-pointer flex flex-col items-center justify-center";
+                    btn.className = "w-9 h-9 sm:w-10 sm:h-10 mx-auto rounded-xl font-bold text-xs sm:text-sm bg-white hover:bg-blue-50 text-slate-900 border-2 border-blue-200 hover:border-blue-500 shadow-2xs transition-all cursor-pointer flex flex-col items-center justify-center relative group";
+                    btn.innerHTML = `<span>${day}</span><span class="w-1.5 h-1.5 rounded-full bg-blue-500 group-hover:scale-125 transition-transform absolute bottom-1"></span>`;
                 }
-                btn.innerHTML = `<span>${day}</span>`;
-                btn.title = `متاح: ${dateStr}`;
+                btn.title = `متاح للحجز: ${dateStr}`;
                 btn.onclick = () => selectCalendarDate(dateStr, cellDate);
             } else {
                 btn.disabled = true;
-                btn.className = "w-full py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm bg-slate-100/60 text-slate-300 border border-transparent cursor-not-allowed select-none flex flex-col items-center justify-center";
+                btn.className = "w-9 h-9 sm:w-10 sm:h-10 mx-auto rounded-xl font-medium text-xs sm:text-sm text-slate-300 hover:text-slate-300 bg-transparent cursor-not-allowed select-none flex flex-col items-center justify-center opacity-40";
                 btn.innerHTML = `<span>${day}</span>`;
                 btn.title = unallowedReason;
             }
@@ -927,48 +973,66 @@
 
         const formatKey = getSelectedFormatKey();
         loadTimeSlots(dateStr, formatKey);
+
+        // Smooth scroll to time column on mobile
+        if (window.innerWidth < 768) {
+            document.getElementById('timeSlotsColumn')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+
+    function goToTodayMonth() {
+        const today = new Date();
+        calDisplayYear = today.getFullYear();
+        calDisplayMonth = today.getMonth();
+        renderCalendar();
     }
 
     function updateSelectedDateBanner(dateStr, dateObj) {
-        const banner = document.getElementById('selectedDateBanner');
-        const text = document.getElementById('selectedDateText');
-        if (!banner || !text) return;
+        const titleElem = document.getElementById('selectedDateTitle');
+        const emptyPrompt = document.getElementById('noDateSelectedPrompt');
+        const slotsGrid = document.getElementById('slotsChipsGrid');
 
-        if (!dateObj) {
+        if (!dateObj && dateStr) {
             const parts = dateStr.split('-');
             if (parts.length === 3) {
                 dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
             }
         }
 
-        if (dateObj) {
+        if (dateObj && titleElem) {
             const dayName = arabicDayNames[dateObj.getDay()];
             const monthName = arabicMonths[dateObj.getMonth()];
-            text.innerText = `${dayName}، ${dateObj.getDate()} ${monthName} ${dateObj.getFullYear()}`;
-            banner.classList.remove('hidden');
+            titleElem.innerText = `${dayName}، ${dateObj.getDate()} ${monthName} ${dateObj.getFullYear()}`;
+            if (emptyPrompt) emptyPrompt.classList.add('hidden');
+            if (slotsGrid) slotsGrid.classList.remove('hidden');
         }
     }
 
     // ========================================================
-    // DYNAMIC TIME SLOTS & AVAILABILITY FETCHING
+    // DYNAMIC TIME SLOTS & AVAILABILITY FETCHING (Calendly Style)
     // ========================================================
 
     function loadTimeSlots(dateStr, formatKey) {
         const chipsGrid = document.getElementById('slotsChipsGrid');
         const spinner = document.getElementById('slotsLoadingSpinner');
         const noSlots = document.getElementById('noSlotsMessage');
+        const emptyPrompt = document.getElementById('noDateSelectedPrompt');
         const conf = scheduleConfig[formatKey] || scheduleConfig['normal'];
 
         if (!chipsGrid) return;
 
         if (!dateStr) {
             chipsGrid.innerHTML = '';
-            if (noSlots) noSlots.classList.remove('hidden');
+            chipsGrid.classList.add('hidden');
+            if (emptyPrompt) emptyPrompt.classList.remove('hidden');
+            if (noSlots) noSlots.classList.add('hidden');
             return;
         }
 
+        if (emptyPrompt) emptyPrompt.classList.add('hidden');
         if (noSlots) noSlots.classList.add('hidden');
         if (spinner) spinner.classList.remove('hidden');
+        chipsGrid.classList.remove('hidden');
 
         const branchSelect = document.getElementById('branch_id');
         const branchId = (formatKey !== 'online' && branchSelect) ? branchSelect.value : '';
@@ -983,11 +1047,8 @@
                 const slots = (data.slots && data.slots.length > 0) ? data.slots : conf.slots.map(s => ({ time: s, is_full: false }));
 
                 if (slots.length === 0) {
-                    chipsGrid.innerHTML = `
-                        <div class="col-span-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 text-xs text-center font-bold">
-                            لا توجد فترات مسجلة لهذا اليوم.
-                        </div>
-                    `;
+                    chipsGrid.classList.add('hidden');
+                    if (noSlots) noSlots.classList.remove('hidden');
                     return;
                 }
 
@@ -998,16 +1059,26 @@
 
                     if (slot.is_full) {
                         btn.disabled = true;
-                        btn.className = "p-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-400 text-xs font-bold cursor-not-allowed opacity-60 flex flex-col items-center justify-center select-none";
+                        btn.className = "w-full p-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed opacity-60 flex items-center justify-between text-right select-none";
                         btn.innerHTML = `
-                            <span>${slot.time}</span>
-                            <span class="text-[9px] text-red-500 font-black mt-0.5">محجوز بالكامل ✕</span>
+                            <div class="flex items-center gap-2">
+                                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span class="font-bold text-xs" dir="ltr">${slot.time}</span>
+                            </div>
+                            <span class="text-[9px] text-red-500 bg-red-50 border border-red-100 font-black px-2 py-0.5 rounded">محجوز بالكامل ✕</span>
                         `;
                     } else {
-                        btn.className = `slot-chip p-2.5 rounded-xl border-2 text-xs font-black transition-all cursor-pointer flex flex-col items-center justify-center ${isSelected ? 'border-blue-600 bg-blue-50 text-blue-700 ring-2 ring-blue-100' : 'border-slate-200 bg-white hover:border-blue-300 text-slate-800'}`;
+                        btn.className = `slot-chip w-full p-2.5 sm:p-3 rounded-xl border-2 transition-all cursor-pointer flex items-center justify-between text-right ${isSelected ? 'border-blue-600 bg-blue-50/90 text-blue-900 ring-2 ring-blue-200 shadow-xs' : 'border-slate-200 bg-white hover:border-blue-300 text-slate-800 hover:shadow-2xs'}`;
                         btn.innerHTML = `
-                            <span>${slot.time}</span>
-                            <span class="text-[9px] text-emerald-600 font-bold mt-0.5">متاح للحجز ✓</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-lg ${isSelected ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-600'} flex items-center justify-center flex-shrink-0 transition-colors">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </div>
+                                <span class="font-black text-xs" dir="ltr">${slot.time}</span>
+                            </div>
+                            <span class="text-[10px] font-bold ${isSelected ? 'text-blue-700 bg-blue-100/80 font-black' : 'text-emerald-700 bg-emerald-50 border border-emerald-200/60'} px-2 py-0.5 rounded-md">
+                                ${isSelected ? 'محدد ✓' : 'متاح للحجز'}
+                            </span>
                         `;
                         btn.onclick = () => selectTimeSlot(slot.time, btn);
                     }
@@ -1017,14 +1088,23 @@
             })
             .catch(err => {
                 if (spinner) spinner.classList.add('hidden');
-                // Fallback to static configured slots if offline/error
                 chipsGrid.innerHTML = '';
                 conf.slots.forEach(slotTime => {
                     const btn = document.createElement('button');
                     btn.type = 'button';
                     const isSelected = (selectedTimeSlot === slotTime);
-                    btn.className = `slot-chip p-2.5 rounded-xl border-2 text-xs font-black transition-all cursor-pointer flex flex-col items-center justify-center ${isSelected ? 'border-blue-600 bg-blue-50 text-blue-700 ring-2 ring-blue-100' : 'border-slate-200 bg-white hover:border-blue-300 text-slate-800'}`;
-                    btn.innerHTML = `<span>${slotTime}</span>`;
+                    btn.className = `slot-chip w-full p-2.5 sm:p-3 rounded-xl border-2 transition-all cursor-pointer flex items-center justify-between text-right ${isSelected ? 'border-blue-600 bg-blue-50/90 text-blue-900 ring-2 ring-blue-200 shadow-xs' : 'border-slate-200 bg-white hover:border-blue-300 text-slate-800'}`;
+                    btn.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-lg ${isSelected ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-600'} flex items-center justify-center flex-shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <span class="font-black text-xs" dir="ltr">${slotTime}</span>
+                        </div>
+                        <span class="text-[10px] font-bold ${isSelected ? 'text-blue-700 bg-blue-100/80 font-black' : 'text-emerald-700 bg-emerald-50 border border-emerald-200/60'} px-2 py-0.5 rounded-md">
+                            ${isSelected ? 'محدد ✓' : 'متاح للحجز'}
+                        </span>
+                    `;
                     btn.onclick = () => selectTimeSlot(slotTime, btn);
                     chipsGrid.appendChild(btn);
                 });
@@ -1039,13 +1119,20 @@
         if (err) err.classList.add('hidden');
 
         document.querySelectorAll('.slot-chip').forEach(b => {
-            b.classList.remove('border-blue-600', 'bg-blue-50', 'text-blue-700', 'ring-2', 'ring-blue-100');
+            b.classList.remove('border-blue-600', 'bg-blue-50/90', 'text-blue-900', 'ring-2', 'ring-blue-200', 'shadow-xs');
             b.classList.add('border-slate-200', 'bg-white', 'text-slate-800');
         });
 
         if (btnElement) {
-            btnElement.classList.add('border-blue-600', 'bg-blue-50', 'text-blue-700', 'ring-2', 'ring-blue-100');
+            btnElement.classList.add('border-blue-600', 'bg-blue-50/90', 'text-blue-900', 'ring-2', 'ring-blue-200', 'shadow-xs');
             btnElement.classList.remove('border-slate-200', 'bg-white', 'text-slate-800');
+        }
+
+        const slotBanner = document.getElementById('selectedSlotBanner');
+        const slotText = document.getElementById('selectedSlotText');
+        if (slotBanner && slotText) {
+            slotText.innerText = slotTime;
+            slotBanner.classList.remove('hidden');
         }
     }
 
