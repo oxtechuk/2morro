@@ -81,6 +81,31 @@
             </div>
         </div>
 
+        <!-- Top Horizontal Age Filter Bar -->
+        <div class="bg-slate-50/90 border border-slate-200/90 p-3 sm:p-3.5 rounded-2xl mb-5 sm:mb-6 shadow-2xs">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <span class="w-2 h-4 bg-[#2563ea] rounded-full"></span>
+                    <span class="text-xs sm:text-sm font-black text-slate-800">تصفية حسب عمر الطفل:</span>
+                    <span class="text-[11px] text-slate-400 font-bold hidden md:inline">اختر سن طفلك لعرض المنتجات المناسبة له</span>
+                </div>
+                
+                <!-- Horizontal Scrollable Age Pills -->
+                <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                    <a href="{{ request()->fullUrlWithQuery(['age' => null, 'page' => null]) }}" 
+                       class="px-3.5 py-1.5 rounded-full text-xs transition-all whitespace-nowrap {{ !request('age') ? 'bg-[#2563ea] text-white font-black shadow-xs' : 'bg-white hover:bg-slate-100 text-slate-600 font-bold border border-slate-200 hover:border-slate-300' }}">
+                        جميع الأعمار
+                    </a>
+                    @foreach($ageGroups as $age)
+                        <a href="{{ request()->fullUrlWithQuery(['age' => $age->slug, 'page' => null]) }}" 
+                           class="px-3.5 py-1.5 rounded-full text-xs transition-all whitespace-nowrap {{ request('age') === $age->slug ? 'bg-[#2563ea] text-white font-black shadow-xs' : 'bg-white hover:bg-slate-100 text-slate-600 font-bold border border-slate-200 hover:border-slate-300' }}">
+                            {{ $age->name }}
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
         <!-- Mobile Filter Action Bar (Visible only on mobile) -->
         <div class="lg:hidden flex items-center justify-between gap-3 mb-5 p-3 rounded-2xl bg-slate-50 border border-slate-200">
             <button @click="mobileFilterOpen = true" class="flex-1 py-2.5 px-4 bg-[#2563ea] text-white text-xs font-black rounded-xl flex items-center justify-center gap-2 shadow-xs active:scale-95 transition-transform">

@@ -22,8 +22,17 @@ class StorefrontController extends Controller
     // Homepage
     public function index()
     {
-        $categories = Category::where('is_active', true)->get();
-        $ageGroups = AgeGroup::all();
+        // Only categories that have active products
+        $categories = Category::where('is_active', true)
+            ->whereHas('products', function($q) {
+                $q->where('is_active', true);
+            })
+            ->get();
+
+        // Only age groups that have active products
+        $ageGroups = AgeGroup::whereHas('products', function($q) {
+            $q->where('is_active', true);
+        })->get();
         $skills = Skill::all();
         $needs = Need::all();
 
@@ -147,6 +156,9 @@ class StorefrontController extends Controller
             $topBrands = $bottomBrands;
         }
 
+        // Top products for age filtering in the featured section
+        $topProducts = $allProducts;
+
         return view('storefront.index', compact(
             'banners',
             'promoSettings',
@@ -160,6 +172,7 @@ class StorefrontController extends Controller
             'needs',
             'newArrivals',
             'bestSellers',
+            'topProducts',
             'allProducts',
             'reviews'
         ));
