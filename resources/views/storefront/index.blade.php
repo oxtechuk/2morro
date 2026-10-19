@@ -247,7 +247,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-stretch">
             
             <!-- Side Promo Banner Card (3 cols on desktop) -->
-            <div class="lg:col-span-3 rounded-3xl p-5 sm:p-6 text-white flex flex-col justify-between text-center relative overflow-hidden shadow-md group transition-all duration-300 hover:shadow-xl min-h-[340px] lg:min-h-[420px]
+            <div class="lg:col-span-3 rounded-3xl p-5 sm:p-6 text-white flex flex-col justify-between text-center relative overflow-hidden shadow-md group transition-all duration-300 hover:shadow-xl
                 @if(($promoSettings['deals_gradient'] ?? 'blue') === 'purple')
                     bg-gradient-to-b from-[#4F46E5] to-[#312E81]
                 @elseif(($promoSettings['deals_gradient'] ?? 'blue') === 'coral')
@@ -282,22 +282,22 @@
                     </div>
                 </div>
 
-                <!-- Banner Image (Maximized full clean display) -->
-                <div class="my-auto py-1 flex-1 flex items-center justify-center relative z-10 w-full">
+                <!-- Banner Image (Proportioned and centered) -->
+                <div class="my-auto py-3 flex-1 flex items-center justify-center relative z-10 w-full">
                     @php
                         $promoImg = $promoSettings['deals_image'] ?: 'images/promo-gift.jpg';
                         $promoImgUrl = str_starts_with($promoImg, 'http') ? $promoImg : asset($promoImg);
                     @endphp
-                    <div class="w-full h-72 sm:h-80 lg:h-96 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+                    <div class="w-full flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
                         <img src="{{ $promoImgUrl }}" 
                              alt="{{ $promoSettings['deals_title'] }}" 
                              onerror="this.onerror=null; this.src='{{ asset('images/promo-gift.jpg') }}';"
-                             class="w-full h-full max-h-[300px] sm:max-h-[350px] lg:max-h-[400px] object-contain drop-shadow-2xl">
+                             class="w-full h-auto max-h-[220px] sm:max-h-[260px] object-contain drop-shadow-2xl">
                     </div>
                 </div>
 
                 <!-- Action Button -->
-                <div class="relative z-10 pt-1">
+                <div class="relative z-10 pt-2">
                     <a href="{{ $promoSettings['deals_btn_link'] }}" class="w-full bg-white hover:bg-slate-100 text-[#2563ea] font-black text-xs py-3 px-6 rounded-2xl inline-flex items-center justify-center gap-1.5 transition-all shadow-sm hover:scale-[1.02] active:scale-95">
                         <span>{{ $promoSettings['deals_btn_text'] }}</span>
                         <svg class="w-3.5 h-3.5 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
@@ -305,116 +305,55 @@
                 </div>
             </div>
 
-            <!-- Products Area: 2 Balanced Groups (9 cols on desktop) with Smart Age Filter -->
-            <div class="lg:col-span-9 flex flex-col gap-4" x-data="{
-                selectedAge: 'all',
-                matchesAge(ageSlugs) {
-                    if (this.selectedAge === 'all') return true;
-                    return Array.isArray(ageSlugs) && ageSlugs.includes(this.selectedAge);
-                },
-                getSearchLink(baseLink) {
-                    if (this.selectedAge === 'all') return baseLink;
-                    const sep = baseLink.includes('?') ? '&' : '?';
-                    return baseLink + sep + 'age=' + this.selectedAge;
-                }
-            }">
+            <!-- Products Area: 2 Balanced Groups (9 cols on desktop) -->
+            <div class="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
                 
-                <!-- Modern Age Filter Header Bar -->
-                <div class="bg-white p-3 sm:p-3.5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-5 bg-[#2563ea] rounded-full"></span>
-                        <div>
-                            <h3 class="text-xs sm:text-sm font-black text-slate-800">تصفية حسب عمر الطفل:</h3>
-                            <p class="text-[11px] text-slate-400 font-bold hidden md:inline">اختر سن طفلك لعرض المنتجات والأدوات المناسبة لمهاراته</p>
+                <!-- Group 1: الأكثر مبيعاً -->
+                <div class="bg-slate-50/70 p-3.5 sm:p-5 rounded-3xl border border-slate-100 flex flex-col justify-between">
+                    <!-- Group Header -->
+                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200/70">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-4 bg-[#EF4444] rounded-full"></span>
+                            <h2 class="text-sm sm:text-base font-black text-slate-800">
+                                {{ $promoSettings['group1_title'] }}
+                            </h2>
                         </div>
+                        <a href="{{ $promoSettings['group1_link'] }}" class="text-[11px] font-bold text-slate-500 hover:text-[#2563ea] flex items-center gap-1 transition-colors group">
+                            <span>عرض الكل</span>
+                            <svg class="w-3 h-3 rotate-180 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </a>
                     </div>
 
-                    <!-- Age Pills -->
-                    <div class="flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar w-full sm:w-auto py-0.5">
-                        <button type="button" 
-                                @click="selectedAge = 'all'" 
-                                :class="selectedAge === 'all' ? 'bg-[#2563ea] text-white shadow-xs font-black' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold'" 
-                                class="px-3.5 py-1.5 rounded-full text-xs transition-all whitespace-nowrap cursor-pointer">
-                            جميع الأعمار
-                        </button>
-                        @foreach($ageGroups as $ageGroup)
-                            <button type="button" 
-                                    @click="selectedAge = '{{ $ageGroup->slug }}'" 
-                                    :class="selectedAge === '{{ $ageGroup->slug }}' ? 'bg-[#2563ea] text-white shadow-xs font-black' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold'" 
-                                    class="px-3.5 py-1.5 rounded-full text-xs transition-all whitespace-nowrap cursor-pointer">
-                                {{ $ageGroup->name }}
-                            </button>
+                    <!-- 2x2 Products Grid on Mobile & Desktop -->
+                    <div class="grid grid-cols-2 gap-2.5 sm:gap-3.5">
+                        @foreach($bestSellers->take(4) as $product)
+                            @include('storefront.partials.product-card', ['product' => $product])
                         @endforeach
                     </div>
                 </div>
 
-                <!-- 2 Balanced Groups Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
-                    
-                    <!-- Group 1: الأكثر مبيعاً -->
-                    <div class="bg-slate-50/70 p-3.5 sm:p-5 rounded-3xl border border-slate-100 flex flex-col justify-between">
-                        <!-- Group Header -->
-                        <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200/70">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-4 bg-[#EF4444] rounded-full"></span>
-                                <h2 class="text-sm sm:text-base font-black text-slate-800">
-                                    {{ $promoSettings['group1_title'] }}
-                                </h2>
-                            </div>
-                            <a :href="getSearchLink('{{ $promoSettings['group1_link'] }}')" class="text-[11px] font-bold text-slate-500 hover:text-[#2563ea] flex items-center gap-1 transition-colors group">
-                                <span>عرض الكل</span>
-                                <svg class="w-3 h-3 rotate-180 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                            </a>
+                <!-- Group 2: الجديد لدينا -->
+                <div class="bg-slate-50/70 p-3.5 sm:p-5 rounded-3xl border border-slate-100 flex flex-col justify-between">
+                    <!-- Group Header -->
+                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200/70">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-4 bg-[#2563ea] rounded-full"></span>
+                            <h2 class="text-sm sm:text-base font-black text-slate-800">
+                                {{ $promoSettings['group2_title'] }}
+                            </h2>
                         </div>
-
-                        <!-- 2x2 Products Grid on Mobile & Desktop -->
-                        <div class="grid grid-cols-2 gap-2.5 sm:gap-3.5">
-                            @foreach($bestSellers as $idx => $product)
-                                @php
-                                    $pAges1 = $product->ageGroups->pluck('slug')->toArray();
-                                @endphp
-                                <div x-show="selectedAge === 'all' ? {{ $idx < 4 ? 'true' : 'false' }} : matchesAge({{ json_encode($pAges1) }})"
-                                     x-transition:enter="transition ease-out duration-200"
-                                     x-transition:enter-start="opacity-0 scale-95"
-                                     x-transition:enter-end="opacity-100 scale-100">
-                                    @include('storefront.partials.product-card', ['product' => $product])
-                                </div>
-                            @endforeach
-                        </div>
+                        <a href="{{ $promoSettings['group2_link'] }}" class="text-[11px] font-bold text-slate-500 hover:text-[#2563ea] flex items-center gap-1 transition-colors group">
+                            <span>عرض الكل</span>
+                            <svg class="w-3 h-3 rotate-180 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </a>
                     </div>
 
-                    <!-- Group 2: الجديد لدينا -->
-                    <div class="bg-slate-50/70 p-3.5 sm:p-5 rounded-3xl border border-slate-100 flex flex-col justify-between">
-                        <!-- Group Header -->
-                        <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200/70">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-4 bg-[#2563ea] rounded-full"></span>
-                                <h2 class="text-sm sm:text-base font-black text-slate-800">
-                                    {{ $promoSettings['group2_title'] }}
-                                </h2>
-                            </div>
-                            <a :href="getSearchLink('{{ $promoSettings['group2_link'] }}')" class="text-[11px] font-bold text-slate-500 hover:text-[#2563ea] flex items-center gap-1 transition-colors group">
-                                <span>عرض الكل</span>
-                                <svg class="w-3 h-3 rotate-180 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                            </a>
-                        </div>
-
-                        <!-- 2x2 Products Grid on Mobile & Desktop -->
-                        <div class="grid grid-cols-2 gap-2.5 sm:gap-3.5">
-                            @foreach($newArrivals as $idx2 => $product)
-                                @php
-                                    $pAges2 = $product->ageGroups->pluck('slug')->toArray();
-                                @endphp
-                                <div x-show="selectedAge === 'all' ? {{ $idx2 < 4 ? 'true' : 'false' }} : matchesAge({{ json_encode($pAges2) }})"
-                                     x-transition:enter="transition ease-out duration-200"
-                                     x-transition:enter-start="opacity-0 scale-95"
-                                     x-transition:enter-end="opacity-100 scale-100">
-                                    @include('storefront.partials.product-card', ['product' => $product])
-                                </div>
-                            @endforeach
-                        </div>
+                    <!-- 2x2 Products Grid on Mobile & Desktop -->
+                    <div class="grid grid-cols-2 gap-2.5 sm:gap-3.5">
+                        @foreach($newArrivals->take(4) as $product)
+                            @include('storefront.partials.product-card', ['product' => $product])
+                        @endforeach
                     </div>
-
                 </div>
 
             </div>

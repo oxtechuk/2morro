@@ -27,6 +27,9 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+    @stack('css')
+    @yield('styles')
+
     <style>
         :root {
             --app-bg: #f4f6f9;
@@ -963,6 +966,7 @@
         }
     </script>
     @yield('scripts')
+    @stack('scripts')
 </body>
 </html>
 

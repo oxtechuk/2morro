@@ -1,18 +1,27 @@
-@extends('layouts.app')
+@extends('admin.layouts.layout')
 
-@section('header-title', 'سجل وبيانات العملاء (CRM)')
-@section('header-subtitle', 'إدارة علاقات العملاء والتواصل والملاحظات وتصنيف الشرائح')
+@section('title', 'سجل وبيانات العملاء (CRM) | لوحة التحكم')
 
 @section('content')
 <div class="container-fluid p-0">
-    <!-- Top Action Breadcrumbs / Links -->
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-        <h4 class="fw-bold mb-0">إدارة علاقات العملاء (CRM)</h4>
-        @if(Route::has('admin.customer.create'))
-            <a href="{{ route('admin.customer.create') }}" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold">
-                <i class="bi bi-person-plus me-1"></i> إضافة عميل جديد
-            </a>
-        @endif
+    <!-- Header & Breadcrumbs -->
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h4 class="fw-bold mb-1">سجل وبيانات العملاء (CRM)</h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">الرئيسية</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">سجل العملاء (CRM)</li>
+                    </ol>
+                </nav>
+            </div>
+            @if(Route::has('admin.customer.create'))
+                <a href="{{ route('admin.customer.create') }}" class="btn btn-primary btn-sm rounded-pill px-3 fw-bold">
+                    <i class="bi bi-person-plus me-1"></i> إضافة عميل جديد
+                </a>
+            @endif
+        </div>
     </div>
 
     <!-- Filters & Search -->

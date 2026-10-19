@@ -1,7 +1,6 @@
-@extends('layouts.app')
+@extends('admin.layouts.layout')
 
-@section('header-title', 'ملف العميل: ' . ($user->name ?? 'عميل'))
-@section('header-subtitle', 'عرض ملف العميل الشامل وسجل الحجوزات والطلبات والتواصل')
+@section('title', 'ملف العميل: ' . ($user->name ?? 'عميل') . ' | لوحة التحكم')
 
 @push('css')
 <style>
@@ -122,39 +121,27 @@
 @section('content')
 <div class="container-fluid p-0">
 
-    <!-- Flash message alerts -->
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2 mb-3" role="alert">
-            <i class="bi bi-check-circle-fill fs-5"></i>
-            <div>{{ session('success') }}</div>
-            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2 mb-3" role="alert">
-            <i class="bi bi-exclamation-triangle-fill fs-5"></i>
-            <div>{{ session('error') }}</div>
-            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
-    <!-- Top Action Navigation -->
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-        <div class="d-flex align-items-center gap-2">
-            <a href="{{ route('admin.crm.index') }}" class="btn btn-outline-secondary btn-sm rounded-pill px-3 fw-bold">
-                <i class="bi bi-arrow-right me-1"></i> العودة لقائمة العملاء
-            </a>
-            @if(Route::has('admin.customer.index'))
-                <a href="{{ route('admin.customer.index') }}" class="btn btn-light btn-sm border rounded-pill px-3">
-                    <i class="bi bi-people me-1"></i> إدارة العملاء القديمة
+    <!-- Header & Breadcrumbs -->
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h4 class="fw-bold mb-1">ملف العميل: {{ $user->name ?? 'عميل' }}</h4>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">الرئيسية</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.crm.index') }}">سجل العملاء (CRM)</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ $user->name ?? ('عميل #' . $user->id) }}</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-white text-dark border px-3 py-2 fs-7 fw-normal shadow-xs">
+                    معرف العميل: <strong class="text-primary font-monospace">#{{ $user->id }}</strong>
+                </span>
+                <a href="{{ route('admin.crm.index') }}" class="btn btn-secondary fw-bold fs-7">
+                    <i class="bi bi-arrow-right me-1"></i> العودة لقائمة العملاء
                 </a>
-            @endif
-        </div>
-        <div>
-            <span class="badge bg-light text-dark border px-3 py-2 fw-normal">
-                معرف العميل الرقمي: <strong class="text-primary font-monospace">#{{ $user->id }}</strong>
-            </span>
+            </div>
         </div>
     </div>
 
