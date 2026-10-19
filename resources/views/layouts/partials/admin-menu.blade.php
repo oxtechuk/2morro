@@ -549,7 +549,7 @@
 
 @hasPermission(['admin.customer.index', 'admin.customer.create'])
     <li>
-        <a class="menu {{ request()->routeIs('admin.customer.*') ? 'active' : '' }}" data-bs-toggle="collapse"
+        <a class="menu {{ request()->routeIs('admin.customer.*', 'admin.crm.*') ? 'active' : '' }}" data-bs-toggle="collapse"
             href="#customerMenu">
             <span>
                 <img class="menu-icon" src="{{ asset('assets/icons-admin/customer.svg') }}" alt="icon"
@@ -558,13 +558,17 @@
             </span>
             <img src="{{ asset('assets/icons-admin/caret-down.svg') }}" alt="icon" class="downIcon">
         </a>
-        <div class="collapse dropdownMenuCollapse {{ $request->routeIs('admin.customer.*') ? 'show' : '' }}"
+        <div class="collapse dropdownMenuCollapse {{ request()->routeIs('admin.customer.*', 'admin.crm.*') ? 'show' : '' }}"
             id="customerMenu">
             <div class="listBar">
                 @hasPermission('admin.customer.index')
                     <a href="{{ route('admin.customer.index') }}"
                         class="subMenu hasCount {{ request()->routeIs('admin.customer.index') ? 'active' : '' }}">
                         {{ __('List Of Customers') }}
+                    </a>
+                    <a href="{{ route('admin.crm.index') }}"
+                        class="subMenu hasCount {{ request()->routeIs('admin.crm.*') ? 'active' : '' }}">
+                        سجل العملاء الشامل (CRM)
                     </a>
                 @endhasPermission
                 @hasPermission('admin.employee.create')

@@ -45,40 +45,42 @@ class StorefrontController extends Controller
             'group2_link' => \App\Models\Setting::get('promo_group2_link', '/search'),
         ];
 
-        // 2. Load Group 1 Products (Bestsellers or Custom Selected)
+        // 2. Load Group 1 Products (Bestsellers or Custom Selected) with ageGroups
         $group1Source = \App\Models\Setting::get('promo_group1_source', 'bestsellers');
         $group1RawIds = \App\Models\Setting::get('promo_group1_product_ids', '[]');
         $group1Ids = is_array($group1RawIds) ? $group1RawIds : (json_decode($group1RawIds, true) ?: []);
 
         if ($group1Source === 'custom' && !empty($group1Ids)) {
-            $bestSellers = Product::where('is_active', true)->whereIn('id', $group1Ids)->take(4)->get();
+            $bestSellers = Product::where('is_active', true)->with(['ageGroups', 'categories'])->whereIn('id', $group1Ids)->take(12)->get();
             if ($bestSellers->isEmpty()) {
-                $bestSellers = Product::where('is_active', true)->take(4)->get();
+                $bestSellers = Product::where('is_active', true)->with(['ageGroups', 'categories'])->take(12)->get();
             }
         } else {
             $bestSellers = Product::where('is_active', true)
+                ->with(['ageGroups', 'categories'])
                 ->where('badge', 'الأكثر مبيعاً')
-                ->take(4)
+                ->take(12)
                 ->get();
             if ($bestSellers->isEmpty()) {
-                $bestSellers = Product::where('is_active', true)->take(4)->get();
+                $bestSellers = Product::where('is_active', true)->with(['ageGroups', 'categories'])->take(12)->get();
             }
         }
 
-        // 3. Load Group 2 Products (New Arrivals or Custom Selected)
+        // 3. Load Group 2 Products (New Arrivals or Custom Selected) with ageGroups
         $group2Source = \App\Models\Setting::get('promo_group2_source', 'newest');
         $group2RawIds = \App\Models\Setting::get('promo_group2_product_ids', '[]');
         $group2Ids = is_array($group2RawIds) ? $group2RawIds : (json_decode($group2RawIds, true) ?: []);
 
         if ($group2Source === 'custom' && !empty($group2Ids)) {
-            $newArrivals = Product::where('is_active', true)->whereIn('id', $group2Ids)->take(4)->get();
+            $newArrivals = Product::where('is_active', true)->with(['ageGroups', 'categories'])->whereIn('id', $group2Ids)->take(12)->get();
             if ($newArrivals->isEmpty()) {
-                $newArrivals = Product::where('is_active', true)->latest()->take(4)->get();
+                $newArrivals = Product::where('is_active', true)->with(['ageGroups', 'categories'])->latest()->take(12)->get();
             }
         } else {
             $newArrivals = Product::where('is_active', true)
+                ->with(['ageGroups', 'categories'])
                 ->latest()
-                ->take(4)
+                ->take(12)
                 ->get();
         }
 

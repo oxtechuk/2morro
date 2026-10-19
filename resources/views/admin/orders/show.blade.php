@@ -217,7 +217,22 @@
                             </span>
                         </div>
                         
-                        @if($order->payment_screenshot)
+                        @if($order->payment_screenshot === 'sent_via_whatsapp')
+                            <div class="border border-success-subtle bg-success-subtle rounded-3 p-3 text-center mb-3">
+                                <i class="bi bi-whatsapp fs-2 text-success d-block mb-1"></i>
+                                <span class="fw-bold text-success-emphasis d-block fs-7">تم اختيار الإرسال عبر الواتساب</span>
+                                <div class="text-muted fs-8 mt-1 mb-2">قام العميل باختيار إرسال إيصال التحويل عبر محادثة الواتساب للتأكيد.</div>
+                                @php
+                                    $custPhone = preg_replace('/[^0-9]/', '', $order->customer_phone);
+                                    if (str_starts_with($custPhone, '01')) {
+                                        $custPhone = '20' . substr($custPhone, 1);
+                                    }
+                                @endphp
+                                <a href="https://wa.me/{{ $custPhone }}" target="_blank" class="btn btn-sm btn-success fw-bold">
+                                    <i class="bi bi-chat-dots me-1"></i> فتح محادثة العميل واتساب
+                                </a>
+                            </div>
+                        @elseif($order->payment_screenshot)
                             <div class="position-relative border rounded p-2 mb-3 bg-light d-inline-block" style="max-width: 100%">
                                 <img src="{{ asset('storage/' . $order->payment_screenshot) }}" class="img-fluid rounded border object-fit-cover" style="max-height: 180px; width: auto; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#screenshotModal" alt="إثبات التحويل">
                                 <div class="fs-9 text-muted mt-1">اضغط على الصورة للتكبير</div>
@@ -239,7 +254,7 @@
 </div>
 
 <!-- Modal for Payment Screenshot Preview -->
-@if($order->payment_screenshot)
+@if($order->payment_screenshot && $order->payment_screenshot !== 'sent_via_whatsapp')
     <div class="modal fade" id="screenshotModal" tabindex="-1" aria-labelledby="screenshotModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">

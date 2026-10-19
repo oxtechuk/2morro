@@ -66,9 +66,19 @@ class User extends Authenticatable
         return $this->hasOne(CustomerProfile::class);
     }
 
+    public function customerProfile(): HasOne
+    {
+        return $this->hasOne(CustomerProfile::class);
+    }
+
     public function crmLogs(): HasMany
     {
         return $this->hasMany(CrmLog::class);
+    }
+
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class);
     }
 
     public function isAdmin(): bool

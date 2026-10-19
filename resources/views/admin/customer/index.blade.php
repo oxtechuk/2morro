@@ -57,6 +57,12 @@
 
                                 <td class="text-center">
                                     <div class="d-flex gap-2 justify-content-center">
+                                        <a href="{{ route('admin.crm.show', $customer->id) }}"
+                                            class="btn btn-outline-success circleIcon" data-bs-toggle="tooltip"
+                                            data-bs-placement="left" data-bs-title="عرض ملف العميل الشامل (CRM)">
+                                            <i class="bi bi-person-lines-fill"></i>
+                                        </a>
+
                                         @hasPermission('admin.customer.edit')
                                             <a href="{{ route('admin.customer.edit', $customer->id) }}"
                                                 class="btn btn-outline-primary circleIcon" data-bs-toggle="tooltip"

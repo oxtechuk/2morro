@@ -305,55 +305,116 @@
                 </div>
             </div>
 
-            <!-- Products Area: 2 Balanced Groups (9 cols on desktop) -->
-            <div class="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+            <!-- Products Area: 2 Balanced Groups (9 cols on desktop) with Smart Age Filter -->
+            <div class="lg:col-span-9 flex flex-col gap-4" x-data="{
+                selectedAge: 'all',
+                matchesAge(ageSlugs) {
+                    if (this.selectedAge === 'all') return true;
+                    return Array.isArray(ageSlugs) && ageSlugs.includes(this.selectedAge);
+                },
+                getSearchLink(baseLink) {
+                    if (this.selectedAge === 'all') return baseLink;
+                    const sep = baseLink.includes('?') ? '&' : '?';
+                    return baseLink + sep + 'age=' + this.selectedAge;
+                }
+            }">
                 
-                <!-- Group 1: الأكثر مبيعاً -->
-                <div class="bg-slate-50/70 p-3.5 sm:p-5 rounded-3xl border border-slate-100 flex flex-col justify-between">
-                    <!-- Group Header -->
-                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200/70">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-4 bg-[#EF4444] rounded-full"></span>
-                            <h2 class="text-sm sm:text-base font-black text-slate-800">
-                                {{ $promoSettings['group1_title'] }}
-                            </h2>
+                <!-- Modern Age Filter Header Bar -->
+                <div class="bg-white p-3 sm:p-3.5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2.5 h-5 bg-[#2563ea] rounded-full"></span>
+                        <div>
+                            <h3 class="text-xs sm:text-sm font-black text-slate-800">تصفية حسب عمر الطفل:</h3>
+                            <p class="text-[11px] text-slate-400 font-bold hidden md:inline">اختر سن طفلك لعرض المنتجات والأدوات المناسبة لمهاراته</p>
                         </div>
-                        <a href="{{ $promoSettings['group1_link'] }}" class="text-[11px] font-bold text-slate-500 hover:text-[#2563ea] flex items-center gap-1 transition-colors group">
-                            <span>عرض الكل</span>
-                            <svg class="w-3 h-3 rotate-180 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                        </a>
                     </div>
 
-                    <!-- 2x2 Products Grid on Mobile & Desktop -->
-                    <div class="grid grid-cols-2 gap-2.5 sm:gap-3.5">
-                        @foreach($bestSellers->take(4) as $product)
-                            @include('storefront.partials.product-card', ['product' => $product])
+                    <!-- Age Pills -->
+                    <div class="flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar w-full sm:w-auto py-0.5">
+                        <button type="button" 
+                                @click="selectedAge = 'all'" 
+                                :class="selectedAge === 'all' ? 'bg-[#2563ea] text-white shadow-xs font-black' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold'" 
+                                class="px-3.5 py-1.5 rounded-full text-xs transition-all whitespace-nowrap cursor-pointer">
+                            جميع الأعمار
+                        </button>
+                        @foreach($ageGroups as $ageGroup)
+                            <button type="button" 
+                                    @click="selectedAge = '{{ $ageGroup->slug }}'" 
+                                    :class="selectedAge === '{{ $ageGroup->slug }}' ? 'bg-[#2563ea] text-white shadow-xs font-black' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold'" 
+                                    class="px-3.5 py-1.5 rounded-full text-xs transition-all whitespace-nowrap cursor-pointer">
+                                {{ $ageGroup->name }}
+                            </button>
                         @endforeach
                     </div>
                 </div>
 
-                <!-- Group 2: الجديد لدينا -->
-                <div class="bg-slate-50/70 p-3.5 sm:p-5 rounded-3xl border border-slate-100 flex flex-col justify-between">
-                    <!-- Group Header -->
-                    <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200/70">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-4 bg-[#2563ea] rounded-full"></span>
-                            <h2 class="text-sm sm:text-base font-black text-slate-800">
-                                {{ $promoSettings['group2_title'] }}
-                            </h2>
+                <!-- 2 Balanced Groups Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+                    
+                    <!-- Group 1: الأكثر مبيعاً -->
+                    <div class="bg-slate-50/70 p-3.5 sm:p-5 rounded-3xl border border-slate-100 flex flex-col justify-between">
+                        <!-- Group Header -->
+                        <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200/70">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-4 bg-[#EF4444] rounded-full"></span>
+                                <h2 class="text-sm sm:text-base font-black text-slate-800">
+                                    {{ $promoSettings['group1_title'] }}
+                                </h2>
+                            </div>
+                            <a :href="getSearchLink('{{ $promoSettings['group1_link'] }}')" class="text-[11px] font-bold text-slate-500 hover:text-[#2563ea] flex items-center gap-1 transition-colors group">
+                                <span>عرض الكل</span>
+                                <svg class="w-3 h-3 rotate-180 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </a>
                         </div>
-                        <a href="{{ $promoSettings['group2_link'] }}" class="text-[11px] font-bold text-slate-500 hover:text-[#2563ea] flex items-center gap-1 transition-colors group">
-                            <span>عرض الكل</span>
-                            <svg class="w-3 h-3 rotate-180 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                        </a>
+
+                        <!-- 2x2 Products Grid on Mobile & Desktop -->
+                        <div class="grid grid-cols-2 gap-2.5 sm:gap-3.5">
+                            @foreach($bestSellers as $idx => $product)
+                                @php
+                                    $pAges1 = $product->ageGroups->pluck('slug')->toArray();
+                                @endphp
+                                <div x-show="selectedAge === 'all' ? {{ $idx < 4 ? 'true' : 'false' }} : matchesAge({{ json_encode($pAges1) }})"
+                                     x-transition:enter="transition ease-out duration-200"
+                                     x-transition:enter-start="opacity-0 scale-95"
+                                     x-transition:enter-end="opacity-100 scale-100">
+                                    @include('storefront.partials.product-card', ['product' => $product])
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
 
-                    <!-- 2x2 Products Grid on Mobile & Desktop -->
-                    <div class="grid grid-cols-2 gap-2.5 sm:gap-3.5">
-                        @foreach($newArrivals->take(4) as $product)
-                            @include('storefront.partials.product-card', ['product' => $product])
-                        @endforeach
+                    <!-- Group 2: الجديد لدينا -->
+                    <div class="bg-slate-50/70 p-3.5 sm:p-5 rounded-3xl border border-slate-100 flex flex-col justify-between">
+                        <!-- Group Header -->
+                        <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-200/70">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-4 bg-[#2563ea] rounded-full"></span>
+                                <h2 class="text-sm sm:text-base font-black text-slate-800">
+                                    {{ $promoSettings['group2_title'] }}
+                                </h2>
+                            </div>
+                            <a :href="getSearchLink('{{ $promoSettings['group2_link'] }}')" class="text-[11px] font-bold text-slate-500 hover:text-[#2563ea] flex items-center gap-1 transition-colors group">
+                                <span>عرض الكل</span>
+                                <svg class="w-3 h-3 rotate-180 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </a>
+                        </div>
+
+                        <!-- 2x2 Products Grid on Mobile & Desktop -->
+                        <div class="grid grid-cols-2 gap-2.5 sm:gap-3.5">
+                            @foreach($newArrivals as $idx2 => $product)
+                                @php
+                                    $pAges2 = $product->ageGroups->pluck('slug')->toArray();
+                                @endphp
+                                <div x-show="selectedAge === 'all' ? {{ $idx2 < 4 ? 'true' : 'false' }} : matchesAge({{ json_encode($pAges2) }})"
+                                     x-transition:enter="transition ease-out duration-200"
+                                     x-transition:enter-start="opacity-0 scale-95"
+                                     x-transition:enter-end="opacity-100 scale-100">
+                                    @include('storefront.partials.product-card', ['product' => $product])
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
+
                 </div>
 
             </div>
@@ -365,7 +426,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 border-t border-slate-100"
          x-data="{ 
             activeTab: 'all',
-            filterProduct(type, cats, needs, skills) {
+            filterProduct(type, cats, needs, skills, ageSlugs) {
                 if (this.activeTab === 'all') return true;
                 if (this.activeTab === 'tools' && type === 'physical') return true;
                 if (this.activeTab === 'digital' && type === 'digital') return true;
@@ -374,6 +435,10 @@
                 if (this.activeTab === 'focus' && skills.includes('attention-focus')) return true;
                 if (this.activeTab === 'learning' && skills.includes('learning-difficulties')) return true;
                 if (this.activeTab === 'adhd' && needs.includes('adhd')) return true;
+                if (this.activeTab.startsWith('age-')) {
+                    const targetAge = this.activeTab.replace('age-', '');
+                    return Array.isArray(ageSlugs) && ageSlugs.includes(targetAge);
+                }
                 return false;
             }
          }">
@@ -390,25 +455,30 @@
 
             <!-- Responsive Filter Tabs Pills (Horizontal swipeable on mobile) -->
             <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-1">
-                <button @click="activeTab = 'all'" :class="activeTab === 'all' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap">
+                <button @click="activeTab = 'all'" :class="activeTab === 'all' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer">
                     الكل
                 </button>
-                <button @click="activeTab = 'tools'" :class="activeTab === 'tools' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap">
+                @foreach($ageGroups as $ag)
+                    <button @click="activeTab = 'age-{{ $ag->slug }}'" :class="activeTab === 'age-{{ $ag->slug }}' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer">
+                        {{ $ag->name }}
+                    </button>
+                @endforeach
+                <button @click="activeTab = 'tools'" :class="activeTab === 'tools' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer">
                     الأدوات المادية
                 </button>
-                <button @click="activeTab = 'digital'" :class="activeTab === 'digital' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap">
+                <button @click="activeTab = 'digital'" :class="activeTab === 'digital' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer">
                     شيتات PDF
                 </button>
-                <button @click="activeTab = 'bundles'" :class="activeTab === 'bundles' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap">
+                <button @click="activeTab = 'bundles'" :class="activeTab === 'bundles' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer">
                     باقات التوفير
                 </button>
-                <button @click="activeTab = 'speech'" :class="activeTab === 'speech' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap">
+                <button @click="activeTab = 'speech'" :class="activeTab === 'speech' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer">
                     النطق والتخاطب
                 </button>
-                <button @click="activeTab = 'focus'" :class="activeTab === 'focus' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap">
+                <button @click="activeTab = 'focus'" :class="activeTab === 'focus' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer">
                     التركيز والانتباه
                 </button>
-                <button @click="activeTab = 'learning'" :class="activeTab === 'learning' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap">
+                <button @click="activeTab = 'learning'" :class="activeTab === 'learning' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer">
                     صعوبات التعلم
                 </button>
             </div>
@@ -421,8 +491,9 @@
                     $catSlugs = $product->categories->pluck('slug')->toArray();
                     $needSlugs = $product->needs->pluck('slug')->toArray();
                     $skillSlugs = $product->skills->pluck('slug')->toArray();
+                    $pAgeSlugs = $product->ageGroups->pluck('slug')->toArray();
                 @endphp
-                <div x-show="filterProduct('{{ $product->type }}', {{ json_encode($catSlugs) }}, {{ json_encode($needSlugs) }}, {{ json_encode($skillSlugs) }})"
+                <div x-show="filterProduct('{{ $product->type }}', {{ json_encode($catSlugs) }}, {{ json_encode($needSlugs) }}, {{ json_encode($skillSlugs) }}, {{ json_encode($pAgeSlugs) }})"
                      x-transition:enter="transition ease-out duration-300"
                      x-transition:enter-start="opacity-0 scale-95"
                      x-transition:enter-end="opacity-100 scale-100">

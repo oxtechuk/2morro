@@ -96,7 +96,7 @@ class CheckoutController extends Controller
         $whatsappNumber = \App\Models\Setting::get('store_whatsapp', '201550504512');
         $supervisorName = \App\Models\Setting::get('supervisor_name', 'أ. هبة الله أكرم');
         $workingHours = \App\Models\Setting::get('working_hours', 'من 12:00 ظهراً إلى 9:00 مساءً (ماعدا الجمعة)');
-        $codEnabled = \App\Models\Setting::get('payment_cod_enabled', '1') == '1';
+        $codEnabled = false; // Cash on delivery disabled
 
         return view('storefront.checkout', compact(
             'cart',
@@ -128,25 +128,25 @@ class CheckoutController extends Controller
             return redirect()->route('home')->with('error', 'السلة فارغة.');
         }
 
-        // Form Validation
+        // Form Validation - customer_email is optional (fallback generated if absent)
         $rules = [
             'customer_name' => 'required|string|max:100',
-            'customer_email' => 'required|email|max:100',
+            'customer_email' => 'nullable|email|max:100',
             'customer_phone' => 'required|string|max:20',
             'shipping_governorate' => 'required|string|max:50',
             'shipping_address' => 'required|string',
-            'payment_method' => 'required|in:cod,instapay,wallet,bank',
+            'payment_method' => 'required|in:wallet,instapay,bank',
+            'proof_method' => 'nullable|in:upload,whatsapp',
             'notes' => 'nullable|string',
         ];
 
-        $codEnabled = \App\Models\Setting::get('payment_cod_enabled', '1') == '1';
-        if ($request->input('payment_method') === 'cod' && !$codEnabled) {
-            return back()->withInput()->with('error', 'طريقة الدفع عند الاستلام غير مفعلة حالياً.');
-        }
-
-        // Proof of payment is required for InstaPay, Wallet, and Bank Transfer
-        if (in_array($request->input('payment_method'), ['instapay', 'wallet', 'bank'])) {
-            $rules['payment_screenshot'] = 'required|image|max:4096'; // Max 4MB image
+        // Transfer proof is mandatory: either uploaded as file or chosen via WhatsApp
+        $proofMethod = $request->input('proof_method', 'upload');
+        if ($proofMethod === 'upload') {
+            if (!$request->hasFile('payment_screenshot')) {
+                return back()->withInput()->with('error', 'إرفاق إيصال التحويل إجباري لتأكيد الطلب. يرجى اختيار صورة الإيصال أو اختيار إرسالها عبر الواتساب.');
+            }
+            $rules['payment_screenshot'] = 'required|image|max:8192'; // Max 8MB image
         }
 
         $request->validate($rules);
@@ -172,17 +172,28 @@ class CheckoutController extends Controller
         // Transaction block for database integrity
         DB::beginTransaction();
         try {
+            $phone = $request->input('customer_phone');
+            $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
+            $customerEmail = $request->input('customer_email') ?: ($cleanPhone . '@customer.2morro.com');
+
             // Handle guest account creation (if not logged in)
             $userId = Auth::id();
             if (!$userId) {
-                // Check if user exists by email, otherwise create new
-                $existingUser = User::where('email', $request->input('customer_email'))->first();
+                // Check if user exists by email or phone, otherwise create new
+                $existingUser = User::where('email', $customerEmail)
+                    ->orWhere(function($q) use ($phone) {
+                        if (!empty($phone)) {
+                            $q->where('phone', $phone);
+                        }
+                    })->first();
+
                 if ($existingUser) {
                     $userId = $existingUser->id;
                 } else {
                     $newUser = User::create([
                         'name' => $request->input('customer_name'),
-                        'email' => $request->input('customer_email'),
+                        'email' => $customerEmail,
+                        'phone' => $phone,
                         'password' => Hash::make(Str::random(12)),
                     ]);
                     $userId = $newUser->id;
@@ -192,13 +203,20 @@ class CheckoutController extends Controller
             // Generate unique order number
             $orderNumber = '2M-' . strtoupper(Str::random(4)) . '-' . time();
 
-            // Handle payment proof screenshot upload
+            // Handle payment proof screenshot
             $screenshotPath = null;
-            if ($request->hasFile('payment_screenshot')) {
+            if ($proofMethod === 'upload' && $request->hasFile('payment_screenshot')) {
                 $file = $request->file('payment_screenshot');
                 $filename = 'proof_' . time() . '_' . Str::random(8) . '.' . ($file->getClientOriginalExtension() ?: 'jpg');
                 $file->move(storage_path('app/public/payment_proofs'), $filename);
                 $screenshotPath = 'payment_proofs/' . $filename;
+            } elseif ($proofMethod === 'whatsapp') {
+                $screenshotPath = 'sent_via_whatsapp';
+            }
+
+            $orderNotes = $request->input('notes', '');
+            if ($proofMethod === 'whatsapp') {
+                $orderNotes = trim($orderNotes . "\n[تأكيد التحويل: العميل سيرسل صورة الإيصال عبر الواتساب]");
             }
 
             // Create Order
@@ -206,8 +224,8 @@ class CheckoutController extends Controller
                 'user_id' => $userId,
                 'order_number' => $orderNumber,
                 'customer_name' => $request->input('customer_name'),
-                'customer_email' => $request->input('customer_email'),
-                'customer_phone' => $request->input('customer_phone'),
+                'customer_email' => $customerEmail,
+                'customer_phone' => $phone,
                 'shipping_governorate' => $request->input('shipping_governorate'),
                 'shipping_city' => $request->input('shipping_city', ''),
                 'shipping_address' => $request->input('shipping_address'),
@@ -216,10 +234,10 @@ class CheckoutController extends Controller
                 'discount_total' => 0.00,
                 'total' => $total,
                 'payment_method' => $request->input('payment_method'),
-                'payment_status' => $request->input('payment_method') === 'cod' ? 'pending' : 'paid', // screenshot uploaded
+                'payment_status' => 'pending', // Pending admin verification of transfer
                 'payment_screenshot' => $screenshotPath,
                 'status' => 'pending',
-                'notes' => $request->input('notes'),
+                'notes' => $orderNotes,
             ]);
 
             // Create Order Items and decrease stock

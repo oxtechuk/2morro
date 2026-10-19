@@ -290,7 +290,11 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if($order->payment_screenshot)
+                                        @if($order->payment_screenshot === 'sent_via_whatsapp')
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle py-1 px-2 fs-8 rounded-pill" title="تم الإرسال عبر الواتساب">
+                                                <i class="bi bi-whatsapp me-0.5"></i> واتساب
+                                            </span>
+                                        @elseif($order->payment_screenshot)
                                             <a href="{{ asset('storage/' . $order->payment_screenshot) }}" target="_blank" class="btn btn-xs btn-outline-primary py-1 px-2.5 fs-8 rounded-pill" title="مشاهدة صورة التحويل">
                                                 <i class="bi bi-image me-1"></i> فحص
                                             </a>

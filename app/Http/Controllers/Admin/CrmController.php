@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
 use App\Models\User;
 use App\Models\CustomerProfile;
 use App\Models\CrmLog;
@@ -67,25 +68,31 @@ class CrmController extends Controller
 
     public function show(User $user)
     {
-        // Prevent accessing admin profiles
-        if ($user->isAdmin() && $user->email !== Auth::user()->email) {
-            abort(403, 'غير مصرح بعرض ملفات المشرفين الآخرين.');
-        }
-
         // Ensure profile exists
-        if (!$user->profile) {
+        if (!$user->profile && !$user->customerProfile) {
             $user->profile()->create([
                 'segment' => 'parent'
             ]);
-            $user->load('profile');
+            $user->load(['profile', 'customerProfile']);
         }
 
-        // Load CRM logs, orders, and digital downloads
+        // Load CRM logs, orders with products, bookings (consultations), and digital downloads
         $crmLogs = $user->crmLogs()->with('admin')->latest()->get();
-        $orders = $user->orders()->latest()->get();
+        $orders = $user->orders()->with('orderProducts.product')->latest()->get();
         $downloads = $user->downloads()->with('product')->latest()->get();
 
-        return view('admin.crm.show', compact('user', 'crmLogs', 'orders', 'downloads'));
+        // Load all bookings linked to user_id or matching parent phone/email
+        $bookings = Booking::where(function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+            if (!empty($user->phone)) {
+                $q->orWhere('parent_phone', $user->phone);
+            }
+            if (!empty($user->email)) {
+                $q->orWhere('parent_email', $user->email);
+            }
+        })->with('bookingBranch')->latest()->get();
+
+        return view('admin.crm.show', compact('user', 'crmLogs', 'orders', 'downloads', 'bookings'));
     }
 
     public function storeNote(Request $request, User $user)
