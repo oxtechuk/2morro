@@ -261,28 +261,28 @@
          }">
         
         <!-- Top Section Header & Age Filter Bar -->
-        <div class="mb-5 bg-white p-3.5 sm:p-4 rounded-3xl border border-slate-100 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="mb-5 bg-white p-4 sm:p-5 rounded-3xl border border-slate-100 shadow-2xs space-y-3.5">
             <div class="flex items-center gap-2.5">
                 <div class="w-8 h-8 rounded-xl bg-blue-50 text-[#2563ea] flex items-center justify-center flex-shrink-0">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
                 <div>
-                    <h3 class="text-xs sm:text-sm font-black text-slate-800">تصفح المنتجات حسب عمر الطفل</h3>
-                    <p class="text-[11px] text-slate-400 font-medium">اختر المرحلة العمرية لعرض الألعاب والأدوات المناسبة لطفلك</p>
+                    <h3 class="text-sm sm:text-base font-black text-slate-900 leading-tight">تصفح المنتجات حسب عمر الطفل</h3>
+                    <p class="text-xs text-slate-500 font-semibold mt-0.5">اختر المرحلة العمرية لعرض الألعاب والأدوات المناسبة لطفلك</p>
                 </div>
             </div>
 
             <!-- Responsive Age Filter Tabs Pills (Only ages with products!) -->
-            <div class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-1">
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 w-full">
                 <button @click="selectedAge = 'all'" 
                         :class="selectedAge === 'all' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'" 
-                        class="px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex-shrink-0">
+                        class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex-shrink-0">
                     الكل
                 </button>
                 @foreach($ageGroups as $ag)
                     <button @click="selectedAge = '{{ $ag->slug }}'" 
                             :class="selectedAge === '{{ $ag->slug }}' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'" 
-                            class="px-4 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex-shrink-0">
+                            class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex-shrink-0">
                         {{ $ag->name }}
                     </button>
                 @endforeach
@@ -292,7 +292,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-stretch">
             
             <!-- Side Promo Banner Card (3 cols on desktop) -->
-            <div class="lg:col-span-3 rounded-3xl p-5 sm:p-6 text-white flex flex-col justify-between text-center relative overflow-hidden shadow-md group transition-all duration-300 hover:shadow-xl
+            <div class="order-2 lg:order-1 lg:col-span-3 rounded-3xl p-5 sm:p-6 text-white flex flex-col justify-between text-center relative overflow-hidden shadow-md group transition-all duration-300 hover:shadow-xl
                 @if(($promoSettings['deals_gradient'] ?? 'blue') === 'purple')
                     bg-gradient-to-b from-[#4F46E5] to-[#312E81]
                 @elseif(($promoSettings['deals_gradient'] ?? 'blue') === 'coral')
@@ -353,7 +353,7 @@
             <!-- Products Area (9 cols on desktop) -->
             <!-- 1. Default State: When selectedAge === 'all' (2 Balanced Groups) -->
             <div x-show="selectedAge === 'all'" 
-                 class="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6"
+                 class="order-1 lg:order-2 lg:col-span-9 grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6"
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0"
                  x-transition:enter-end="opacity-100">
@@ -410,7 +410,7 @@
 
             <!-- 2. Filtered State: When selectedAge !== 'all' -->
             <div x-show="selectedAge !== 'all'" 
-                 class="lg:col-span-9 bg-slate-50/70 p-3.5 sm:p-5 rounded-3xl border border-slate-100 flex flex-col justify-between"
+                 class="order-1 lg:order-2 lg:col-span-9 bg-slate-50/70 p-3.5 sm:p-5 rounded-3xl border border-slate-100 flex flex-col justify-between"
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="opacity-0"
                  x-transition:enter-end="opacity-100"
