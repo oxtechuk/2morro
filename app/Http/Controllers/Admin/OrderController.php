@@ -16,7 +16,7 @@ use App\Models\GeneraleSetting;
 use App\Services\TwilioService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use App\Repositories\OrderRepository;
 use App\Services\NotificationServices;
@@ -157,5 +157,35 @@ class OrderController extends Controller
         $order->save();
 
         return back()->with('success', 'تم تعديل حالة الدفع بنجاح');
+    }
+
+    /**
+     * Delete an order and its associated files and items.
+     */
+    public function destroy(Order $order)
+    {
+        $orderNumber = $order->order_number ?? $order->id;
+
+        // Delete payment screenshot if exists
+        if (!empty($order->payment_screenshot) && Storage::disk('public')->exists($order->payment_screenshot)) {
+            Storage::disk('public')->delete($order->payment_screenshot);
+        }
+
+        // Delete related items
+        $order->items()->delete();
+
+        // Record CRM log if associated with a user
+        if ($order->user_id) {
+            CrmLog::create([
+                'user_id' => $order->user_id,
+                'admin_id' => Auth::id(),
+                'type' => 'order',
+                'details' => 'تم حذف الطلب #' . $orderNumber . ' نهائياً من قبل الإدارة',
+            ]);
+        }
+
+        $order->delete();
+
+        return redirect()->route('admin.orders.index')->with('success', 'تم حذف الطلب #' . $orderNumber . ' بنجاح!');
     }
 }

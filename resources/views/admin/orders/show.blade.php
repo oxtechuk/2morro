@@ -21,6 +21,13 @@
                 <a href="{{ route('admin.orders.invoice', $order->id) }}" target="_blank" class="btn btn-light border fw-bold fs-7">
                     <i class="bi bi-printer me-1"></i> طباعة الفاتورة
                 </a>
+                <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" class="d-inline" onsubmit="return confirm('هل أنت متأكد من رغبتك في حذف هذا الطلب نهائياً؟ #{{ $order->order_number }}');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-outline-danger fw-bold fs-7">
+                        <i class="bi bi-trash me-1"></i> حذف الطلب
+                    </button>
+                </form>
                 <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary fw-bold fs-7">
                     العودة للقائمة
                 </a>

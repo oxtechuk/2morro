@@ -170,6 +170,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/order/status-change/{order}', [OrderController::class, 'statusChange'])->name('order.status.change');
     Route::get('/order/payment-status-toggle/{order}', [OrderController::class, 'paymentStatusToggle'])->name('order.payment.status.toggle');
     Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
+    Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
+    Route::delete('/order/destroy/{order}', [OrderController::class, 'destroy'])->name('order.destroy');
 
     // Reviews Management
     Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');

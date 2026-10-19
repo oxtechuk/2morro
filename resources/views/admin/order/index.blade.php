@@ -117,6 +117,13 @@
                                         <img src="{{ asset('assets/icons-admin/download-alt.svg') }}" alt="icon"
                                             loading="lazy" />
                                     </a>
+                                    <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" class="d-inline" onsubmit="return confirm('هل أنت متأكد من رغبتك في حذف هذا الطلب نهائياً؟');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="حذف الطلب" class="circleIcon border-0 bg-danger-subtle text-danger" style="width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%;">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         @empty
