@@ -770,6 +770,44 @@
                 </div>
             </li>
 
+            <!-- Collapsible Group 4: العروض والبروموكود -->
+            @php
+                $isPromoGroupActive = request()->routeIs('admin.coupon.*') || request()->routeIs('admin.discounts.*');
+                $activeCouponsCount = \App\Models\Coupon::where('is_active', true)->count();
+            @endphp
+            <li class="menu-item" data-tooltip="العروض والبروموكود">
+                <button type="button" class="menu-link {{ $isPromoGroupActive ? '' : 'collapsed' }}" data-bs-toggle="collapse" data-bs-target="#menu-promo" aria-expanded="{{ $isPromoGroupActive ? 'true' : 'false' }}">
+                    <i class="bi bi-ticket-perforated-fill menu-icon text-danger"></i>
+                    <span class="menu-text">العروض والبروموكود</span>
+                    @if($activeCouponsCount > 0)
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle fs-8 px-2 py-0.5 rounded-pill me-1 ms-auto">{{ $activeCouponsCount }} نشط</span>
+                    @endif
+                    <i class="bi bi-chevron-down menu-arrow"></i>
+                </button>
+                <div class="collapse {{ $isPromoGroupActive ? 'show' : '' }}" id="menu-promo">
+                    <ul class="submenu">
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.coupon.index') }}" class="submenu-link {{ request()->routeIs('admin.coupon.index') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>أكواد الخصم والبروموكود</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.coupon.create') }}" class="submenu-link {{ request()->routeIs('admin.coupon.create') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>إنشاء كود خصم جديد</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.discounts.index') }}" class="submenu-link {{ request()->routeIs('admin.discounts.*') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>العروض والخصومات الجماعية</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
             <li class="menu-title">المتجر والنظام</li>
             <li class="menu-item" data-tooltip="عرض المتجر">
                 <a href="{{ route('home') }}" target="_blank" class="menu-link">

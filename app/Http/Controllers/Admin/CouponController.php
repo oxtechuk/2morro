@@ -20,7 +20,14 @@ class CouponController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        return view('admin.coupon.index', compact('coupons'));
+        $stats = [
+            'total' => Coupon::count(),
+            'active' => Coupon::where('is_active', true)->count(),
+            'total_used' => (int) Coupon::sum('total_used'),
+            'total_savings' => (float) \App\Models\Order::sum('discount_total'),
+        ];
+
+        return view('admin.coupon.index', compact('coupons', 'stats'));
     }
 
     /**
