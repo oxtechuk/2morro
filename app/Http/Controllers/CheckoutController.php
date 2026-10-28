@@ -40,14 +40,30 @@ class CheckoutController extends Controller
         $shippingFee = 0;
         
         if ($physicalCount > 0) {
-            if ($subtotal >= $freeShippingThreshold) {
-                $shippingFee = 0.00; // Free shipping
+            $shippingFee = ($subtotal >= $freeShippingThreshold) ? 0.00 : 50.00;
+        }
+        // Check if a promo coupon is applied
+        $discountTotal = 0.00;
+        $appliedCoupon = session()->get('applied_coupon');
+        if ($appliedCoupon) {
+            $coupon = \App\Models\Coupon::where('code', $appliedCoupon['code'])->first();
+            if ($coupon) {
+                $eval = $coupon->evaluateCart($subtotal, $cart);
+                if ($eval['eligible']) {
+                    $discountTotal = (float) $eval['discount'];
+                    $appliedCoupon['discount'] = $discountTotal;
+                    session()->put('applied_coupon', $appliedCoupon);
+                } else {
+                    session()->forget('applied_coupon');
+                    $appliedCoupon = null;
+                }
             } else {
-                $shippingFee = 50.00; // Flat shipping fee in Egypt
+                session()->forget('applied_coupon');
+                $appliedCoupon = null;
             }
         }
 
-        $total = $subtotal + $shippingFee;
+        $total = max(0, $subtotal - $discountTotal) + $shippingFee;
 
         // InstaPay, Wallet, and Bank Transfer / IBAN details
         $instapayAddress = \App\Models\Setting::get('payment_instapay_address', 'hebaalla@instapay');
@@ -116,7 +132,9 @@ class CheckoutController extends Controller
             'linktreeUrl',
             'whatsappNumber',
             'supervisorName',
-            'workingHours'
+            'workingHours',
+            'discountTotal',
+            'appliedCoupon'
         ));
     }
 
@@ -161,13 +179,22 @@ class CheckoutController extends Controller
             }
         }
 
-        // Free shipping over 550 EGP
-        $shippingFee = 0.00;
-        if ($physicalCount > 0) {
-            $shippingFee = ($subtotal >= 550.00) ? 0.00 : 50.00;
+        // Evaluate Coupon Discount if applied
+        $discountTotal = 0.00;
+        $couponCode = null;
+        $appliedCoupon = session()->get('applied_coupon');
+        if ($appliedCoupon) {
+            $coupon = \App\Models\Coupon::where('code', $appliedCoupon['code'])->first();
+            if ($coupon) {
+                $eval = $coupon->evaluateCart($subtotal, $cart);
+                if ($eval['eligible']) {
+                    $discountTotal = (float) $eval['discount'];
+                    $couponCode = $coupon->code;
+                }
+            }
         }
 
-        $total = $subtotal + $shippingFee;
+        $total = max(0, $subtotal - $discountTotal) + $shippingFee;
 
         // Transaction block for database integrity
         DB::beginTransaction();
@@ -231,7 +258,8 @@ class CheckoutController extends Controller
                 'shipping_address' => $request->input('shipping_address'),
                 'shipping_fee' => $shippingFee,
                 'subtotal' => $subtotal,
-                'discount_total' => 0.00,
+                'discount_total' => $discountTotal,
+                'coupon_code' => $couponCode,
                 'total' => $total,
                 'payment_method' => $request->input('payment_method'),
                 'payment_status' => 'pending', // Pending admin verification of transfer
@@ -239,6 +267,12 @@ class CheckoutController extends Controller
                 'status' => 'pending',
                 'notes' => $orderNotes,
             ]);
+
+            // Increment coupon total_used
+            if ($couponCode) {
+                \App\Models\Coupon::where('code', $couponCode)->increment('total_used');
+            }
+            session()->forget('applied_coupon');
 
             // Create Order Items and decrease stock
             foreach ($cart as $id => $item) {
@@ -306,5 +340,102 @@ class CheckoutController extends Controller
         $downloads = Download::where('order_id', $order->id)->with('product')->get();
 
         return view('storefront.success', compact('order', 'downloads'));
+    }
+
+    /**
+     * Apply promo coupon via AJAX in Checkout / Cart
+     */
+    public function applyCoupon(Request $request)
+    {
+        $code = strtoupper(trim($request->input('coupon_code', $request->input('code', ''))));
+        if (empty($code)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'يرجى إدخال رمز كود الخصم أولاً.',
+            ], 422);
+        }
+
+        $coupon = \App\Models\Coupon::where('code', $code)->first();
+        if (!$coupon) {
+            return response()->json([
+                'success' => false,
+                'message' => 'كود الخصم المدخل غير صحيح أو غير متوفر.',
+            ], 404);
+        }
+
+        $cart = session()->get('cart', []);
+        if (empty($cart)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'سلة التسوق فارغة، يرجى إضافة منتجات أولاً.',
+            ], 422);
+        }
+
+        $subtotal = 0;
+        $physicalCount = 0;
+        foreach ($cart as $item) {
+            $subtotal += ($item['price'] ?? 0) * ($item['quantity'] ?? 1);
+            if (($item['type'] ?? 'physical') === 'physical') {
+                $physicalCount += ($item['quantity'] ?? 1);
+            }
+        }
+
+        $eval = $coupon->evaluateCart($subtotal, $cart);
+        if (!$eval['eligible']) {
+            return response()->json([
+                'success' => false,
+                'message' => $eval['message'],
+            ], 422);
+        }
+
+        $discount = (float) $eval['discount'];
+        session()->put('applied_coupon', [
+            'code' => $coupon->code,
+            'discount' => $discount,
+            'type' => $coupon->discount_type,
+        ]);
+
+        $shippingFee = ($physicalCount > 0) ? ($subtotal >= 550.00 ? 0.00 : 50.00) : 0.00;
+        $newTotal = max(0, $subtotal - $discount) + $shippingFee;
+
+        return response()->json([
+            'success' => true,
+            'message' => $eval['message'],
+            'coupon' => [
+                'code' => $coupon->code,
+                'discount' => $discount,
+                'formatted_discount' => number_format($discount, 2) . ' ج.م',
+                'new_total' => $newTotal,
+                'formatted_total' => number_format($newTotal, 2) . ' ج.م',
+            ],
+        ]);
+    }
+
+    /**
+     * Remove applied coupon
+     */
+    public function removeCoupon()
+    {
+        session()->forget('applied_coupon');
+
+        $cart = session()->get('cart', []);
+        $subtotal = 0;
+        $physicalCount = 0;
+        foreach ($cart as $item) {
+            $subtotal += ($item['price'] ?? 0) * ($item['quantity'] ?? 1);
+            if (($item['type'] ?? 'physical') === 'physical') {
+                $physicalCount += ($item['quantity'] ?? 1);
+            }
+        }
+
+        $shippingFee = ($physicalCount > 0) ? ($subtotal >= 550.00 ? 0.00 : 50.00) : 0.00;
+        $newTotal = $subtotal + $shippingFee;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم إلغاء كود الخصم بنجاح.',
+            'new_total' => $newTotal,
+            'formatted_total' => number_format($newTotal, 2) . ' ج.م',
+        ]);
     }
 }

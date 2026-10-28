@@ -126,10 +126,10 @@
                     <div class="card-header"><h5 class="mb-0">التسعير والمخزون</h5></div>
                     <div class="card-body">
                         <div class="row g-3">
-                            <div class="col-md-6 col-sm-12">
-                                <label class="form-label fw-bold">السعر الأساسي للمنتج (ج.م)</label>
+                            <div class="col-md-4 col-sm-12">
+                                <label class="form-label fw-bold">السعر الأساسي للمنتج (ج.م) <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <input type="number" step="0.01" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price', $product->price) }}" required>
+                                    <input type="number" step="0.01" id="product_price" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price', $product->price) }}" required>
                                     <span class="input-group-text">ج.م</span>
                                 </div>
                                 @error('price')
@@ -137,13 +137,28 @@
                                 @enderror
                             </div>
 
-                            <div class="col-md-6 col-sm-12">
-                                <label class="form-label fw-bold">سعر العرض / التخفيض (اختياري)</label>
+                            <div class="col-md-4 col-sm-12">
+                                <label class="form-label fw-bold">نسبة الخصم المئوية (%)</label>
                                 <div class="input-group">
-                                    <input type="number" step="0.01" name="sale_price" class="form-control @error('sale_price') is-invalid @enderror" value="{{ old('sale_price', $product->sale_price) }}">
+                                    <input type="number" step="1" min="0" max="99" id="discount_percentage" class="form-control" placeholder="مثال: 20" value="{{ $product->price > 0 && $product->sale_price ? round((($product->price - $product->sale_price) / $product->price) * 100) : '' }}">
+                                    <span class="input-group-text bg-light text-primary font-bold">%</span>
+                                </div>
+                                <small class="text-muted">أدخل النسبة لحساب سعر العرض تلقائياً</small>
+                            </div>
+
+                            <div class="col-md-4 col-sm-12">
+                                <label class="form-label fw-bold">سعر العرض بعد الخصم (ج.م)</label>
+                                <div class="input-group">
+                                    <input type="number" step="0.01" id="product_sale_price" name="sale_price" class="form-control @error('sale_price') is-invalid @enderror" value="{{ old('sale_price', $product->sale_price) }}" placeholder="أو اكتب السعر المخفض">
                                     <span class="input-group-text">ج.م</span>
                                 </div>
-                                <small class="text-muted">اتركه فارغاً في حالة عدم وجود خصم. يجب أن يكون أقل من السعر الأساسي.</small>
+                                <small class="text-muted" id="discount_savings_hint">
+                                    @if($product->price > 0 && $product->sale_price)
+                                        قيمة التوفير: {{ number_format($product->price - $product->sale_price, 2) }} ج.م
+                                    @else
+                                        اتركه فارغاً في حال عدم وجود تخفيض
+                                    @endif
+                                </small>
                                 @error('sale_price')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
@@ -731,6 +746,71 @@
             } else {
                 currentImg.style.opacity = '1';
                 currentImg.style.filter = 'none';
+            }
+    // Bidirectional Price and Discount Percentage Calculator
+    const priceInput = document.getElementById('product_price');
+    const discountPercentInput = document.getElementById('discount_percentage');
+    const salePriceInput = document.getElementById('product_sale_price');
+    const savingsHint = document.getElementById('discount_savings_hint');
+    const badgeInput = document.querySelector('input[name="badge"]');
+
+    function updateSavingsHint(price, salePrice) {
+        if (!savingsHint) return;
+        if (price > 0 && salePrice > 0 && salePrice < price) {
+            const savings = (price - salePrice).toFixed(2);
+            const pct = Math.round(((price - salePrice) / price) * 100);
+            savingsHint.innerHTML = `<span class="text-success fw-bold">قيمة التوفير: ${savings} ج.م (وفرت ${pct}%)</span>`;
+        } else {
+            savingsHint.innerHTML = `<span class="text-muted">اتركه فارغاً في حال عدم وجود تخفيض</span>`;
+        }
+    }
+
+    if (priceInput && discountPercentInput && salePriceInput) {
+        // When typing discount percentage -> calculate sale_price
+        discountPercentInput.addEventListener('input', function() {
+            const price = parseFloat(priceInput.value) || 0;
+            const pct = parseFloat(this.value) || 0;
+            if (price > 0 && pct > 0 && pct < 100) {
+                const discounted = price - (price * pct / 100);
+                salePriceInput.value = discounted.toFixed(2);
+                updateSavingsHint(price, discounted);
+                if (badgeInput && (!badgeInput.value || badgeInput.value.startsWith('خصم'))) {
+                    badgeInput.value = `خصم ${pct}%`;
+                }
+            } else if (pct === 0 || isNaN(pct)) {
+                salePriceInput.value = '';
+                updateSavingsHint(price, 0);
+            }
+        });
+
+        // When typing sale_price -> calculate discount percentage
+        salePriceInput.addEventListener('input', function() {
+            const price = parseFloat(priceInput.value) || 0;
+            const salePrice = parseFloat(this.value) || 0;
+            if (price > 0 && salePrice > 0 && salePrice < price) {
+                const pct = Math.round(((price - salePrice) / price) * 100);
+                discountPercentInput.value = pct;
+                updateSavingsHint(price, salePrice);
+                if (badgeInput && (!badgeInput.value || badgeInput.value.startsWith('خصم'))) {
+                    badgeInput.value = `خصم ${pct}%`;
+                }
+            } else {
+                discountPercentInput.value = '';
+                updateSavingsHint(price, salePrice);
+            }
+        });
+
+        // When price changes
+        priceInput.addEventListener('input', function() {
+            const price = parseFloat(this.value) || 0;
+            const pct = parseFloat(discountPercentInput.value) || 0;
+            if (price > 0 && pct > 0) {
+                const discounted = price - (price * pct / 100);
+                salePriceInput.value = discounted.toFixed(2);
+                updateSavingsHint(price, discounted);
+            } else {
+                const salePrice = parseFloat(salePriceInput.value) || 0;
+                updateSavingsHint(price, salePrice);
             }
         });
     }

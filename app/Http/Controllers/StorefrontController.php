@@ -45,7 +45,7 @@ class StorefrontController extends Controller
             'deals_subtitle' => \App\Models\Setting::get('promo_deals_subtitle', 'خصومات تصل إلي'),
             'deals_discount' => \App\Models\Setting::get('promo_deals_discount', '30%'),
             'deals_btn_text' => \App\Models\Setting::get('promo_deals_btn_text', 'تسوق الآن'),
-            'deals_btn_link' => \App\Models\Setting::get('promo_deals_btn_link', '/search?category=educational-bundles'),
+            'deals_btn_link' => \App\Models\Setting::get('promo_deals_btn_link', route('offers')),
             'deals_image' => \App\Models\Setting::get('promo_deals_image', 'images/promo-gift.jpg'),
             'deals_gradient' => \App\Models\Setting::get('promo_deals_gradient', 'blue'),
             'group1_title' => \App\Models\Setting::get('promo_group1_title', 'الأكثر مبيعاً'),
@@ -388,5 +388,76 @@ class StorefrontController extends Controller
             'skills',
             'needs'
         ))->header('Content-Type', 'text/xml');
+    }
+
+    /**
+     * Dedicated Offers & Promotions Page (/offers)
+     */
+    public function offers(Request $request)
+    {
+        $categorySlug = $request->get('category');
+        $sortBy = $request->get('sort', 'discount_desc');
+
+        $query = Product::where('is_active', true)
+            ->whereNotNull('sale_price')
+            ->where('sale_price', '>', 0)
+            ->whereRaw('sale_price < price')
+            ->with(['categories', 'ageGroups']);
+
+        if ($categorySlug) {
+            $query->whereHas('categories', function($q) use ($categorySlug) {
+                $q->where('slug', $categorySlug);
+            });
+        }
+
+        switch ($sortBy) {
+            case 'price_asc':
+                $query->orderBy('sale_price', 'asc');
+                break;
+            case 'price_desc':
+                $query->orderBy('sale_price', 'desc');
+                break;
+            case 'latest':
+                $query->latest('id');
+                break;
+            case 'discount_desc':
+            default:
+                $query->orderByRaw('((price - sale_price) / price) DESC');
+                break;
+        }
+
+        $products = $query->paginate(16)->withQueryString();
+
+        $categories = Category::where('is_active', true)
+            ->whereHas('products', function($q) {
+                $q->where('is_active', true)
+                    ->whereNotNull('sale_price')
+                    ->where('sale_price', '>', 0)
+                    ->whereRaw('sale_price < price');
+            })
+            ->withCount(['products' => function($q) {
+                $q->where('is_active', true)
+                    ->whereNotNull('sale_price')
+                    ->where('sale_price', '>', 0)
+                    ->whereRaw('sale_price < price');
+            }])
+            ->get();
+
+        $totalOffersCount = Product::where('is_active', true)
+            ->whereNotNull('sale_price')
+            ->where('sale_price', '>', 0)
+            ->whereRaw('sale_price < price')
+            ->count();
+
+        $banners = Banner::active()->get();
+
+        return view('storefront.offers', compact(
+            'products',
+            'categories',
+            'categorySlug',
+            'sortBy',
+            'totalOffersCount',
+            'banners'
+        ));
     }
 }

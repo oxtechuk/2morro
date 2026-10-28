@@ -268,37 +268,42 @@
         </div>
     </li>
 @endhasPermission
-@hasPermission(['admin.coupon.index', 'admin.coupon.create'])
-    <!--- coupon--->
+    <!--- bulk discounts & offers --->
+    <li>
+        <a class="menu {{ request()->routeIs('admin.discounts.*') ? 'active' : '' }}"
+            href="{{ route('admin.discounts.index') }}">
+            <span>
+                <i class="bi bi-percent fs-5 me-2 text-danger"></i>
+                {{ __('العروض والخصومات الجماعية') }}
+            </span>
+        </a>
+    </li>
+
+    <!--- coupon / promo codes --->
     <li>
         <a class="menu {{ request()->routeIs('admin.coupon.*') ? 'active' : '' }}" data-bs-toggle="collapse"
             href="#couponMenu">
             <span>
                 <img class="menu-icon" src="{{ asset('assets/icons-admin/coupon-percent.svg') }}" alt="icon"
                     loading="lazy" />
-                {{ __('Coupon') }}
+                {{ __('أكواد الخصم والبروموكود') }}
             </span>
             <img src="{{ asset('assets/icons-admin/caret-down.svg') }}" alt="icon" class="downIcon">
         </a>
-        <div class="collapse dropdownMenuCollapse {{ $request->routeIs('admin.coupon.*') ? 'show' : '' }}"
+        <div class="collapse dropdownMenuCollapse {{ request()->routeIs('admin.coupon.*') ? 'show' : '' }}"
             id="couponMenu">
             <div class="listBar">
-                @hasPermission('admin.coupon.index')
-                    <a href="{{ route('admin.coupon.index') }}"
-                        class="subMenu hasCount {{ request()->routeIs('admin.coupon.index') ? 'active' : '' }}">
-                        {{ __('List Of Coupons') }}
-                    </a>
-                @endhasPermission
-                @hasPermission('admin.coupon.create')
-                    <a href="{{ route('admin.coupon.create') }}"
-                        class="subMenu hasCount {{ request()->routeIs('admin.coupon.create') ? 'active' : '' }}">
-                        {{ __('Add Coupon') }}
-                    </a>
-                @endhasPermission
+                <a href="{{ route('admin.coupon.index') }}"
+                    class="subMenu {{ request()->routeIs('admin.coupon.index') ? 'active' : '' }}">
+                    {{ __('قائمة أكواد الخصم') }}
+                </a>
+                <a href="{{ route('admin.coupon.create') }}"
+                    class="subMenu {{ request()->routeIs('admin.coupon.create') ? 'active' : '' }}">
+                    {{ __('إنشاء كود خصم جديد') }}
+                </a>
             </div>
         </div>
     </li>
-@endhasPermission
 @hasPermission('admin.customerNotification.index')
     <!--- notification--->
     <li>

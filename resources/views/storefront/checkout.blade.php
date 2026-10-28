@@ -343,6 +343,42 @@
                         @endforeach
                     </div>
 
+                    <!-- Promo Code Box -->
+                    <div class="mt-4 pt-4 border-t border-slate-200" id="coupon_section">
+                        @if(!empty($appliedCoupon))
+                            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between" id="coupon_active_box">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-base">🎉</span>
+                                    <div>
+                                        <div class="text-xs font-black text-emerald-800">
+                                            كود الخصم مفعل: <span class="font-mono bg-white px-2 py-0.5 rounded border border-emerald-300 text-emerald-700">{{ $appliedCoupon['code'] }}</span>
+                                        </div>
+                                        <div class="text-[11px] text-emerald-600 font-bold mt-0.5">
+                                            وفرت {{ number_format($discountTotal, 2) }} ج.م من إجمالي طلبك
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="removePromoCode()" class="text-xs font-bold text-red-600 hover:text-red-700 bg-white hover:bg-red-50 border border-red-200 px-2.5 py-1 rounded-lg transition-colors cursor-pointer">
+                                    إلغاء
+                                </button>
+                            </div>
+                        @else
+                            <div id="coupon_input_box">
+                                <label class="text-[11px] font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 text-[#2563ea]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                                    <span>هل لديك كود خصم أو بروموكود؟</span>
+                                </label>
+                                <div class="flex gap-2">
+                                    <input type="text" id="promo_code_input" placeholder="اكتب كود الخصم هنا..." class="flex-1 text-xs font-bold font-mono uppercase bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-800 focus:border-[#2563ea] focus:ring-1 focus:ring-blue-100 outline-none">
+                                    <button type="button" id="btn_apply_coupon" onclick="applyPromoCode()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all shadow-xs cursor-pointer disabled:opacity-50">
+                                        تطبيق
+                                    </button>
+                                </div>
+                                <div id="coupon_message" class="text-[11px] font-bold mt-1.5 hidden"></div>
+                            </div>
+                        @endif
+                    </div>
+
                     <!-- Receipt Calculations -->
                     <div class="mt-4 pt-4 border-t border-slate-200 flex flex-col gap-2.5 text-xs">
                         <div class="flex justify-between items-center text-slate-600 font-semibold">
@@ -359,6 +395,15 @@
                             @endif
                         </div>
 
+                        <!-- Coupon Discount Line -->
+                        <div class="flex justify-between items-center text-emerald-700 font-bold bg-emerald-50 px-2.5 py-1.5 rounded-lg border border-emerald-200 {{ $discountTotal > 0 ? '' : 'hidden' }}" id="receipt_discount_row">
+                            <span class="flex items-center gap-1">
+                                <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                                <span id="receipt_discount_label">خصم الكوبون{{ !empty($appliedCoupon) ? ' (' . $appliedCoupon['code'] . ')' : '' }}:</span>
+                            </span>
+                            <span id="receipt_discount_amount">-{{ number_format($discountTotal, 2) }} ج.م</span>
+                        </div>
+
                         <!-- Free shipping progress bar -->
                         @if($physicalCount > 0 && $subtotal < 550)
                             <div class="bg-blue-50/60 border border-blue-100 p-2.5 rounded-xl flex flex-col gap-1.5 mt-1">
@@ -373,8 +418,8 @@
                         @endif
 
                         <div class="flex justify-between items-center text-slate-900 font-black text-sm pt-3 border-t border-slate-200">
-                            <span>الإجمالي الكلي:</span>
-                            <span class="text-[#2563ea] text-base font-black">{{ number_format($total, 2) }} ج.م</span>
+                            <span>الإجمالي النهائي للدفع:</span>
+                            <span id="checkout_grand_total" class="text-[#2563ea] text-base font-black">{{ number_format($total, 2) }} ج.م</span>
                         </div>
                     </div>
                 </div>
@@ -394,4 +439,78 @@
 
     </div>
 </div>
+
+<script>
+function applyPromoCode() {
+    const input = document.getElementById('promo_code_input');
+    const btn = document.getElementById('btn_apply_coupon');
+    const msg = document.getElementById('coupon_message');
+
+    if (!input || !input.value.trim()) {
+        if (msg) {
+            msg.className = 'text-[11px] font-bold mt-1.5 text-red-600 block';
+            msg.textContent = 'يرجى كتابة رمز الكود أولاً.';
+        }
+        return;
+    }
+
+    const code = input.value.trim();
+    btn.disabled = true;
+    btn.textContent = 'جاري الفحص...';
+    if (msg) msg.className = 'hidden';
+
+    fetch('{{ route('checkout.coupon.apply') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ code: code })
+    })
+    .then(res => res.json().then(data => ({ status: res.status, body: data })))
+    .then(result => {
+        btn.disabled = false;
+        btn.textContent = 'تطبيق';
+
+        if (result.status === 200 && result.body.success) {
+            // Reload page to seamlessly refresh Alpine state and checkout totals
+            window.location.reload();
+        } else {
+            if (msg) {
+                msg.className = 'text-[11px] font-bold mt-1.5 text-red-600 block';
+                msg.textContent = result.body.message || 'كود الخصم غير صحيح.';
+            }
+        }
+    })
+    .catch(err => {
+        btn.disabled = false;
+        btn.textContent = 'تطبيق';
+        if (msg) {
+            msg.className = 'text-[11px] font-bold mt-1.5 text-red-600 block';
+            msg.textContent = 'تعذر الاتصال بالخادم، يرجى المحاولة مرة أخرى.';
+        }
+    });
+}
+
+function removePromoCode() {
+    fetch('{{ route('checkout.coupon.remove') }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        }
+    })
+    .catch(err => {
+        console.error(err);
+    });
+}
+</script>
 @endsection

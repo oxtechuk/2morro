@@ -12,6 +12,7 @@ Route::get('/', [StorefrontController::class, 'index'])->name('home');
 Route::get('/product/{product:slug}', [StorefrontController::class, 'product'])->name('product');
 Route::get('/search/autocomplete', [StorefrontController::class, 'autocomplete'])->name('search.autocomplete');
 Route::get('/search', [StorefrontController::class, 'search'])->name('search');
+Route::get('/offers', [StorefrontController::class, 'offers'])->name('offers');
 Route::get('/sitemap.xml', [StorefrontController::class, 'sitemap']);
 
 // Cart routes
@@ -24,6 +25,8 @@ Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear')
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 Route::get('/checkout/success/{order_number}', [CheckoutController::class, 'success'])->name('checkout.success');
+Route::post('/checkout/coupon/apply', [CheckoutController::class, 'applyCoupon'])->name('checkout.coupon.apply');
+Route::post('/checkout/coupon/remove', [CheckoutController::class, 'removeCoupon'])->name('checkout.coupon.remove');
 
 // Secure file download route
 Route::get('/download/{token}', [DownloadController::class, 'download'])->name('download');
@@ -81,6 +84,8 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\TaxonomyController;
 use App\Http\Controllers\Admin\ProductImportExportController;
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
+use App\Http\Controllers\Admin\CouponController as AdminCouponController;
+use App\Http\Controllers\Admin\BulkDiscountController;
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -177,6 +182,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
     Route::post('/reviews/{review}/toggle-approve', [ReviewController::class, 'toggleApprove'])->name('reviews.toggleApprove');
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+
+    // Promo Codes & Coupons Management
+    Route::get('/coupon/toggle/{coupon}', [AdminCouponController::class, 'statusToggle'])->name('coupon.toggle');
+    Route::resource('coupon', AdminCouponController::class)->except(['show']);
+
+    // Bulk Category & Product Percentage Discounts
+    Route::get('/discounts', [BulkDiscountController::class, 'index'])->name('discounts.index');
+    Route::post('/discounts/apply', [BulkDiscountController::class, 'applyCategory'])->name('discounts.apply');
+    Route::post('/discounts/reset', [BulkDiscountController::class, 'resetCategory'])->name('discounts.reset');
+    Route::post('/discounts/product/{product}/reset', [BulkDiscountController::class, 'resetProduct'])->name('discounts.product.reset');
 
     // Notifications
     Route::get('/notifications', [AdminNotificationController::class, 'show'])->name('notification.show');

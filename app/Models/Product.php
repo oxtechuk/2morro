@@ -27,7 +27,7 @@ class Product extends Model
 
     protected $guarded = ['id'];
 
-    protected $appends = ['thumbnail'];
+    protected $appends = ['thumbnail', 'has_discount', 'discount_percentage'];
 
     protected $casts = [
         'benefits' => 'array',
@@ -449,5 +449,31 @@ class Product extends Model
             }
         }
         return $this->buy_price;
+    }
+
+    public function getHasDiscountAttribute(): bool
+    {
+        return !empty($this->sale_price) && $this->sale_price > 0 && $this->sale_price < $this->price;
+    }
+
+    public function getDiscountPercentageAttribute(): int
+    {
+        if ($this->has_discount && $this->price > 0) {
+            return (int) round((($this->price - $this->sale_price) / $this->price) * 100);
+        }
+        return 0;
+    }
+
+    public function getDiscountSavingsAttribute(): float
+    {
+        if ($this->has_discount) {
+            return (float) ($this->price - $this->sale_price);
+        }
+        return 0.0;
+    }
+
+    public function scopeOnSale($query)
+    {
+        return $query->whereNotNull('sale_price')->whereRaw('sale_price < price AND sale_price > 0');
     }
 }

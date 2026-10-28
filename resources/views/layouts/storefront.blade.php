@@ -218,6 +218,11 @@
                             باقات التوفير
                         </a>
 
+                        <a href="{{ route('offers') }}" class="py-2 px-2.5 rounded-xl transition-all whitespace-nowrap inline-flex items-center gap-1 {{ request()->routeIs('offers') ? 'bg-rose-50 text-rose-600 font-black' : 'text-rose-600 hover:bg-rose-50 font-bold' }}">
+                            <span class="text-sm">🔥</span>
+                            <span>العروض</span>
+                        </a>
+
                         <a href="{{ route('booking.index') }}" class="ms-1 px-4 py-2 rounded-xl text-white text-xs font-black transition-all shadow-xs hover:opacity-90 hover:scale-[1.02] active:scale-95 whitespace-nowrap" style="background-color: #f76d11;">
                             حجز استشارة
                         </a>
@@ -475,6 +480,10 @@
                 <a href="{{ route('search', ['category' => 'digital-worksheets']) }}" class="block text-sm font-bold text-slate-700 py-2 border-b border-slate-50">الشيتات التعليمية</a>
                 <a href="{{ route('search', ['category' => 'courses']) }}" class="block text-sm font-bold text-slate-700 py-2 border-b border-slate-50">الكورسات والبرامج</a>
                 <a href="{{ route('search', ['category' => 'educational-bundles']) }}" class="block text-sm font-bold text-slate-700 py-2 border-b border-slate-50">الباقات والعروض</a>
+                <a href="{{ route('offers') }}" class="block text-sm font-black text-rose-600 py-2 border-b border-slate-50 flex items-center justify-between">
+                    <span>العروض والخصومات</span>
+                    <span class="text-xs bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full font-bold">🔥 تخفيضات</span>
+                </a>
                 <a href="{{ route('booking.index') }}" class="block text-sm font-bold text-amber-700 py-2 border-b border-slate-50">حجز استشارة وتقييم</a>
                 <a href="https://linktr.ee/hebaalla?subscribe" target="_blank" class="block text-sm font-black text-emerald-600 py-2 border-b border-slate-50">صفحة روابط المركز (Linktree)</a>
 
@@ -700,6 +709,7 @@
                             <li><a href="{{ route('search', ['category' => 'educational-tools']) }}" class="hover:text-[#2563ea] transition-colors flex items-center gap-1.5"><span class="w-1 h-1 rounded-full bg-slate-400"></span> الألعاب والأدوات</a></li>
                             <li><a href="{{ route('search', ['category' => 'digital-worksheets']) }}" class="hover:text-[#2563ea] transition-colors flex items-center gap-1.5"><span class="w-1 h-1 rounded-full bg-slate-400"></span> شيتات PDF</a></li>
                             <li><a href="{{ route('search', ['category' => 'educational-bundles']) }}" class="hover:text-[#2563ea] transition-colors flex items-center gap-1.5"><span class="w-1 h-1 rounded-full bg-slate-400"></span> باقات التوفير</a></li>
+                            <li><a href="{{ route('offers') }}" class="hover:text-rose-600 text-rose-600 transition-colors flex items-center gap-1.5 font-black"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span> أقوى العروض 🔥</a></li>
                             <li class="pt-1">
                                 <a href="{{ route('booking.index') }}" class="inline-flex items-center gap-1 text-[11px] font-black text-[#2563ea] bg-blue-50 border border-blue-200 px-2.5 py-1.5 rounded-lg hover:bg-[#2563ea] hover:text-white transition-all">
                                     <span>حجز استشارة</span>

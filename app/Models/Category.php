@@ -43,6 +43,11 @@ class Category extends Model
         return $this->hasMany(Category::class, 'parent_id');
     }
 
+    public function coupons(): BelongsToMany
+    {
+        return $this->belongsToMany(Coupon::class, 'coupon_category', 'category_id', 'coupon_id');
+    }
+
 
     protected static function booted()
     {

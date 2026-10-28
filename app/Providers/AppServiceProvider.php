@@ -34,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Schema::defaultStringLength(191);
         // Guarantee Blade permission directives are always registered
         \Illuminate\Support\Facades\Blade::if('hasPermission', function ($permissions) {
             $user = auth()->user();
