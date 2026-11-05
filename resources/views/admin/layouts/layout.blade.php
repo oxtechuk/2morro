@@ -770,7 +770,6 @@
                 </div>
             </li>
 
-<<<<<<< Updated upstream
             <!-- Collapsible Group 4: العروض والبروموكود -->
             @php
                 $isPromoGroupActive = request()->routeIs('admin.coupon.*') || request()->routeIs('admin.discounts.*');
@@ -803,14 +802,19 @@
                             <a href="{{ route('admin.discounts.index') }}" class="submenu-link {{ request()->routeIs('admin.discounts.*') ? 'active' : '' }}">
                                 <span class="submenu-dot"></span>
                                 <span>العروض والخصومات الجماعية</span>
-=======
-            <!-- Collapsible Group 4: شروحات الدكتور والريلز -->
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <!-- Collapsible Group 5: شروحات الدكتور والريلز -->
             @php
                 $isVideosGroupActive = request()->routeIs('admin.doctor-videos.*');
             @endphp
             <li class="menu-item" data-tooltip="شروحات الدكتور والريلز">
                 <button type="button" class="menu-link {{ $isVideosGroupActive ? '' : 'collapsed' }}" data-bs-toggle="collapse" data-bs-target="#menu-doctor-videos" aria-expanded="{{ $isVideosGroupActive ? 'true' : 'false' }}">
-                    <i class="bi bi-camera-reels-fill menu-icon"></i>
+                    <i class="bi bi-camera-reels-fill menu-icon text-primary"></i>
                     <span class="menu-text">شروحات الدكتور والريلز</span>
                     <i class="bi bi-chevron-down menu-arrow"></i>
                 </button>
@@ -844,13 +848,13 @@
                 </div>
             </li>
 
-            <!-- Collapsible Group 5: الترافيك والبكسلات والتسويق -->
+            <!-- Collapsible Group 6: الترافيك والبكسلات والتسويق -->
             @php
                 $isMarketingGroupActive = request()->routeIs('admin.analytics.*') || request()->routeIs('admin.marketing.*');
             @endphp
             <li class="menu-item" data-tooltip="الترافيك والبكسلات">
                 <button type="button" class="menu-link {{ $isMarketingGroupActive ? '' : 'collapsed' }}" data-bs-toggle="collapse" data-bs-target="#menu-marketing" aria-expanded="{{ $isMarketingGroupActive ? 'true' : 'false' }}">
-                    <i class="bi bi-graph-up-arrow menu-icon"></i>
+                    <i class="bi bi-graph-up-arrow menu-icon text-success"></i>
                     <span class="menu-text">الترافيك والبكسلات</span>
                     <i class="bi bi-chevron-down menu-arrow"></i>
                 </button>
@@ -866,7 +870,6 @@
                             <a href="{{ route('admin.marketing.pixels.index') }}" class="submenu-link {{ request()->routeIs('admin.marketing.*') ? 'active' : '' }}">
                                 <span class="submenu-dot"></span>
                                 <span>إدارة البكسلات والإعلانات</span>
->>>>>>> Stashed changes
                             </a>
                         </li>
                     </ul>

@@ -71,9 +71,14 @@ class DoctorVideoController extends Controller
 
         $videos = $videosQuery->latest('id')->paginate(12)->withQueryString();
 
-        // Taxonomies for Chips
-        $needs = Need::withCount(['doctorVideos' => fn($q) => $q->published()])->get();
-        $ageGroups = AgeGroup::withCount(['doctorVideos' => fn($q) => $q->published()])->orderBy('min_age', 'asc')->get();
+        // Taxonomies for Chips - Only categories that have published videos
+        $needs = Need::whereHas('doctorVideos', fn($q) => $q->published())
+            ->withCount(['doctorVideos' => fn($q) => $q->published()])
+            ->get();
+        $ageGroups = AgeGroup::whereHas('doctorVideos', fn($q) => $q->published())
+            ->withCount(['doctorVideos' => fn($q) => $q->published()])
+            ->orderBy('min_age', 'asc')
+            ->get();
 
         return view('storefront.doctor-videos.index', compact(
             'videos',

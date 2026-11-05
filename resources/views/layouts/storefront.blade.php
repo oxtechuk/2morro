@@ -238,16 +238,14 @@
                             باقات التوفير
                         </a>
 
-<<<<<<< Updated upstream
                         <a href="{{ route('offers') }}" class="py-2 px-2.5 rounded-xl transition-all whitespace-nowrap inline-flex items-center gap-1 {{ request()->routeIs('offers') ? 'bg-rose-50 text-rose-600 font-black' : 'text-rose-600 hover:bg-rose-50 font-bold' }}">
                             <span class="text-sm">🔥</span>
                             <span>العروض</span>
-=======
-                        <a href="{{ route('doctor-videos.index') }}" class="py-2 px-0.5 transition-colors whitespace-nowrap flex items-center gap-1.5 {{ request()->routeIs('doctor-videos.*') ? 'text-rose-600 border-b-2 border-rose-600 font-black' : 'text-slate-700 hover:text-rose-600' }}">
-                            <svg class="w-4 h-4 text-rose-500 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6.47v11.06c0 1.25 1.37 2.01 2.43 1.36l9.1-5.53c1.02-.62 1.02-2.1 0-2.72l-9.1-5.53C5.37 4.46 4 5.22 4 6.47z"/></svg>
+                        </a>
+                        <a href="{{ route('doctor-videos.index') }}" class="py-2 px-0.5 transition-colors whitespace-nowrap flex items-center gap-1.5 {{ request()->routeIs('doctor-videos.*') ? 'text-[#2563ea] border-b-2 border-[#2563ea] font-black' : 'text-slate-700 hover:text-[#2563ea]' }}">
+                            <svg class="w-4 h-4 text-[#2563ea]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                             <span>شروحات الدكتور</span>
-                            <span class="text-[10px] bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded-md font-black">جديد 🔥</span>
->>>>>>> Stashed changes
+                            <span class="text-[10px] bg-blue-100 text-[#2563ea] px-1.5 py-0.5 rounded-md font-black">جديد</span>
                         </a>
 
                         <a href="{{ route('booking.index') }}" class="ms-1 px-4 py-2 rounded-xl text-white text-xs font-black transition-all shadow-xs hover:opacity-90 hover:scale-[1.02] active:scale-95 whitespace-nowrap" style="background-color: #f76d11;">
@@ -507,18 +505,16 @@
                 <a href="{{ route('search', ['category' => 'digital-worksheets']) }}" class="block text-sm font-bold text-slate-700 py-2 border-b border-slate-50">الشيتات التعليمية</a>
                 <a href="{{ route('search', ['category' => 'courses']) }}" class="block text-sm font-bold text-slate-700 py-2 border-b border-slate-50">الكورسات والبرامج</a>
                 <a href="{{ route('search', ['category' => 'educational-bundles']) }}" class="block text-sm font-bold text-slate-700 py-2 border-b border-slate-50">الباقات والعروض</a>
-<<<<<<< Updated upstream
                 <a href="{{ route('offers') }}" class="block text-sm font-black text-rose-600 py-2 border-b border-slate-50 flex items-center justify-between">
                     <span>العروض والخصومات</span>
-                    <span class="text-xs bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full font-bold">🔥 تخفيضات</span>
-=======
-                <a href="{{ route('doctor-videos.index') }}" class="flex items-center justify-between text-sm font-bold text-rose-600 py-2 border-b border-slate-50">
+                    <span class="text-xs bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full font-bold">تخفيضات</span>
+                </a>
+                <a href="{{ route('doctor-videos.index') }}" class="flex items-center justify-between text-sm font-bold text-[#2563ea] py-2 border-b border-slate-50">
                     <span class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-rose-500" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6.47v11.06c0 1.25 1.37 2.01 2.43 1.36l9.1-5.53c1.02-.62 1.02-2.1 0-2.72l-9.1-5.53C5.37 4.46 4 5.22 4 6.47z"/></svg>
+                        <svg class="w-4 h-4 text-[#2563ea]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                         <span>شروحات الدكتور والريلز</span>
                     </span>
-                    <span class="text-[10px] bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full font-black">جديد 🔥</span>
->>>>>>> Stashed changes
+                    <span class="text-[10px] bg-blue-100 text-[#2563ea] px-2 py-0.5 rounded-full font-black">جديد</span>
                 </a>
                 <a href="{{ route('booking.index') }}" class="block text-sm font-bold text-amber-700 py-2 border-b border-slate-50">حجز استشارة وتقييم</a>
                 <a href="https://linktr.ee/hebaalla?subscribe" target="_blank" class="block text-sm font-black text-emerald-600 py-2 border-b border-slate-50">صفحة روابط المركز (Linktree)</a>
