@@ -77,7 +77,7 @@ class DoctorVideoController extends Controller
     {
         $ageGroups = AgeGroup::orderBy('min_age', 'asc')->get();
         $needs     = Need::orderBy('name', 'asc')->get();
-        $products  = Product::where('is_active', true)->select('id', 'name', 'thumbnail', 'price')->get();
+        $products  = Product::where('is_active', true)->select('id', 'name', 'images', 'price')->get();
 
         return view('admin.doctor-videos.create', compact('ageGroups', 'needs', 'products'));
     }
@@ -155,7 +155,7 @@ class DoctorVideoController extends Controller
         $doctorVideo->load('products');
         $ageGroups = AgeGroup::orderBy('min_age', 'asc')->get();
         $needs     = Need::orderBy('name', 'asc')->get();
-        $products  = Product::where('is_active', true)->select('id', 'name', 'thumbnail', 'price')->get();
+        $products  = Product::where('is_active', true)->select('id', 'name', 'images', 'price')->get();
 
         return view('admin.doctor-videos.edit', compact('doctorVideo', 'ageGroups', 'needs', 'products'));
     }

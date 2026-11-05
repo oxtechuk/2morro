@@ -211,6 +211,21 @@ class Product extends Model
     }
 
     /**
+     * Get clean URL for the product's primary image / thumbnail.
+     */
+    public function getThumbnailUrlAttribute(): string
+    {
+        if (!empty($this->images) && is_array($this->images) && count($this->images) > 0) {
+            $first = $this->images[0];
+            if (str_starts_with($first, 'http://') || str_starts_with($first, 'https://')) {
+                return $first;
+            }
+            return asset('storage/' . ltrim($first, '/'));
+        }
+        return asset('default/default.jpg');
+    }
+
+    /**
      * Get the medias for the product.
      */
     public function medias(): HasMany
