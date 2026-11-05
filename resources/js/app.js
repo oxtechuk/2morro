@@ -35,5 +35,9 @@ app.use(router);
 app.use(VueAwesomePaginate);
 app.use(Toast);
 app.component("chat-box", ChatBox);
-app.mount("#chat-app");
-app.mount("#app");
+if (document.getElementById("chat-app")) {
+    app.mount("#chat-app");
+}
+if (document.getElementById("app")) {
+    app.mount("#app");
+}

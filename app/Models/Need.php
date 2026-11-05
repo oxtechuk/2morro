@@ -19,4 +19,9 @@ class Need extends Model
     {
         return $this->belongsToMany(Product::class);
     }
+
+    public function doctorVideos()
+    {
+        return $this->hasMany(DoctorVideo::class);
+    }
 }

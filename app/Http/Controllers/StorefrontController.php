@@ -22,11 +22,14 @@ class StorefrontController extends Controller
     // Homepage
     public function index()
     {
-        // Only categories that have active products
+        // Only categories that have active products with products count
         $categories = Category::where('is_active', true)
             ->whereHas('products', function($q) {
                 $q->where('is_active', true);
             })
+            ->withCount(['products' => function($q) {
+                $q->where('is_active', true);
+            }])
             ->get();
 
         // Only age groups that have active products

@@ -14,6 +14,23 @@
 
         <title>@yield('title', $siteMetaTitle)</title>
         <meta name="description" content="@yield('meta_description', $siteMetaDescription)">
+        <meta name="robots" content="@yield('robots', 'index, follow')">
+        <link rel="canonical" href="{{ url()->current() }}">
+
+        <!-- Open Graph / Facebook / WhatsApp -->
+        <meta property="og:site_name" content="مركز ومتجر تمورو 2morro">
+        <meta property="og:title" content="@yield('title', $siteMetaTitle)">
+        <meta property="og:description" content="@yield('meta_description', $siteMetaDescription)">
+        <meta property="og:type" content="@yield('og_type', 'website')">
+        <meta property="og:url" content="{{ url()->current() }}">
+        <meta property="og:image" content="@yield('og_image', asset($favLogo) . '?v=' . $favVersion)">
+        <meta property="og:locale" content="ar_EG">
+
+        <!-- Twitter Meta -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="@yield('title', $siteMetaTitle)">
+        <meta name="twitter:description" content="@yield('meta_description', $siteMetaDescription)">
+        <meta name="twitter:image" content="@yield('og_image', asset($favLogo) . '?v=' . $favVersion)">
 
         <!-- Favicon (Store Logo) -->
         <link rel="icon" type="image/png" href="{{ asset($favLogo) }}?v={{ $favVersion }}">
@@ -109,6 +126,9 @@
             }
         </style>
         @yield('styles')
+
+        <!-- Marketing Pixels & Tracking Scripts (Meta, TikTok, GA4, AdSense) -->
+        @include('storefront.partials.tracking-head')
     </head>
     <body class="antialiased bg-[#F8FAFC] text-slate-800 font-sans selection:bg-blue-600 selection:text-white min-h-screen flex flex-col justify-between" 
           x-data="{ cartOpen: false, searchOpen: false, mobileMenuOpen: false }">
@@ -218,9 +238,16 @@
                             باقات التوفير
                         </a>
 
+<<<<<<< Updated upstream
                         <a href="{{ route('offers') }}" class="py-2 px-2.5 rounded-xl transition-all whitespace-nowrap inline-flex items-center gap-1 {{ request()->routeIs('offers') ? 'bg-rose-50 text-rose-600 font-black' : 'text-rose-600 hover:bg-rose-50 font-bold' }}">
                             <span class="text-sm">🔥</span>
                             <span>العروض</span>
+=======
+                        <a href="{{ route('doctor-videos.index') }}" class="py-2 px-0.5 transition-colors whitespace-nowrap flex items-center gap-1.5 {{ request()->routeIs('doctor-videos.*') ? 'text-rose-600 border-b-2 border-rose-600 font-black' : 'text-slate-700 hover:text-rose-600' }}">
+                            <svg class="w-4 h-4 text-rose-500 animate-pulse" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6.47v11.06c0 1.25 1.37 2.01 2.43 1.36l9.1-5.53c1.02-.62 1.02-2.1 0-2.72l-9.1-5.53C5.37 4.46 4 5.22 4 6.47z"/></svg>
+                            <span>شروحات الدكتور</span>
+                            <span class="text-[10px] bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded-md font-black">جديد 🔥</span>
+>>>>>>> Stashed changes
                         </a>
 
                         <a href="{{ route('booking.index') }}" class="ms-1 px-4 py-2 rounded-xl text-white text-xs font-black transition-all shadow-xs hover:opacity-90 hover:scale-[1.02] active:scale-95 whitespace-nowrap" style="background-color: #f76d11;">
@@ -480,9 +507,18 @@
                 <a href="{{ route('search', ['category' => 'digital-worksheets']) }}" class="block text-sm font-bold text-slate-700 py-2 border-b border-slate-50">الشيتات التعليمية</a>
                 <a href="{{ route('search', ['category' => 'courses']) }}" class="block text-sm font-bold text-slate-700 py-2 border-b border-slate-50">الكورسات والبرامج</a>
                 <a href="{{ route('search', ['category' => 'educational-bundles']) }}" class="block text-sm font-bold text-slate-700 py-2 border-b border-slate-50">الباقات والعروض</a>
+<<<<<<< Updated upstream
                 <a href="{{ route('offers') }}" class="block text-sm font-black text-rose-600 py-2 border-b border-slate-50 flex items-center justify-between">
                     <span>العروض والخصومات</span>
                     <span class="text-xs bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full font-bold">🔥 تخفيضات</span>
+=======
+                <a href="{{ route('doctor-videos.index') }}" class="flex items-center justify-between text-sm font-bold text-rose-600 py-2 border-b border-slate-50">
+                    <span class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-rose-500" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6.47v11.06c0 1.25 1.37 2.01 2.43 1.36l9.1-5.53c1.02-.62 1.02-2.1 0-2.72l-9.1-5.53C5.37 4.46 4 5.22 4 6.47z"/></svg>
+                        <span>شروحات الدكتور والريلز</span>
+                    </span>
+                    <span class="text-[10px] bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full font-black">جديد 🔥</span>
+>>>>>>> Stashed changes
                 </a>
                 <a href="{{ route('booking.index') }}" class="block text-sm font-bold text-amber-700 py-2 border-b border-slate-50">حجز استشارة وتقييم</a>
                 <a href="https://linktr.ee/hebaalla?subscribe" target="_blank" class="block text-sm font-black text-emerald-600 py-2 border-b border-slate-50">صفحة روابط المركز (Linktree)</a>
@@ -991,6 +1027,9 @@
                 });
             });
         </script>
+
+        <!-- Marketing Pixels Body & E-commerce Bridge -->
+        @include('storefront.partials.tracking-body')
     </body>
 </html>
 

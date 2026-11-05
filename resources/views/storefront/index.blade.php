@@ -1,6 +1,7 @@
 @extends('layouts.storefront')
 
-@section('title', '2morro | أدوات وشيتات تعليمية تنمي مهارات طفلك')
+@section('title', 'متجر تمورو 2morro | أدوات تنمية مهارات الطفل وتخاطب وتأهيل وشيتات تعليمية')
+@section('meta_description', 'مركز ومتجر تمورو 2morro: الوسائل والألعاب التعليمية المتخصصة في علاج تأخر النطق، تنمية مهارات التركيز، الشيتات الرقمية، واستشارات التخاطب وتعديل السلوك.')
 
 @section('content')
 <div class="bg-white">
@@ -458,7 +459,33 @@
     <!-- 4. All Products Catalog with Category Filtering -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 border-t border-slate-100"
          x-data="{ 
-            activeCategory: 'all'
+            activeCategory: 'all',
+            categoryNames: {
+                'all': 'جميع الأقسام',
+                @foreach($categories as $cat)
+                    '{{ $cat->slug }}': '{{ $cat->name }}',
+                @endforeach
+            },
+            categoryCounts: {
+                'all': {{ $allProducts->count() }},
+                @foreach($categories as $cat)
+                    '{{ $cat->slug }}': {{ $cat->products_count ?? 0 }},
+                @endforeach
+            },
+            getCategoryName(slug) {
+                return this.categoryNames[slug] || '';
+            },
+            getCategoryCount(slug) {
+                return this.categoryCounts[slug] || 0;
+            },
+            filterCategory(productCats) {
+                if (this.activeCategory === 'all') return true;
+                if (!productCats) return false;
+                if (Array.isArray(productCats)) {
+                    return productCats.includes(this.activeCategory);
+                }
+                return productCats === this.activeCategory;
+            }
          }">
         
         <!-- Header & Category Filter Tabs -->
@@ -467,29 +494,63 @@
                 <div class="space-y-1">
                     <div class="flex items-center gap-2.5">
                         <span class="w-1.5 h-6 bg-[#2563ea] rounded-full"></span>
-                        <h2 class="text-xl sm:text-2xl font-black text-slate-900">جميع المنتجات والأدوات التعليمية</h2>
+                        <h2 class="text-xl sm:text-2xl font-black text-slate-900" x-show="activeCategory === 'all'">
+                            جميع المنتجات والأدوات التعليمية
+                        </h2>
+                        <h2 class="text-xl sm:text-2xl font-black text-slate-900" x-show="activeCategory !== 'all'" x-cloak>
+                            منتجات قسم: <span class="text-[#2563ea]" x-text="getCategoryName(activeCategory)"></span>
+                        </h2>
                     </div>
-                    <p class="text-xs text-slate-500 font-semibold pr-4">تصفح منتجاتنا وأدواتنا التعليمية مصنفة حسب الفئة والقسم</p>
+                    <p class="text-xs text-slate-500 font-semibold pr-4" x-show="activeCategory === 'all'">
+                        تصفح منتجاتنا وأدواتنا التعليمية مصنفة حسب الفئة والقسم
+                    </p>
+                    <p class="text-xs text-slate-500 font-semibold pr-4 flex items-center gap-2" x-show="activeCategory !== 'all'" x-cloak>
+                        <span>تم تصفية <strong class="text-[#2563ea]" x-text="getCategoryCount(activeCategory)"></strong> منتجات</span>
+                        <span>•</span>
+                        <button type="button" @click="activeCategory = 'all'" class="text-[#2563ea] hover:underline font-bold cursor-pointer">
+                            إلغاء التصفية وعرض الكل
+                        </button>
+                    </p>
                 </div>
 
-                <a href="{{ route('search') }}" class="text-xs font-bold text-[#2563ea] hover:text-[#1d4ed8] flex items-center gap-1.5 self-start sm:self-auto group transition-colors">
-                    <span>عرض المتجر بالكامل</span>
-                    <svg class="w-3.5 h-3.5 rotate-180 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                </a>
+                <div class="flex items-center gap-2.5">
+                    <button type="button"
+                            x-show="activeCategory !== 'all'" 
+                            @click="activeCategory = 'all'" 
+                            x-cloak
+                            class="text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 px-3.5 py-2 rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        <span>عرض الكل</span>
+                    </button>
+
+                    <a :href="activeCategory === 'all' ? '{{ route('search') }}' : '{{ route('search') }}?category=' + activeCategory" 
+                       class="text-xs font-bold text-[#2563ea] hover:text-[#1d4ed8] flex items-center gap-1.5 self-start sm:self-auto group transition-colors">
+                        <span x-text="activeCategory === 'all' ? 'عرض المتجر بالكامل' : 'تصفح كل قسم ' + getCategoryName(activeCategory) + ' في المتجر'"></span>
+                        <svg class="w-3.5 h-3.5 rotate-180 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+                </div>
             </div>
 
             <!-- Category Filter Tabs Pills (Horizontal swipeable on mobile) -->
             <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 w-full">
-                <button @click="activeCategory = 'all'" 
+                <button type="button"
+                        @click="activeCategory = 'all'" 
                         :class="activeCategory === 'all' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'" 
-                        class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex-shrink-0">
-                    الكل
+                        class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex-shrink-0 flex items-center gap-2">
+                    <span>الكل</span>
+                    <span :class="activeCategory === 'all' ? 'bg-white/25 text-white' : 'bg-slate-200 text-slate-600'" class="px-2 py-0.5 rounded-full text-[10px] font-black">
+                        {{ $allProducts->count() }}
+                    </span>
                 </button>
                 @foreach($categories as $cat)
-                    <button @click="activeCategory = '{{ $cat->slug }}'" 
+                    <button type="button"
+                            @click="activeCategory = '{{ $cat->slug }}'" 
                             :class="activeCategory === '{{ $cat->slug }}' ? 'bg-[#2563ea] text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'" 
-                            class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex-shrink-0">
-                        {{ $cat->name }}
+                            class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex-shrink-0 flex items-center gap-2">
+                        <span>{{ $cat->name }}</span>
+                        <span :class="activeCategory === '{{ $cat->slug }}' ? 'bg-white/25 text-white' : 'bg-slate-200 text-slate-600'" class="px-2 py-0.5 rounded-full text-[10px] font-black">
+                            {{ $cat->products_count ?? 0 }}
+                        </span>
                     </button>
                 @endforeach
             </div>
@@ -501,19 +562,37 @@
                 @php
                     $catSlugs = $product->categories->pluck('slug')->toArray();
                 @endphp
-                <div x-show="activeCategory === 'all' || {{ json_encode($catSlugs) }}.includes(activeCategory)"
+                <div x-show="filterCategory({{ json_encode($catSlugs) }})"
                      x-transition:enter="transition ease-out duration-300"
                      x-transition:enter-start="opacity-0 scale-95"
-                     x-transition:enter-end="opacity-100 scale-100">
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95">
                     @include('storefront.partials.product-card', ['product' => $product])
                 </div>
             @endforeach
+
+            <!-- Empty State if category has 0 matching products -->
+            <div x-show="activeCategory !== 'all' && getCategoryCount(activeCategory) === 0" 
+                 x-cloak 
+                 class="col-span-full py-12 text-center bg-slate-50/70 rounded-3xl border border-dashed border-slate-200 p-6">
+                <div class="w-12 h-12 mx-auto rounded-full bg-blue-50 text-[#2563ea] flex items-center justify-center mb-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+                </div>
+                <h3 class="text-sm font-black text-slate-800">لا توجد منتجات متوفرة حالياً في هذا القسم</h3>
+                <p class="text-xs text-slate-500 mt-1">يتم إضافة منتجات ووسائل تعليمية جديدة بشكل مستمر</p>
+                <button type="button" @click="activeCategory = 'all'" class="mt-4 px-5 py-2.5 rounded-xl bg-[#2563ea] text-white text-xs font-bold hover:bg-blue-700 transition-colors shadow-xs cursor-pointer">
+                    عرض جميع المنتجات
+                </button>
+            </div>
         </div>
 
         <!-- Load More / Full Store Link -->
         <div class="flex items-center justify-center mt-8 sm:mt-10">
-            <a href="{{ route('search') }}" class="inline-flex items-center gap-2 bg-white hover:bg-slate-50 border-2 border-slate-200 hover:border-[#2563ea] text-slate-700 hover:text-[#2563ea] font-extrabold text-xs sm:text-sm py-3 px-8 sm:px-10 rounded-full transition-all shadow-xs group">
-                <span>تصفح جميع المنتجات ({{ \App\Models\Product::where('is_active', true)->count() }} منتج)</span>
+            <a :href="activeCategory === 'all' ? '{{ route('search') }}' : '{{ route('search') }}?category=' + activeCategory" 
+               class="inline-flex items-center gap-2 bg-white hover:bg-slate-50 border-2 border-slate-200 hover:border-[#2563ea] text-slate-700 hover:text-[#2563ea] font-extrabold text-xs sm:text-sm py-3 px-8 sm:px-10 rounded-full transition-all shadow-xs group">
+                <span x-text="activeCategory === 'all' ? 'تصفح جميع المنتجات ({{ \App\Models\Product::where('is_active', true)->count() }} منتج)' : 'تصفح كل منتجات قسم ' + getCategoryName(activeCategory) + ' في المتجر (' + getCategoryCount(activeCategory) + ' منتج)'"></span>
                 <svg class="w-4 h-4 rotate-180 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             </a>
         </div>

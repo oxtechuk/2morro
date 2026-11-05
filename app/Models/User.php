@@ -150,4 +150,14 @@ class User extends Authenticatable
         }
         return $query;
     }
+
+    /**
+     * Doctor Videos purchased by this user
+     */
+    public function purchasedDoctorVideos()
+    {
+        return $this->belongsToMany(DoctorVideo::class, 'doctor_video_access')
+                    ->withPivot('price_paid', 'order_id')
+                    ->withTimestamps();
+    }
 }

@@ -1,6 +1,16 @@
 @extends('layouts.storefront')
 
-@section('title', 'تصفح منتجات تمورو | أدوات وشيتات تعليمية')
+@php
+    $searchPageTitle = 'تصفح كافة الأدوات والألعاب التعليمية والشيتات | متجر تمورو 2morro';
+    if (!empty($query)) {
+        $searchPageTitle = 'نتائج البحث عن "' . $query . '" | متجر تمورو 2morro';
+    } elseif (!empty($currentCategory)) {
+        $searchPageTitle = $currentCategory->name . ' للأطفال | متجر تمورو 2morro';
+    }
+@endphp
+
+@section('title', $searchPageTitle)
+@section('meta_description', 'تصفح باقة مختارة من أفضل ألعاب تنمية المهارات، كروت التخاطب، الشيتات الرقمية، والوسائل التعليمية المناسبة لكل مرحلة عمرية واحتياج خاص.')
 
 @section('content')
 <div class="bg-white py-6 sm:py-8" x-data="{ mobileFilterOpen: false }">

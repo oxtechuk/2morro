@@ -385,12 +385,13 @@ const router = createRouter({
     routes,
 });
 
-// Dynamic Title for pages
+// Dynamic Title for pages - only for legacy #app SPA, never on Blade storefront
 router.beforeEach((to, from, next) => {
-    const master = useMaster();
-    const appName = master.appName;
-
-    document.title = to.meta.title ? `${to.meta.title} - ${appName}` : appName;
+    if (document.getElementById("app") && to.meta.title && to.name !== "not-found") {
+        const master = useMaster();
+        const appName = master?.appName || "2morro";
+        document.title = `${to.meta.title} - ${appName}`;
+    }
     next();
 });
 

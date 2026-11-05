@@ -1,6 +1,7 @@
 @extends('layouts.storefront')
 
-@section('title', $bookingTitle . ' | مركز 2morro')
+@section('title', 'حجز استشارة وتقييم تخاطب وتعديل سلوك أونلاين وفي المركز | تمورو 2morro')
+@section('meta_description', 'احجز جلستك الاستشارية والتقييمية مع أخصائيي التخاطب وتنمية المهارات وتعديل السلوك بمركز تمورو بالإسكندرية (الإبراهيمية، البيطاش، سيدي بشر) أو أونلاين.')
 
 @section('content')
 <div class="bg-[#F8FAFC] min-h-screen py-6 sm:py-10">

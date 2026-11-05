@@ -1,6 +1,9 @@
 @extends('layouts.storefront')
 
-@section('title', $product->name . ' | 2morro')
+@section('title', $product->name . ' | متجر تمورو للأدوات التعليمية وتنمية المهارات')
+@section('meta_description', Str::limit(strip_tags($product->description ?? $product->short_description ?? $product->name), 160))
+@section('og_type', 'product')
+@section('og_image', $product->thumbnail_url ?? '')
 
 @section('content')
 <div class="bg-white py-8">
@@ -301,4 +304,18 @@
 
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof window.trackEcommerceEvent === 'function') {
+            window.trackEcommerceEvent('ViewContent', {
+                content_name: '{{ addslashes($product->name) }}',
+                content_ids: ['{{ $product->id }}'],
+                content_type: 'product',
+                value: {{ (float)$product->price }},
+                currency: 'EGP'
+            });
+        }
+    });
+</script>
 @endsection

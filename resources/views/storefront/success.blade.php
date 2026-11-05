@@ -118,4 +118,17 @@
 
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof window.trackEcommerceEvent === 'function') {
+            window.trackEcommerceEvent('Purchase', {
+                value: {{ (float)$order->total }},
+                currency: 'EGP',
+                content_type: 'product',
+                order_id: '{{ $order->order_number }}'
+            });
+        }
+    });
+</script>
 @endsection

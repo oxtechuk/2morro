@@ -770,6 +770,7 @@
                 </div>
             </li>
 
+<<<<<<< Updated upstream
             <!-- Collapsible Group 4: العروض والبروموكود -->
             @php
                 $isPromoGroupActive = request()->routeIs('admin.coupon.*') || request()->routeIs('admin.discounts.*');
@@ -802,6 +803,70 @@
                             <a href="{{ route('admin.discounts.index') }}" class="submenu-link {{ request()->routeIs('admin.discounts.*') ? 'active' : '' }}">
                                 <span class="submenu-dot"></span>
                                 <span>العروض والخصومات الجماعية</span>
+=======
+            <!-- Collapsible Group 4: شروحات الدكتور والريلز -->
+            @php
+                $isVideosGroupActive = request()->routeIs('admin.doctor-videos.*');
+            @endphp
+            <li class="menu-item" data-tooltip="شروحات الدكتور والريلز">
+                <button type="button" class="menu-link {{ $isVideosGroupActive ? '' : 'collapsed' }}" data-bs-toggle="collapse" data-bs-target="#menu-doctor-videos" aria-expanded="{{ $isVideosGroupActive ? 'true' : 'false' }}">
+                    <i class="bi bi-camera-reels-fill menu-icon"></i>
+                    <span class="menu-text">شروحات الدكتور والريلز</span>
+                    <i class="bi bi-chevron-down menu-arrow"></i>
+                </button>
+                <div class="collapse {{ $isVideosGroupActive ? 'show' : '' }}" id="menu-doctor-videos">
+                    <ul class="submenu">
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.doctor-videos.index') }}" class="submenu-link {{ request()->routeIs('admin.doctor-videos.index') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>كافة الفيديوهات والريلز</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.doctor-videos.create') }}" class="submenu-link {{ request()->routeIs('admin.doctor-videos.create') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>رفع فيديو / ريلز جديد</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.doctor-videos.gallery') }}" class="submenu-link {{ request()->routeIs('admin.doctor-videos.gallery') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>معرض الميديا والوسائط</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.doctor-videos.purchases') }}" class="submenu-link {{ request()->routeIs('admin.doctor-videos.purchases') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>اشتراكات ومبيعات الشروحات</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <!-- Collapsible Group 5: الترافيك والبكسلات والتسويق -->
+            @php
+                $isMarketingGroupActive = request()->routeIs('admin.analytics.*') || request()->routeIs('admin.marketing.*');
+            @endphp
+            <li class="menu-item" data-tooltip="الترافيك والبكسلات">
+                <button type="button" class="menu-link {{ $isMarketingGroupActive ? '' : 'collapsed' }}" data-bs-toggle="collapse" data-bs-target="#menu-marketing" aria-expanded="{{ $isMarketingGroupActive ? 'true' : 'false' }}">
+                    <i class="bi bi-graph-up-arrow menu-icon"></i>
+                    <span class="menu-text">الترافيك والبكسلات</span>
+                    <i class="bi bi-chevron-down menu-arrow"></i>
+                </button>
+                <div class="collapse {{ $isMarketingGroupActive ? 'show' : '' }}" id="menu-marketing">
+                    <ul class="submenu">
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.analytics.index') }}" class="submenu-link {{ request()->routeIs('admin.analytics.*') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>تحليل الزيارات والترافيك</span>
+                            </a>
+                        </li>
+                        <li class="submenu-item">
+                            <a href="{{ route('admin.marketing.pixels.index') }}" class="submenu-link {{ request()->routeIs('admin.marketing.*') ? 'active' : '' }}">
+                                <span class="submenu-dot"></span>
+                                <span>إدارة البكسلات والإعلانات</span>
+>>>>>>> Stashed changes
                             </a>
                         </li>
                     </ul>

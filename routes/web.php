@@ -38,6 +38,12 @@ Route::get('/booking/slots-availability', [BookingController::class, 'slotsAvail
 Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
 Route::get('/booking/success/{bookingNumber}', [BookingController::class, 'success'])->name('booking.success');
 
+// Doctor Videos & Explanations Storefront Routes (شروحات الدكتور والريلز)
+use App\Http\Controllers\DoctorVideoController;
+Route::get('/doctor-videos', [DoctorVideoController::class, 'index'])->name('doctor-videos.index');
+Route::get('/doctor-videos/{slug}', [DoctorVideoController::class, 'watch'])->name('doctor-videos.watch');
+Route::post('/doctor-videos/{id}/purchase', [DoctorVideoController::class, 'purchase'])->name('doctor-videos.purchase')->middleware('auth');
+
 // Breeze dashboard & auth profile routes
 Route::get('/dashboard', function () {
     if (auth()->check() && auth()->user()->isAdmin()) {
@@ -82,6 +88,9 @@ use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\TaxonomyController;
+use App\Http\Controllers\Admin\DoctorVideoController as AdminDoctorVideoController;
+use App\Http\Controllers\Admin\AnalyticsController;
+use App\Http\Controllers\Admin\MarketingPixelController;
 use App\Http\Controllers\Admin\ProductImportExportController;
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
 use App\Http\Controllers\Admin\CouponController as AdminCouponController;
@@ -146,6 +155,20 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/taxonomy/needs', [TaxonomyController::class, 'storeNeed'])->name('taxonomy.needs.store');
     Route::put('/taxonomy/needs/{need}', [TaxonomyController::class, 'updateNeed'])->name('taxonomy.needs.update');
     Route::delete('/taxonomy/needs/{need}', [TaxonomyController::class, 'destroyNeed'])->name('taxonomy.needs.destroy');
+
+    // Doctor Videos & Reels Management (إدارة شروحات الدكتور والريلز)
+    Route::get('/doctor-videos/gallery', [AdminDoctorVideoController::class, 'gallery'])->name('doctor-videos.gallery');
+    Route::post('/doctor-videos/upload-media', [AdminDoctorVideoController::class, 'uploadMedia'])->name('doctor-videos.uploadMedia');
+    Route::get('/doctor-videos/purchases', [AdminDoctorVideoController::class, 'purchases'])->name('doctor-videos.purchases');
+    Route::post('/doctor-videos/{doctorVideo}/toggle-status', [AdminDoctorVideoController::class, 'toggleStatus'])->name('doctor-videos.toggleStatus');
+    Route::resource('doctor-videos', AdminDoctorVideoController::class);
+
+    // Traffic Analytics Dashboard (تحليل الترافيك والزيارات)
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+
+    // Marketing Pixels & Tracking Hub (إدارة البكسلات وتتبع الإعلانات)
+    Route::get('/marketing/pixels', [MarketingPixelController::class, 'index'])->name('marketing.pixels.index');
+    Route::post('/marketing/pixels', [MarketingPixelController::class, 'update'])->name('marketing.pixels.update');
 
     // Products Bulk Import & Export via Excel/CSV
     Route::get('/products/import-export', [ProductImportExportController::class, 'index'])->name('products.importExport');
